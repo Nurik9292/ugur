@@ -1,0 +1,84 @@
+<th:block th:fragment="base">
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}">Title</title>
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="120x120" th:href="@{/assets/img/favicon/apple-touch-icon.png}">
+    <link rel="icon" type="image/png" sizes="32x32" th:href="@{/assets/img/favicon/favicon-32x32.png}">
+    <link rel="icon" type="image/png" sizes="16x16" th:href="@{/assets/img/favicon/favicon-16x16.png}">
+    <link rel="manifest" th:href="@{/assets/img/favicon/site.webmanifest}">
+    <link rel="mask-icon" th:href="@{/assets/img/favicon/safari-pinned-tab.svg}" color="#ffffff">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- Sweet Alert -->
+    <link type="text/css" th:href="@{/vendor/sweetalert2/dist/sweetalert2.min.css}" rel="stylesheet">
+
+    <!-- Notyf -->
+    <link type="text/css" th:href="@{/vendor/notyf/notyf.min.css}" rel="stylesheet">
+
+    <!-- Volt CSS -->
+    <link type="text/css" th:href="@{/css/volt.css}" rel="stylesheet">
+
+</head>
+<body>
+<div th:replace="includes/sidebar :: sidebar"></div>
+
+<main class="content">
+<th:block th:insert="includes/navbar :: navbar"></th:block>
+<th:block th:switch="${page}">
+    <th:block th:case="main" th:insert="pages/main :: main"></th:block>
+    <th:block th:case="user" th:insert="pages/users/index :: index"></th:block>
+    <th:block th:case="user-create" th:insert="pages/users/create :: create"></th:block>
+    <th:block th:case="user-edit" th:insert="pages/users/edit :: edit"></th:block>
+</th:block>
+
+<div th:replace="includes/footer :: footer"></div>
+</main>
+
+<!-- Core -->
+<script th:src="@{'/vendor/@popperjs/core/dist/umd/popper.min.js'}"></script>
+<script th:src="@{/vendor/bootstrap/dist/js/bootstrap.min.js}"></script>
+
+<!-- Vendor JS -->
+<script th:src="@{/vendor/onscreen/dist/on-screen.umd.min.js}"></script>
+
+<!-- Slider -->
+<script th:src="@{/vendor/nouislider/distribute/nouislider.min.js}"></script>
+
+<!-- Smooth scroll -->
+<script th:src="@{/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js}"></script>
+
+<!-- Charts -->
+<script th:src="@{/vendor/chartist/dist/chartist.min.js}"></script>
+<script th:src="@{/vendor/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js}"></script>
+
+<!-- Datepicker -->
+<script th:src="@{/vendor/vanillajs-datepicker/dist/js/datepicker.min.js}"></script>
+
+<!-- Sweet Alerts 2 -->
+<script th:src="@{/vendor/sweetalert2/dist/sweetalert2.all.min.js}"></script>
+
+<!-- Moment JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
+
+<!-- Vanilla JS Datepicker -->
+<script th:src="@{/vendor/vanillajs-datepicker/dist/js/datepicker.min.js}"></script>
+
+<!-- Notyf -->
+<script th:src="@{/vendor/notyf/notyf.min.js}"></script>
+
+<!-- Simplebar -->
+<script th:src="@{/vendor/simplebar/dist/simplebar.min.js}"></script>
+
+<!-- Github buttons -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
+<!-- Volt JS -->
+<script th:src="@{/assets/js/volt.js}"></script>
+
+</body>
+</html>
+</th:block>
