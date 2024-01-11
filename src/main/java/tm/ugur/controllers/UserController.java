@@ -25,7 +25,7 @@ public class UserController {
     @GetMapping()
     public String index(Model model){
         model.addAttribute("title", " Пользователи");
-        model.addAttribute("page", "user");
+        model.addAttribute("page", "user-index");
         model.addAttribute("users", this.personService.index());
         return "layouts/users/index";
     }

@@ -9,12 +9,12 @@ import java.util.Objects;
 @Table(name = "stops")
 public class Stop {
 
-    @Id
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @Id
     private int id;
 
-    @Id
     @NotEmpty(message = "Заполните название.")
     @Column(name = "name")
     private String name;
@@ -92,7 +92,7 @@ public class Stop {
     @Override
     public String toString() {
         return "Stop{" +
-                "id=" + id +
+             "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
     }

@@ -1,0 +1,6 @@
+.ukaz{
+    &:hover{
+        color: black;
+        text-decoration: underline black;
+    } ;
+}

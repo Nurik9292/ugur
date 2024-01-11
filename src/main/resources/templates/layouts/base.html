@@ -21,6 +21,7 @@
 
     <!-- Volt CSS -->
     <link type="text/css" th:href="@{/css/volt.css}" rel="stylesheet">
+    <link type="text/css" th:href="@{/css/custom.css}" rel="stylesheet">
 
 </head>
 <body>
@@ -30,9 +31,12 @@
 <th:block th:insert="includes/navbar :: navbar"></th:block>
 <th:block th:switch="${page}">
     <th:block th:case="main" th:insert="pages/main :: main"></th:block>
-    <th:block th:case="user" th:insert="pages/users/index :: index"></th:block>
+    <th:block th:case="user-index" th:insert="pages/users/index :: index"></th:block>
     <th:block th:case="user-create" th:insert="pages/users/create :: create"></th:block>
     <th:block th:case="user-edit" th:insert="pages/users/edit :: edit"></th:block>
+    <th:block th:case="city-index" th:insert="pages/cities/index :: index"></th:block>
+    <th:block th:case="city-create" th:insert="pages/cities/create :: create"></th:block>
+<!--    <th:block th:case="city-edit" th:insert="pages/cities/edit :: edit"></th:block>-->
 </th:block>
 
 <div th:replace="includes/footer :: footer"></div>

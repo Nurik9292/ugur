@@ -2,6 +2,7 @@ package tm.ugur.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
 import java.util.Objects;
 
@@ -14,15 +15,16 @@ public class City {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Size(min = 3, max = 10)
     @NotEmpty(message = "Заполните название города")
     @Column(name = "name")
-    private StringBuilder name;
+    private String name;
 
     public City(){
 
     }
 
-    public City(StringBuilder name) {
+    public City(String name) {
         this.name = name;
     }
 
@@ -34,11 +36,11 @@ public class City {
         this.id = id;
     }
 
-    public StringBuilder getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(StringBuilder name) {
+    public void setName(String name) {
         this.name = name;
     }
 
