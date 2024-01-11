@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -19,6 +20,9 @@ public class City {
     @NotEmpty(message = "Заполните название города")
     @Column(name = "name")
     private String name;
+
+    @OneToMany(mappedBy = "city")
+    private List<Stop> stops;
 
     public City(){
 
@@ -64,4 +68,5 @@ public class City {
                 ", name=" + name +
                 '}';
     }
+
 }

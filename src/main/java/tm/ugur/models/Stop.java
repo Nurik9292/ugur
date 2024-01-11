@@ -20,13 +20,11 @@ public class Stop {
     private String name;
 
     @Column(name = "location")
-    private StringBuilder location;
+    private String location;
 
-    @Transient
-    private StringBuilder lat;
-
-    @Transient
-    private StringBuilder lng;
+    @ManyToOne
+    @JoinColumn(name = "city_id", referencedColumnName = "id")
+    private City city;
 
     public Stop(){
 
@@ -52,29 +50,14 @@ public class Stop {
         this.name = name;
     }
 
-    public StringBuilder getLocation() {
+    public String getLocation() {
         return location;
     }
 
-    public void setLocation(StringBuilder location) {
+    public void setLocation(String location) {
         this.location = location;
     }
 
-    public StringBuilder getLat() {
-        return lat;
-    }
-
-    public void setLat(StringBuilder lat) {
-        this.lat = lat;
-    }
-
-    public StringBuilder getLng() {
-        return lng;
-    }
-
-    public void setLng(StringBuilder lng) {
-        this.lng = lng;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -95,5 +78,13 @@ public class Stop {
              "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
     }
 }
