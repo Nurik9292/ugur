@@ -26,6 +26,15 @@ public class Stop {
     @JoinColumn(name = "city_id", referencedColumnName = "id")
     private City city;
 
+    @NotEmpty(message = "Заполните поле")
+    @Transient
+    private String lat;
+
+    @NotEmpty(message = "Заполните поле")
+
+    @Transient
+    private String lng;
+
     public Stop(){
 
     }
@@ -86,5 +95,21 @@ public class Stop {
 
     public void setCity(City city) {
         this.city = city;
+    }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
+
+    public String getLng() {
+        return lng;
+    }
+
+    public void setLng(String lng) {
+        this.lng = lng;
     }
 }

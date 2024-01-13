@@ -59,9 +59,9 @@
                     <div class="multi-level collapse "
                          role="list" id="submenu-app" aria-expanded="false">
                         <ul class="flex-column nav">
-                            <li class="nav-item ">
-                                <a class="nav-link" href="#">
-                                    <span class="sidebar-text">Автобусы</span>
+                            <li th:class="'nav-item' + ' ' + ${page.startsWith('stop') ? 'active' : ''}">
+                                <a class="nav-link" href="/stops">
+                                    <span class="sidebar-text">Остановки</span>
                                 </a>
                             </li>
                             <li class="nav-item ">
@@ -92,13 +92,8 @@
                         <span class="sidebar-text">Users</span>
                     </a>
                 </li>
-
                 <li role="separator" class="dropdown-divider mt-4 mb-3 border-gray-700"></li>
-
-
             </ul>
         </div>
     </nav>
-
-
 </div>

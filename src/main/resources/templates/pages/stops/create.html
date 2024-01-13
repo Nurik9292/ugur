@@ -1,0 +1,75 @@
+<th:block th:fragment="create">
+    <div class="py-4">
+        <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
+            <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+                <li class="breadcrumb-item">
+                    <a href="/">
+                        <svg class="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    <a href="/stops">Stops</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    Create
+                </li>
+            </ol>
+        </nav>
+        <div class="d-flex justify-content-between w-100 flex-wrap">
+            <div class="mb-3 mb-lg-0">
+                <h1 class="h4">Остановка</h1>
+            </div>
+        </div>
+    </div>
+    <div class="card card-body border-0 shadow mb-4">
+        <h2 class="h5 mb-4">Создать остановку</h2>
+        <form action="/stops/store" method="POST" th:onject="${stop}">
+<!--            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">-->
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="name">Имя</label>
+                    <input class="form-control" id="name" name="name" type="text" placeholder="Введите имя пользователя" required="">
+                    <div th:if="${nameError}" style="color: red">
+                        Название города должен состоять от 3 до 10 символов.
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="role">Страна</label>
+                    <select class="form-select mb-0" id="role" name="city" aria-label="Role select example">
+                        <option th:each="city : ${cities}" th:value="${city.getId()}" th:text="${city.getName()}"></option>
+                    </select>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="lat">Широта</label>
+                    <input class="form-control" id="lat" name="lat" type="text" placeholder="Введите широту" required="">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="lng">Долготта</label>
+                    <input class="form-control" id="lng" name="lng" type="text" placeholder="Введите долготу" required="">
+                </div>
+                <div th:if="${geo}" style="color: red">
+                    Заполните широту и долготу или выберите на карте точку.
+                </div>
+                <div class="col-md-6 mb-3">
+                    <a href="#" class="btn btn-info mt-2 animate-up-2" onclick="showOnMap()">Отобразить на карте</a>
+                </div>
+            </div>
+            <div class="row align-items-center">
+                    <div id="map"></div>
+            </div>
+
+            <div class="mt-3">
+                <button class="btn btn-lg btn-info mt-2 animate-up-2" type="submit">Создать</button>
+            </div>
+        </form>
+    </div>
+
+    <style>
+        #map{
+            height: 500px;
+        }
+    </style>
+</th:block>

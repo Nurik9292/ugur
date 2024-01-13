@@ -30,11 +30,13 @@ public class StopService {
 
     @Transactional
     public void store(Stop stop){
+        stop.setLocation("{\"lat\": " + stop.getLat()  + ", " +  "\"lng\": " + stop.getLng() + "}");
         this.stopRepository.save(stop);
     }
 
     @Transactional
     public void update(int id, Stop stop){
+        stop.setLocation("{\"lat\": " + stop.getLat()  + ", " +  "\"lng\": " + stop.getLng() + "}");
         stop.setId(id);
         this.stopRepository.save(stop);
     }
