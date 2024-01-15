@@ -2,18 +2,21 @@ package tm.ugur.controllers;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.expression.Numbers;
 import tm.ugur.models.Stop;
 import tm.ugur.services.CityService;
 import tm.ugur.services.StopService;
 
+import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Controller
 @RequestMapping("/stops")
@@ -30,9 +33,29 @@ public class StopController {
     }
 
     @GetMapping
-    public String  index(Model model){
+    public String  index(@RequestParam(name = "page", required = false) String page,
+                         @RequestParam(name = "items", required = false) String items, Model model){
+        int pageNumber = page == null ? 1 : Integer.parseInt(page);
+        int itemsPerPage = items == null ? 5 : Integer.parseInt(items);
+
+        Page<Stop> stops = this.stopService.findAll(pageNumber - 1, itemsPerPage);
+        int totalPages = stops.getTotalPages();
+        int currentPage = stops.getNumber();
+        System.out.println(stops.getTotalPages());
+        System.out.println(stops.getNumber());
+        Numbers numbers = new Numbers(Locale.getDefault());
+        Integer[] totalPage = numbers.sequence(currentPage > 4 ? currentPage - 1 : 1, currentPage + 4 < totalPages ? currentPage + 3 : totalPages);
+
+        if(totalPages > 0){
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages).boxed().toList();
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
+
+
+
         model.addAttribute("title", "Остановка");
-        model.addAttribute("stops", this.stopService.findAll());
+        model.addAttribute("stops", stops);
+        model.addAttribute("totalPage", totalPage);
         model.addAttribute("page", "stop-index");
         return "layouts/stops/index";
     }
@@ -44,7 +67,6 @@ public class StopController {
         model.addAttribute("cities", this.cityService.findAll());
 
         return "layouts/stops/create";
-//        return "pages/stops/test";
     }
 
     @PostMapping("/store")

@@ -30,13 +30,15 @@
                     <div class="dataTable-top">
                         <div class="dataTable-dropdown">
                             <label>
-                                <select class="dataTable-selector">
-                                    <option value="5">5</option>
-                                    <option value="10" selected="">10</option>
-                                    <option value="15">15</option>
-                                    <option value="20">20</option>
-                                    <option value="25">25</option>
-                                </select> entries per page
+                                <form id="myForm">
+                                <select id="selector"  class="dataTable-selector" onchange="onChagePageItems()">
+                                    <option value="5" th:selected=" 5 == ${stops.getSize()}">5</option>
+                                    <option value="10" th:selected="10 == ${stops.getSize()}">10</option>
+                                    <option value="15" th:selected="15 == ${stops.getSize()}">15</option>
+                                    <option value="20" th:selected="20 == ${stops.getSize()}">20</option>
+                                    <option value="25" th:selected="25 == ${stops.getSize()}">25</option>
+                                </select>
+                                </form>
                             </label>
                         </div>
                         <div class="dataTable-search">
@@ -47,68 +49,39 @@
                         <table class="table table-flush dataTable-table" id="datatable">
                             <thead class="thead-light">
                                  <tr>
-                                    <th data-sortable="" style="width: 18.8589%;">
-                                        <a href="#" class="dataTable-sorter">Name</a>
+                                    <th data-sortable="" style="width: 28.8589%;">
+                                        <a href="#" class="dataTable-sorter">Название</a>
                                     </th>
-                                    <th data-sortable="" style="width: 28.5786%;">
-                                        <a href="#" class="dataTable-sorter">Position</a>
+                                    <th data-sortable="" style="width: 18.5786%;">
+                                        <a href="#" class="dataTable-sorter">Широата</a>
                                     </th>
-                                    <th data-sortable="" style="width: 15.8125%;">
-                                        <a href="#" class="dataTable-sorter">Office</a>
+                                    <th data-sortable="" style="width: 18.8125%;">
+                                        <a href="#" class="dataTable-sorter">Долгота</a>
                                     </th>
-                                    <th data-sortable="" style="width: 8.70413%;">
-                                        <a href="#" class="dataTable-sorter">Age</a>
+                                    <th data-sortable="" style="width: 10.70413%;">
+                                        <a href="#" class="dataTable-sorter">Город</a>
                                     </th>
-                                    <th data-sortable="" style="width: 15.9576%;">
-                                        <a href="#" class="dataTable-sorter">Start date</a>
-                                    </th>
-                                     <th data-sortable="" style="width: 12.0407%;">
-                                        <a href="#" class="dataTable-sorter">Salary</a>
+                                    <th data-sortable="" style="width: 20.9576%;">
+                                        <a href="#" class="dataTable-sorter">Действие</a>
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Tiger Nixon</td>
-                                    <td>System Architect</td>
-                                    <td>Edinburgh</td>
-                                    <td>61</td>
+                                <tr th:each="stop : ${stops}">
+                                    <td th:text="${stop.getName()}"></td>
+                                    <td th:text="${stop.getLat()}"></td>
+                                    <td th:text="${stop.getLng()}"></td>
+                                    <td th:text="${stop.getCity().getName()}"></td>
                                     <td>2011/04/25</td>
-                                    <td>$320,800</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="dataTable-bottom">
-                        <div class="dataTable-info">Showing 1 to 10 of 57 entries</div>
-                        <nav class="dataTable-pagination">
-                            <ul class="dataTable-pagination-list">
-                                <li class="pager">
-                                    <a href="#" data-page="1">‹</a>
-                                </li>
-                                <li class="active">
-                                    <a href="#" data-page="1">1</a>
-                                </li>
-                                <li class="">
-                                    <a href="#" data-page="2">2</a>
-                                </li>
-                                <li class="">
-                                    <a href="#" data-page="3">3</a>
-                                </li>
-                                <li class="">
-                                    <a href="#" data-page="4">4</a>
-                                </li>
-                                <li class="">
-                                    <a href="#" data-page="5">5</a>
-                                </li>
-                                <li class="">
-                                    <a href="#" data-page="6">6</a>
-                                </li>
-                                <li class="pager">
-                                    <a href="#" data-page="2">›</a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <div class="dataTable-info"
+                             th:text="'Showing 1 to ' + ${stops.getSize()} + ' of ' + ${stops.getTotalElements()} + ' entries'">
+                        </div>
+                        <th:block th:insert="pagination/pagination :: paginate(${stops}, ${totalPage})"></th:block>
                     </div>
                 </div>
             </div>
