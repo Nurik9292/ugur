@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface StopRepository extends JpaRepository<Stop, Integer> {
-    List<Stop> findByName(@NotEmpty(message = "Заполните название.") String name);
+    List<Stop> findByNameStartingWith(@NotEmpty(message = "Заполните название.") String name);
 }

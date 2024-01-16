@@ -37,7 +37,7 @@ public class StopService {
     }
 
     public Page<Stop> search(String name){
-        List<Stop> stops = this.stopRepository.findByName(name);
+        List<Stop> stops = this.stopRepository.findByNameStartingWith(name);
         stops.forEach(this::setLatLng);
         return this.findPaginated(PageRequest.of(0, 10), stops, "");
     }
