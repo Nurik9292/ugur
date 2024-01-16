@@ -48,8 +48,7 @@ public class StopController {
 
         int totalPages = stops.getTotalPages();
         int currentPage = stops.getNumber();
-        System.out.println(stops.getTotalPages());
-        System.out.println(stops.getNumber());
+
         Numbers numbers = new Numbers(Locale.getDefault());
         Integer[] totalPage = numbers.sequence(currentPage > 4 ? currentPage - 1 : 1, currentPage + 4 < totalPages ? currentPage + 3 : totalPages);
 
@@ -57,8 +56,6 @@ public class StopController {
             List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages).boxed().toList();
             model.addAttribute("pageNumbers", pageNumbers);
         }
-
-
 
         model.addAttribute("title", "Остановка");
         model.addAttribute("stops", stops);
@@ -95,6 +92,41 @@ public class StopController {
         this.stopService.store(stop);
 
         return "redirect:/stops";
+    }
+
+
+    @GetMapping("/{id}/edit")
+    public String edit(@PathVariable("id") int id, Model model){
+
+        model.addAttribute("title", "Изменить Остановку");
+        model.addAttribute("page", "stop-edit");
+        model.addAttribute("stop", this.stopService.findOne(id));
+        model.addAttribute("cities", this.cityService.findAll());
+
+        return "layouts/stops/edit";
+    }
+
+    @PatchMapping("/{id}")
+    public String update(@PathVariable("id") int id,
+                         @ModelAttribute("stop") @Valid Stop stop, BindingResult bindingResult,
+                         Model model){
+
+        if(bindingResult.hasErrors()){
+            if(Objects.requireNonNull(bindingResult.getFieldError()).getField().equals("name"))
+                model.addAttribute("nameError", true);
+            if(Objects.requireNonNull(bindingResult.getFieldError()).getField().equals("lat") ||
+                    Objects.requireNonNull(bindingResult.getFieldError()).getField().equals("lng"))
+                model.addAttribute("geo", true);
+
+            model.addAttribute("page", "stop-create");
+            model.addAttribute("title", "Создать остановку");
+
+            return "layouts/stops/edit";
+        }
+
+        this.stopService.update(id, stop);
+
+        return "redirect:/layouts/stops/index";
     }
 
     @GetMapping("/search")

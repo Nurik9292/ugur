@@ -1,6 +1,11 @@
-.ukaz{
-    &:hover{
-        color: black;
-        text-decoration: underline black;
-    } ;
+
+.svg{
+
+}
+.svg:hover svg {
+    fill: black;
+}
+
+#map-stop{
+    height: 500px;
 }

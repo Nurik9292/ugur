@@ -11,6 +11,7 @@ import tm.ugur.repo.StopRepository;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -42,8 +43,10 @@ public class StopService {
         return this.findPaginated(PageRequest.of(0, 10), stops, "");
     }
 
-    public Optional<Stop> findOne(int id){
-        return this.stopRepository.findById(id);
+    public Stop findOne(int id){
+         Stop stop = this.stopRepository.findById(id).orElse(null);
+        this.setLatLng(Objects.requireNonNull(stop));
+        return stop;
     }
 
     @Transactional
