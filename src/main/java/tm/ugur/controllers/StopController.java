@@ -3,6 +3,7 @@ package tm.ugur.controllers;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,7 +16,6 @@ import tm.ugur.services.StopService;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Controller
@@ -34,11 +34,18 @@ public class StopController {
 
     @GetMapping
     public String  index(@RequestParam(name = "page", required = false) String page,
-                         @RequestParam(name = "items", required = false) String items, Model model){
+                         @RequestParam(name = "items", required = false) String items,
+                         @RequestParam(value = "sortBy", required = false) String sortBy, Model model){
         int pageNumber = page == null ? 1 : Integer.parseInt(page);
         int itemsPerPage = items == null ? 5 : Integer.parseInt(items);
+        Page<Stop> stops = null;
 
-        Page<Stop> stops = this.stopService.findAll(pageNumber - 1, itemsPerPage);
+        if(sortBy != null && sortBy.equals("name")){
+            stops = this.stopService.findAll(pageNumber - 1, itemsPerPage, sortBy);
+        }else{
+            stops = this.stopService.findAll(pageNumber - 1, itemsPerPage);
+        }
+
         int totalPages = stops.getTotalPages();
         int currentPage = stops.getNumber();
         System.out.println(stops.getTotalPages());
@@ -90,4 +97,12 @@ public class StopController {
         return "redirect:/stops";
     }
 
+    @GetMapping("/search")
+    public String search(@RequestParam("search") String search, Model model){
+        Page<Stop> stops = this.stopService.search(search);
+        model.addAttribute("title", "Остановки");
+        model.addAttribute("stops", stops);
+        model.addAttribute("page", "stop-index");
+        return "layouts/stops/index";
+    }
 }

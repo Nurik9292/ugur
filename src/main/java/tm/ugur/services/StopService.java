@@ -2,17 +2,13 @@ package tm.ugur.services;
 
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tm.ugur.models.Stop;
 import tm.ugur.pojo.CustomPoint;
 import tm.ugur.repo.StopRepository;
 
-import java.awt.print.Book;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +17,7 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class StopService {
 
-    private StopRepository stopRepository;
+    private final StopRepository stopRepository;
 
     @Autowired
     public StopService(StopRepository stopRepository) {
@@ -31,7 +27,19 @@ public class StopService {
     public Page<Stop> findAll(int pageNumber,  int itemsPerPage){
         List<Stop> stops = this.stopRepository.findAll();
         stops.forEach(this::setLatLng);
-        return this.findPaginated(PageRequest.of(pageNumber, itemsPerPage), stops);
+        return this.findPaginated(PageRequest.of(pageNumber, itemsPerPage), stops, "");
+    }
+
+    public Page<Stop> findAll(int pageNumber,  int itemsPerPage, String sortBy){
+        List<Stop> stops = this.stopRepository.findAll();
+        stops.forEach(this::setLatLng);
+        return this.findPaginated(PageRequest.of(pageNumber, itemsPerPage, Sort.by(sortBy)), stops, sortBy);
+    }
+
+    public Page<Stop> search(String name){
+        List<Stop> stops = this.stopRepository.findByName(name);
+        stops.forEach(this::setLatLng);
+        return this.findPaginated(PageRequest.of(0, 10), stops, "");
     }
 
     public Optional<Stop> findOne(int id){
@@ -63,7 +71,7 @@ public class StopService {
         stop.setLng(point.getLng());
     }
 
-    private Page<Stop> findPaginated(Pageable pageable, List<Stop> stops){
+    private Page<Stop> findPaginated(Pageable pageable, List<Stop> stops, String sortBy){
        int pageSize = pageable.getPageSize();
        int currentPage = pageable.getPageNumber();
        int startItem = currentPage * pageSize;
@@ -77,6 +85,13 @@ public class StopService {
            list = stops.subList(startItem, toIndex);
        }
 
-       return new PageImpl<Stop>(list, PageRequest.of(currentPage, pageSize), stops.size());
+       if(sortBy.isEmpty()){
+           return new PageImpl<Stop>(list, PageRequest.of(currentPage, pageSize), stops.size());
+       }else{
+           return new PageImpl<Stop>(list, PageRequest.of(currentPage, pageSize, Sort.by(sortBy)), stops.size());
+       }
     }
+
+
+
 }
