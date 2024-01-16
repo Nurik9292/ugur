@@ -95,6 +95,8 @@ public class StopController {
     }
 
 
+
+
     @GetMapping("/{id}/edit")
     public String edit(@PathVariable("id") int id, Model model){
 
@@ -126,7 +128,13 @@ public class StopController {
 
         this.stopService.update(id, stop);
 
-        return "redirect:/layouts/stops/index";
+        return "redirect:/stops";
+    }
+
+    @DeleteMapping("{id}")
+    public String delete(@PathVariable("id") int id){
+        this.stopService.delete(id);
+        return "redirect:/stops";
     }
 
     @GetMapping("/search")
