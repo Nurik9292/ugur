@@ -3,7 +3,6 @@ package tm.ugur.controllers;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -74,17 +73,13 @@ public class StopController {
     }
 
     @PostMapping("/store")
-    public String store(@ModelAttribute("stop") @Valid Stop stop, BindingResult bindingResult, Model model){
+    public String store(@ModelAttribute("stop") @Valid Stop stop, BindingResult result, Model model){
 
-        if (bindingResult.hasErrors()){
-            if(Objects.requireNonNull(bindingResult.getFieldError()).getField().equals("name"))
-                model.addAttribute("nameError", true);
-            if(Objects.requireNonNull(bindingResult.getFieldError()).getField().equals("lat") ||
-                    Objects.requireNonNull(bindingResult.getFieldError()).getField().equals("lng"))
-                model.addAttribute("geo", true);
-
+        if (result.hasErrors()){
+            this.errors(model, result);
             model.addAttribute("page", "stop-create");
             model.addAttribute("title", "Создать остановку");
+            model.addAttribute("cities", this.cityService.findAll());
 
             return "layouts/stops/create";
         }
@@ -110,19 +105,13 @@ public class StopController {
 
     @PatchMapping("/{id}")
     public String update(@PathVariable("id") int id,
-                         @ModelAttribute("stop") @Valid Stop stop, BindingResult bindingResult,
+                         @ModelAttribute("stop") @Valid Stop stop, BindingResult result,
                          Model model){
 
-        if(bindingResult.hasErrors()){
-            if(Objects.requireNonNull(bindingResult.getFieldError()).getField().equals("name"))
-                model.addAttribute("nameError", true);
-            if(Objects.requireNonNull(bindingResult.getFieldError()).getField().equals("lat") ||
-                    Objects.requireNonNull(bindingResult.getFieldError()).getField().equals("lng"))
-                model.addAttribute("geo", true);
-
+        if(result.hasErrors()){
+            this.errors(model, result);
             model.addAttribute("page", "stop-create");
             model.addAttribute("title", "Создать остановку");
-
             return "layouts/stops/edit";
         }
 
@@ -144,5 +133,13 @@ public class StopController {
         model.addAttribute("stops", stops);
         model.addAttribute("page", "stop-index");
         return "layouts/stops/index";
+    }
+
+    private void errors(Model model, BindingResult result){
+        if(Objects.requireNonNull(result.getFieldError()).getField().equals("name"))
+            model.addAttribute("nameError", true);
+        if(Objects.requireNonNull(result.getFieldError()).getField().equals("lat") ||
+                Objects.requireNonNull(result.getFieldError()).getField().equals("lng"))
+            model.addAttribute("geo", true);
     }
 }

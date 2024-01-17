@@ -2,6 +2,7 @@ package tm.ugur.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
 import java.util.Objects;
 
@@ -16,6 +17,7 @@ public class Stop {
     private int id;
 
     @NotEmpty(message = "Заполните название.")
+    @Size(min = 3, max = 10, message = "Название города должен состоять от 3 до 10 символов.")
     @Column(name = "name")
     private String name;
 
