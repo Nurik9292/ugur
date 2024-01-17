@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -17,7 +18,7 @@ public class Stop {
     private int id;
 
     @NotEmpty(message = "Заполните название.")
-    @Size(min = 3, max = 10, message = "Название города должен состоять от 3 до 10 символов.")
+    @Size(min = 3, max = 10, message = "Назвние города должен состоять от 3 до 10 символов.")
     @Column(name = "name")
     private String name;
 
@@ -25,8 +26,14 @@ public class Stop {
     private String location;
 
     @ManyToOne
-    @JoinColumn(name = "city_id", referencedColumnName = "id")
     private City city;
+
+
+    @ManyToMany(mappedBy = "startStops")
+    List<Route> startRoutes;
+
+    @ManyToMany(mappedBy = "endStops")
+    List<Route> endRoutes;
 
     @NotEmpty(message = "Заполните поле")
     @Transient
@@ -70,27 +77,6 @@ public class Stop {
     }
 
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Stop stop = (Stop) o;
-        return id == stop.id && Objects.equals(name, stop.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
-    }
-
-    @Override
-    public String toString() {
-        return "Stop{" +
-             "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
-    }
-
     public City getCity() {
         return city;
     }
@@ -114,4 +100,43 @@ public class Stop {
     public void setLng(String lng) {
         this.lng = lng;
     }
+
+    public List<Route> getStartRoutes() {
+        return startRoutes;
+    }
+
+    public void setStartRoutes(List<Route> startRoutes) {
+        this.startRoutes = startRoutes;
+    }
+
+    public List<Route> getEndRoutes() {
+        return endRoutes;
+    }
+
+    public void setEndRoutes(List<Route> endRoutes) {
+        this.endRoutes = endRoutes;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Stop stop = (Stop) o;
+        return id == stop.id && Objects.equals(name, stop.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
+
+    @Override
+    public String toString() {
+        return "Stop{" +
+             "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
+
 }

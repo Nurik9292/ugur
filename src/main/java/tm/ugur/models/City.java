@@ -24,6 +24,10 @@ public class City {
     @OneToMany(mappedBy = "city")
     private List<Stop> stops;
 
+    @OneToMany(mappedBy = "city")
+    private List<Route> routes;
+
+
     public City(){
 
     }
@@ -46,6 +50,22 @@ public class City {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<Route> getRoutes() {
+        return routes;
+    }
+
+    public void setRoutes(List<Route> routes) {
+        this.routes = routes;
+    }
+
+    public List<Stop> getStops() {
+        return stops;
+    }
+
+    public void setStops(List<Stop> stops) {
+        this.stops = stops;
     }
 
     @Override
