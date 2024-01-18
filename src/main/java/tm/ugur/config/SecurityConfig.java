@@ -33,9 +33,9 @@ public class SecurityConfig {
 
     @Bean SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         return http.csrf().disable().authorizeHttpRequests(auth ->
-                auth.requestMatchers("/users/create", "/users", "/users/store").permitAll()
-                        .anyRequest().permitAll())
-//                .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
+                auth.requestMatchers("/users/create", "/users", "/users/store").hasRole("SUPER")
+                        .anyRequest().authenticated())
+                .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
                 .build();
     }
 
