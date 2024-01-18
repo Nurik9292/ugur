@@ -22,30 +22,30 @@ public class BusScheduling {
         this.mobWebSocketHandler = mobWebSocketHandler;
     }
 
-//    @Async
-//    @Scheduled(fixedDelay = 1000)
-//    public void scheduleFixedDelayTask() throws JsonProcessingException {
-//        Map<String, String> map = this.imdataService.getDataBus();
-//        List<BusDTO> buses = new ArrayList<>();
-//
-//        JsonNode jsonNode = this.atLogisticService.getDataBus();
-//
-//        for (JsonNode node : jsonNode.get("list")) {
-//            if (map.containsKey(node.get("vehiclenumber").asText())) {
-//                BusDTO bus = new BusDTO(
-//                        node.get("vehiclenumber").asText(),
-//                        map.get(node.get("vehiclenumber").asText()),
-//                        node.get("status").get("speed").asText(),
-//                        node.get("imei").asText(),
-//                        node.get("status").get("dir").asText(),
-//                        node.get("status").get("lat").asText(),
-//                        node.get("status").get("lon").asText()
-//                );
-//
-//                ObjectMapper mapper = new ObjectMapper();
-//
-//                this.mobWebSocketHandler.sendToMobileApp(mapper.writeValueAsString(bus));
-//            }
-//        }
-//    }
+    @Async
+    @Scheduled(fixedDelay = 1000)
+    public void scheduleFixedDelayTask() throws JsonProcessingException {
+        Map<String, String> map = this.imdataService.getDataBus();
+        List<BusDTO> buses = new ArrayList<>();
+
+        JsonNode jsonNode = this.atLogisticService.getDataBus();
+
+        for (JsonNode node : jsonNode.get("list")) {
+            if (map.containsKey(node.get("vehiclenumber").asText())) {
+                BusDTO bus = new BusDTO(
+                        node.get("vehiclenumber").asText(),
+                        map.get(node.get("vehiclenumber").asText()),
+                        node.get("status").get("speed").asText(),
+                        node.get("imei").asText(),
+                        node.get("status").get("dir").asText(),
+                        node.get("status").get("lat").asText(),
+                        node.get("status").get("lon").asText()
+                );
+
+                ObjectMapper mapper = new ObjectMapper();
+
+                this.mobWebSocketHandler.sendToMobileApp(mapper.writeValueAsString(bus));
+            }
+        }
+    }
 }
