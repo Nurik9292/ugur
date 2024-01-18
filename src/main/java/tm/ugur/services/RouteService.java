@@ -1,17 +1,22 @@
 package tm.ugur.services;
 
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tm.ugur.models.Route;
+import tm.ugur.models.Stop;
 import tm.ugur.repo.RouteRepository;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
 public class RouteService {
 
+    private static int count = 1;
     private final RouteRepository routeRepository;
 
     @Autowired
@@ -20,10 +25,15 @@ public class RouteService {
     }
 
 
-    public List<Route> findAll(){
-        return this.routeRepository.findAll();
+    public Page<Route> findAll(int pageNumber, int itemsPerPage, String sortBy)
+    {
+        return this.findPaginated(PageRequest.of(pageNumber, itemsPerPage), this.routeRepository.findAll(), sortBy);
     }
 
+    public Page<Route> findAll(int pageNumber, int itemsPerPage)
+    {
+        return this.findPaginated(PageRequest.of(pageNumber, itemsPerPage), this.routeRepository.findAll(), "");
+    }
 
     public Route findOne(long id){
         return this.routeRepository.findById(id).orElse(null);
@@ -43,5 +53,33 @@ public class RouteService {
     @Transactional
     public void delete(long id){
         this.routeRepository.deleteById(id);
+    }
+
+
+    private Page<Route> findPaginated(Pageable pageable, List<Route> routes, String sortBy){
+        int pageSize = pageable.getPageSize();
+        int currentPage = pageable.getPageNumber();
+        int startItem = currentPage * pageSize;
+
+        List<Route> list;
+
+        if(routes.size() < startItem){
+            list = Collections.emptyList();
+        }else{
+            int toIndex = Math.min(startItem + pageSize, routes.size());
+            list = routes.subList(startItem, toIndex);
+        }
+
+        if(sortBy.isEmpty()){
+            return new PageImpl<Route>(list, PageRequest.of(currentPage, pageSize), routes.size());
+        }else{
+            return new PageImpl<Route>(list, PageRequest.of(currentPage, pageSize, Sort.by(sortBy)), routes.size());
+        }
+    }
+
+    private void init(Stop stop){
+        if(stop.getId() == 1){
+
+        }
     }
 }

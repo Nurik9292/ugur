@@ -30,6 +30,9 @@
     <link type="text/css" th:href="@{/css/dataTable.css}" rel="stylesheet">
 
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@2.0.1/dist/css/multi-select-tag.css">
+
+
 </head>
 <body>
 <div th:replace="includes/sidebar :: sidebar"></div>
@@ -46,6 +49,8 @@
     <th:block th:case="stop-index" th:insert="pages/stops/index :: index"></th:block>
     <th:block th:case="stop-create" th:insert="pages/stops/create :: create"></th:block>
     <th:block th:case="stop-edit" th:insert="pages/stops/edit :: edit"></th:block>
+    <th:block th:case="route-index" th:insert="pages/routes/index :: index"></th:block>
+    <th:block th:case="route-craete" th:insert="pages/routes/create :: create"></th:block>
 </th:block>
 
 <div th:replace="includes/footer :: footer"></div>
@@ -100,5 +105,81 @@
 
     <script th:src="@{/js/map.js}"></script>
     <script th:src="@{/js/myfunction.js}"></script>
+    <script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@2.0.1/dist/js/multi-select-tag.js"></script>
 
+
+    <script>
+        if(document.getElementById("start_stops")){
+            let selectedStart = [];
+            new MultiSelectTag('start_stops', {
+                rounded: true,
+                shadow: true,
+                placeholder: 'Search',
+                tagColor: {
+                    textColor: '#ffffff',
+                    borderColor: '#2361ce',
+                    bgColor: '#2361ce',
+                },
+                onChange: function(values) {
+                    let res = [];
+                   if(values.length < selectedStart.length){
+                       for(const item of values){
+                           for(const sel of selectedStart)
+                           if(sel === item.value){
+                               res.push(sel);
+                           }
+                       }
+                       selectedStart = selectedStart.filter((element) => {
+                           return res.includes(element);
+                       });
+                   }else{
+                       for(const item of values){
+                           if(!selectedStart.includes(item.value)){
+                               selectedStart.push(item.value);
+                           }
+                       }
+                   }
+
+                   document.getElementById("selectedOptionsOrderStart").value = selectedStart.join(",");
+                }
+            })}
+
+
+        if(document.getElementById("end_stops")){
+            let selectedEnd = [];
+            new MultiSelectTag('end_stops', {
+                rounded: true,
+                shadow: true,
+                placeholder: 'Search',
+                tagColor: {
+                    textColor: '#ffffff',
+                    borderColor: '#2361ce',
+                    bgColor: '#2361ce',
+                },
+                onChange: function(values) {
+                    let res = [];
+                    if(values.length < selectedEnd.length){
+                        for(const item of values){
+                            for(const sel of selectedEnd)
+                                if(sel === item.value){
+                                    res.push(sel);
+                                }
+                        }
+                        selectedEnd = selectedEnd.filter((element) => {
+                            return res.includes(element);
+                        });
+                    }else{
+                        for(const item of values){
+                            if(!selectedEnd.includes(item.value)){
+                                selectedEnd.push(item.value);
+                            }
+                        }
+                    }
+
+                    document.getElementById("selectedOptionsOrderEnd").value = selectedEnd.join(",");
+                }
+            })}
+
+
+    </script>
 </th:block>

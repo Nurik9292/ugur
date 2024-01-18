@@ -28,7 +28,7 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label for="name">Имя</label>
-                    <input class="form-control" id="name" name="name" th:value="${stop.getName()}" type="text" placeholder="Введите название остановки" required="">
+                    <input class="form-control" id="name" name="name" th:value="${stop.getName()}" type="text" placeholder="Введите имя пользователя" required="">
                     <div th:if="${nameError}" style="color: red">
                         Название города должен состоять от 3 до 10 символов.
                     </div>

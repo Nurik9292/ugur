@@ -36,7 +36,7 @@ public class StopController {
                          @RequestParam(name = "items", required = false) String items,
                          @RequestParam(value = "sortBy", required = false) String sortBy, Model model){
         int pageNumber = page == null ? 1 : Integer.parseInt(page);
-        int itemsPerPage = items == null ? 5 : Integer.parseInt(items);
+        int itemsPerPage = items == null ? 10 : Integer.parseInt(items);
         Page<Stop> stops = null;
 
         if(sortBy != null && sortBy.equals("name")){

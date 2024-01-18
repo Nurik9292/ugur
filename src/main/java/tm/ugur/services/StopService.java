@@ -25,6 +25,10 @@ public class StopService {
         this.stopRepository = stopRepository;
     }
 
+    public List<Stop> findAll(){
+        return this.stopRepository.findAll();
+    }
+
     public Page<Stop> findAll(int pageNumber,  int itemsPerPage){
         List<Stop> stops = this.stopRepository.findAll();
         stops.forEach(this::setLatLng);
@@ -61,6 +65,8 @@ public class StopService {
         stop.setId(id);
         this.stopRepository.save(stop);
     }
+
+
 
     @Transactional
     public void delete(int id){

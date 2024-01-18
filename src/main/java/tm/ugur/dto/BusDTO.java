@@ -1,6 +1,6 @@
-package tm.ugur.dao;
+package tm.ugur.dto;
 
-public class BusDAO {
+public class BusDTO {
 
     private String carNumber;
     private String number;
@@ -10,9 +10,9 @@ public class BusDAO {
     private String lat;
     private String lng;
 
-    public BusDAO(){}
+    public BusDTO(){}
 
-    public BusDAO(String carNumber, String number, String speed, String imei, String dir, String lat, String lng) {
+    public BusDTO(String carNumber, String number, String speed, String imei, String dir, String lat, String lng) {
         this.carNumber = carNumber;
         this.number = number;
         this.speed = speed;

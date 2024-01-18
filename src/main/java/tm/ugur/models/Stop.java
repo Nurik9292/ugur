@@ -40,9 +40,14 @@ public class Stop {
     private String lat;
 
     @NotEmpty(message = "Заполните поле")
-
     @Transient
     private String lng;
+
+    @OneToMany(mappedBy = "stop")
+    private List<StartRouteStop> startRouteStops;
+
+    @OneToMany(mappedBy = "stop")
+    private List<EndRouteStop> endRouteStops;
 
     public Stop(){
 
@@ -117,6 +122,22 @@ public class Stop {
         this.endRoutes = endRoutes;
     }
 
+    public List<StartRouteStop> getStartRouteStops() {
+        return startRouteStops;
+    }
+
+    public void setStartRouteStops(List<StartRouteStop> startRouteStops) {
+        this.startRouteStops = startRouteStops;
+    }
+
+    public List<EndRouteStop> getEndRouteStops() {
+        return endRouteStops;
+    }
+
+    public void setEndRouteStops(List<EndRouteStop> endRouteStops) {
+        this.endRouteStops = endRouteStops;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -137,6 +158,4 @@ public class Stop {
                 ", name='" + name + '\'' +
                 '}';
     }
-
-
 }

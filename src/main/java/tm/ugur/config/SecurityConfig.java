@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractAuthenticationFilterConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,7 +34,9 @@ public class SecurityConfig {
     @Bean SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         return http.csrf().disable().authorizeHttpRequests(auth ->
                 auth.requestMatchers("/users/create", "/users", "/users/store").permitAll()
-                        .anyRequest().permitAll()).build();
+                        .anyRequest().permitAll())
+//                .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
+                .build();
     }
 
     @Bean
