@@ -8,9 +8,8 @@ import tm.ugur.models.StartRouteStop;
 import tm.ugur.models.Stop;
 import tm.ugur.repo.StartRouteStopRepository;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 @Service
@@ -28,25 +27,21 @@ public class StartRouteStopService {
     }
 
     @Transactional
-    public void updateIndexs(String ids, Route route){
-        int count = 1;
-        List<Stop> stops = route.getStartStops();
-        System.out.println(stops);
-        for (String id : ids.split(",")){
-            System.out.println(id);
-            for(Stop stop : stops){
-                if(stop.getId() == Integer.parseInt(id)){
-                    List<StartRouteStop> startRouteStops = this.startRouteStopRepository.findByStop(stop);
-                    for(StartRouteStop startRouteStop : startRouteStops){
-                            if(startRouteStop.getRoute().getId() == route.getId()){
-                                startRouteStop.setIndex(count++);
-                                this.startRouteStopRepository.save(startRouteStop);
-                            }
-                        }
+    public void updateIndexs(String ids, Route route) {
+        Map<Integer, Stop> stopMap = new HashMap<>();
+        route.getStartStops().forEach(stop -> stopMap.put(stop.getId(), stop));
 
-                }
+        AtomicInteger count = new AtomicInteger(1);
+        for (String idString : ids.split(",")) {
+            int id = Integer.parseInt(idString);
+            Stop stop = stopMap.get(id);
+            if (stop != null) {
+                List<StartRouteStop> startRouteStops = this.startRouteStopRepository.findByStopAndRoute(stop, route);
+                startRouteStops.forEach(startRouteStop -> {
+                    startRouteStop.setIndex(count.getAndIncrement());
+                    this.startRouteStopRepository.save(startRouteStop);
+                });
             }
         }
-
     }
 }

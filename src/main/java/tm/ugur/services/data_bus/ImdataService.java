@@ -28,8 +28,6 @@ public class ImdataService implements ImportBusData {
             uniqueCarNumber.put(this.split(obj.get("car_number").asText()), obj.get("number").asText());
         });
 
-        System.out.println(uniqueCarNumber.size());
-
         return uniqueCarNumber;
     }
 

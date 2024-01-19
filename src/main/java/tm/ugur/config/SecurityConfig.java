@@ -36,6 +36,7 @@ public class SecurityConfig {
         return http.csrf().disable().authorizeHttpRequests(auth ->
                 auth.requestMatchers("/users/create", "/users", "/users/store").hasRole("SUPER")
                         .requestMatchers("/api/**").permitAll()
+                        .requestMatchers("/websocket-ugur/**").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
                 .build();

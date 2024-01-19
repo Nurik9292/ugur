@@ -5,13 +5,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tm.ugur.models.EndRouteStop;
 import tm.ugur.models.Route;
-import tm.ugur.models.StartRouteStop;
 import tm.ugur.models.Stop;
 import tm.ugur.repo.EndRouteStopRepository;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @Transactional(readOnly = true)
@@ -28,25 +26,21 @@ public class EndRouteStopService {
 
 
     @Transactional
-    public void updateIndexs(String ids, Route route){
-        int count = 1;
-        List<Stop> stops = route.getStartStops();
-        System.out.println(stops);
-        for (String id : ids.split(",")){
-            System.out.println(id);
-            for(Stop stop : stops){
-                if(stop.getId() == Integer.parseInt(id)){
-                    List<EndRouteStop> endRouteStops = this.endRouteStopRepository.findByStop(stop);
-                    for(EndRouteStop endRouteStop : endRouteStops){
-                        if(endRouteStop.getRoute().getId() == route.getId()){
-                            endRouteStop.setIndex(count++);
-                            this.endRouteStopRepository.save(endRouteStop);
-                        }
-                    }
+    public void updateIndexs(String ids, Route route) {
+        Map<Integer, Stop> stopMap = new HashMap<>();  // Map for efficient stop lookup
+        route.getStartStops().forEach(stop -> stopMap.put(stop.getId(), stop));
 
-                }
+        AtomicInteger count = new AtomicInteger(1);
+        for (String idString : ids.split(",")) {
+            int id = Integer.parseInt(idString);
+            Stop stop = stopMap.get(id);
+            if (stop != null) {
+                List<EndRouteStop> endRouteStops = this.endRouteStopRepository.findByStopAndRoute(stop, route);
+                endRouteStops.forEach(endRouteStop -> {
+                    endRouteStop.setIndex(count.getAndIncrement());
+                    this.endRouteStopRepository.save(endRouteStop);
+                });
             }
         }
-
     }
 }
