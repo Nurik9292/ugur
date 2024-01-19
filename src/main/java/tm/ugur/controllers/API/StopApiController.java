@@ -1,12 +1,13 @@
 package tm.ugur.controllers.API;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import tm.ugur.dto.StopDTO;
 import tm.ugur.services.api.StopAPiService;
+import tm.ugur.util.errors.stop.StopErrorResponse;
+import tm.ugur.util.errors.stop.StopNotFoundException;
 
 import java.util.List;
 
@@ -23,13 +24,22 @@ public class StopApiController {
 
     @GetMapping
     public List<StopDTO> getStops(){
-        return this.stopService.findAll();
+        return this.stopService.getStops();
     }
+
+
 
     @GetMapping("/{id}")
     public StopDTO getStop(@PathVariable("id") int id){
-        return this.stopService.findOne(id);
+        return this.stopService.getStop(id);
     }
 
 
+    @ExceptionHandler
+    private ResponseEntity<StopErrorResponse> handleException(StopNotFoundException e){
+        StopErrorResponse errorResponse = new StopErrorResponse(
+                "Stop with this id wasn't found!", System.currentTimeMillis());
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
 }

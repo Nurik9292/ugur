@@ -31,9 +31,11 @@ public class SecurityConfig {
         return this.personDetailService;
     }
 
-    @Bean SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         return http.csrf().disable().authorizeHttpRequests(auth ->
                 auth.requestMatchers("/users/create", "/users", "/users/store").hasRole("SUPER")
+                        .requestMatchers("/api/***").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
                 .build();

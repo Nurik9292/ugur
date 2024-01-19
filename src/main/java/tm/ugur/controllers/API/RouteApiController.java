@@ -1,12 +1,13 @@
 package tm.ugur.controllers.API;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import tm.ugur.dto.RouteDTO;
 import tm.ugur.services.api.RouteApiService;
+import tm.ugur.util.errors.route.RouteErrorResponse;
+import tm.ugur.util.errors.route.RouteNotFoundException;
 
 import java.util.List;
 
@@ -31,5 +32,14 @@ public class RouteApiController {
     @GetMapping("/{id}")
     public RouteDTO getRoute(@PathVariable("id") int id){
         return this.routeService.findOne(id);
+    }
+
+
+    @ExceptionHandler
+    private ResponseEntity<RouteErrorResponse> handleException(RouteNotFoundException e){
+        RouteErrorResponse errorResponse = new RouteErrorResponse(
+                "Route with this id wasn't found!", System.currentTimeMillis());
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 }

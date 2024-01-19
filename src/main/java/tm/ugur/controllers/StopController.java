@@ -3,6 +3,8 @@ package tm.ugur.controllers;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,6 +13,8 @@ import org.thymeleaf.expression.Numbers;
 import tm.ugur.models.Stop;
 import tm.ugur.services.CityService;
 import tm.ugur.services.StopService;
+import tm.ugur.util.errors.stop.StopErrorResponse;
+import tm.ugur.util.errors.stop.StopNotFoundException;
 
 import java.util.List;
 import java.util.Locale;
@@ -72,7 +76,7 @@ public class StopController {
         return "layouts/stops/create";
     }
 
-    @PostMapping("/store")
+    @PostMapping
     public String store(@ModelAttribute("stop") @Valid Stop stop, BindingResult result, Model model){
 
         if (result.hasErrors()){
@@ -80,7 +84,6 @@ public class StopController {
             model.addAttribute("page", "stop-create");
             model.addAttribute("title", "Создать остановку");
             model.addAttribute("cities", this.cityService.findAll());
-
             return "layouts/stops/create";
         }
 
@@ -135,6 +138,7 @@ public class StopController {
         return "layouts/stops/index";
     }
 
+
     private void errors(Model model, BindingResult result){
         if(Objects.requireNonNull(result.getFieldError()).getField().equals("name"))
             model.addAttribute("nameError", true);
@@ -142,4 +146,13 @@ public class StopController {
                 Objects.requireNonNull(result.getFieldError()).getField().equals("lng"))
             model.addAttribute("geo", true);
     }
+
+
+//    @ExceptionHandler
+//    private ResponseEntity<StopErrorResponse> handleException(StopNotFoundException e){
+//        StopErrorResponse errorResponse = new StopErrorResponse(
+//                "Stop with this id wasn't found!", System.currentTimeMillis());
+//
+//        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+//    }
 }

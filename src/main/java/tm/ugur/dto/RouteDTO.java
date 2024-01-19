@@ -33,6 +33,7 @@ public class RouteDTO {
     @JoinColumn(name = "city_id", referencedColumnName = "id")
     private City city;
 
+    private int cityId;
 
     @Column(name = "front_line")
     private String front_line;
@@ -84,12 +85,13 @@ public class RouteDTO {
         this.routeTime = routeTime;
     }
 
-    public City getCity() {
-        return city;
-    }
+//    public City getCity() {
+//        return city;
+//    }
 
     public void setCity(City city) {
         this.city = city;
+        this.cityId = city.getId();
     }
 
     public String getFront_line() {
@@ -108,11 +110,11 @@ public class RouteDTO {
         this.back_line = back_line;
     }
 
-    @Override
-    public String toString() {
-        return "RouteDTO{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
+    public void setCityId(int cityId){
+        this.cityId = cityId;
+    }
+
+    public int getCityId(){
+        return this.cityId;
     }
 }

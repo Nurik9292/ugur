@@ -8,11 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 import tm.ugur.models.Stop;
 import tm.ugur.pojo.CustomPoint;
 import tm.ugur.repo.StopRepository;
+import tm.ugur.util.errors.stop.StopNotFoundException;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -48,7 +48,7 @@ public class StopService {
     }
 
     public Stop findOne(int id){
-         Stop stop = this.stopRepository.findById(id).orElse(null);
+        Stop stop = this.stopRepository.findById(id).orElseThrow(StopNotFoundException::new);
         this.setLatLng(Objects.requireNonNull(stop));
         return stop;
     }

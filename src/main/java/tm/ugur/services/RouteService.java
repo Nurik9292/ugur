@@ -3,11 +3,16 @@ package tm.ugur.services;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import tm.ugur.models.Route;
 import tm.ugur.models.Stop;
 import tm.ugur.repo.RouteRepository;
+import tm.ugur.util.errors.route.RouteErrorResponse;
+import tm.ugur.util.errors.route.RouteNotFoundException;
 
 import java.util.Collections;
 import java.util.List;
@@ -77,9 +82,11 @@ public class RouteService {
         }
     }
 
-    private void init(Stop stop){
-        if(stop.getId() == 1){
+    @ExceptionHandler
+    private ResponseEntity<RouteErrorResponse> handleException(RouteNotFoundException e){
+        RouteErrorResponse errorResponse = new RouteErrorResponse(
+                "Route with this id wasn't found!", System.currentTimeMillis());
 
-        }
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 }

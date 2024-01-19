@@ -18,9 +18,17 @@ public class StopDTO {
     private String location;
 
     @ManyToOne
+    @JoinColumn(name = "city_id", referencedColumnName = "id")
     private City city;
 
+    private int cityId;
+
     public StopDTO(){}
+
+    public StopDTO(String name, String location){
+        this.name = name;
+        this.location = location;
+    }
 
     public String getName() {
         return name;
@@ -38,20 +46,28 @@ public class StopDTO {
         this.location = location;
     }
 
-    public City getCity() {
-        return city;
+    public int getId() {
+        return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+//    public City getCity() {
+//        return city;
+//    }
+
     public void setCity(City city) {
+        this.setCityId(city.getId());
         this.city = city;
     }
 
-    @Override
-    public String toString() {
-        return "StopDTO{" +
-                "name='" + name + '\'' +
-                ", location='" + location + '\'' +
-                ", city=" + city +
-                '}';
+    public int getCityId(){
+        return this.cityId;
+    }
+
+    public void setCityId(int cityId){
+        this.cityId = cityId;
     }
 }

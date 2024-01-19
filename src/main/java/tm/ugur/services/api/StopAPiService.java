@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tm.ugur.dto.StopDTO;
 import tm.ugur.models.Stop;
 import tm.ugur.repo.StopRepository;
+import tm.ugur.util.errors.stop.StopNotFoundException;
 
 import java.util.List;
 
@@ -15,32 +16,32 @@ import java.util.List;
 public class StopAPiService {
 
     private final StopRepository stopRepository;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public StopAPiService(StopRepository stopRepository) {
+    public StopAPiService(StopRepository stopRepository, ModelMapper modelMapper) {
         this.stopRepository = stopRepository;
+        this.modelMapper = modelMapper;
     }
 
-    public List<StopDTO> findAll(){
+    public List<StopDTO> getStops(){
         return this.stopRepository.findAll().stream().map(this::convertToStopDTO).toList();
     }
 
 
-
-    public StopDTO findOne(int id){
-        return this.convertToStopDTO(this.stopRepository.findById(id).orElse(null));
+    public StopDTO getStop(int id){
+        return this.convertToStopDTO(
+                this.stopRepository.findById(id).orElseThrow(StopNotFoundException::new));
     }
 
 
 
     public Stop converToStop(StopDTO stopDTO){
-        ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(stopDTO, Stop.class);
+        return this.modelMapper.map(stopDTO, Stop.class);
     }
 
     public StopDTO convertToStopDTO(Stop stop){
-        ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(stop, StopDTO.class);
+        return this.modelMapper.map(stop, StopDTO.class);
     }
 
 }
