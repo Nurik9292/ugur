@@ -20,6 +20,7 @@ public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfi
             MessageSecurityMetadataSourceRegistry messages) {
         messages
                 .simpDestMatchers("/topic/**").permitAll()
+                .simpSubscribeDestMatchers("/topic/**").permitAll()
                 .anyMessage().permitAll();
     }
 
