@@ -34,9 +34,9 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         return http.csrf().disable().authorizeHttpRequests(auth ->
-                auth.requestMatchers("/users/create", "/users", "/users/store").hasRole("SUPER")
+                auth
+                        .requestMatchers("/users/create", "/users", "/users/store").hasRole("SUPER")
                         .requestMatchers("/api/**").permitAll()
-                        .requestMatchers("/test/**").permitAll()
                         .requestMatchers("/websocket-ugur", "/websocket-ugur/**").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
