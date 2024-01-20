@@ -3,6 +3,8 @@ package tm.ugur.job;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -25,6 +27,11 @@ public class BusScheduling {
     private final AtLogisticService atLogisticService;
     private final MobWebSocketHandler mobWebSocketHandler;
 
+    private boolean isApiAvailable = true;
+
+    private final static Logger logger = LoggerFactory.getLogger(BusScheduling.class);
+
+
     @Autowired
     public BusScheduling(ImdataService imdataService, AtLogisticService atLogisticService, MobWebSocketHandler mobWebSocketHandler) {
         this.imdataService = imdataService;
@@ -34,27 +41,34 @@ public class BusScheduling {
 
     @Async
     @Scheduled(fixedDelay = 1000)
-    public void scheduleFixedDelayTask() throws JsonProcessingException {
-        Map<String, String> map = this.imdataService.getDataBus();
+    public void scheduleFixedDelayTask(){
+        try {
+            Map<String, String> map = this.imdataService.getDataBus();
+            JsonNode jsonNode = this.atLogisticService.getDataBus();
 
-        JsonNode jsonNode = this.atLogisticService.getDataBus();
+            if (isApiAvailable) {
+                for (JsonNode node : jsonNode.get("list")) {
+                    if (map.containsKey(node.get("vehiclenumber").asText())) {
+                        BusDTO bus = new BusDTO(
+                                node.get("vehiclenumber").asText(),
+                                map.get(node.get("vehiclenumber").asText()),
+                                node.get("status").get("speed").asText(),
+                                node.get("imei").asText(),
+                                node.get("status").get("dir").asText(),
+                                node.get("status").get("lat").asText(),
+                                node.get("status").get("lon").asText()
+                        );
 
-        for (JsonNode node : jsonNode.get("list")) {
-            if (map.containsKey(node.get("vehiclenumber").asText())) {
-                BusDTO bus = new BusDTO(
-                        node.get("vehiclenumber").asText(),
-                        map.get(node.get("vehiclenumber").asText()),
-                        node.get("status").get("speed").asText(),
-                        node.get("imei").asText(),
-                        node.get("status").get("dir").asText(),
-                        node.get("status").get("lat").asText(),
-                        node.get("status").get("lon").asText()
-                );
-
-                ObjectMapper mapper = new ObjectMapper();
-
-                this.mobWebSocketHandler.sendToMobileApp(mapper.writeValueAsString(bus));
+                        ObjectMapper mapper = new ObjectMapper();
+                        this.mobWebSocketHandler.sendToMobileApp(mapper.writeValueAsString(bus));
+                    }
+                }
             }
+        } catch (Exception e) {
+            isApiAvailable = false;
+            logger.error("API unavailable: " + e.getMessage());
+
+            mobWebSocketHandler.sendToMobileApp("API temporarily unavailable");
         }
     }
 }
