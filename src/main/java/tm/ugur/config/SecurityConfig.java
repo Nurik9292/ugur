@@ -37,7 +37,7 @@ public class SecurityConfig {
                 auth.requestMatchers("/users/create", "/users", "/users/store").hasRole("SUPER")
                         .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/test/**").permitAll()
-                        .requestMatchers("/websocket-ugur/**").permitAll()
+                        .requestMatchers("/websocket-ugur", "/websocket-ugur/**").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
                 .build();
