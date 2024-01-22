@@ -7,14 +7,14 @@ import jakarta.persistence.*;
 public class Bus {
 
     @Id
-    @Column(name = "buses")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "car_number")
     private String carNumber;
 
-    @Column(name = "lan")
+    @Column(name = "lat")
     private String lat;
 
     @Column(name = "lng")
@@ -23,7 +23,7 @@ public class Bus {
     @Column(name = "speed")
     private String speed;
 
-    @Column(name = "iemi")
+    @Column(name = "imei")
     private String imei;
 
     @Column(name = "number")

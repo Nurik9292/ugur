@@ -1,6 +1,5 @@
 package tm.ugur.job;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -75,6 +74,7 @@ public class BusScheduling {
                         );
 
                         Bus busUpdate = this.busSservice.findByCarNumber(node.get("vehiclenumber").asText());
+                        buses.add(busDTO);
 
                         if(busUpdate != null)
                             this.busSservice.store(bus);
