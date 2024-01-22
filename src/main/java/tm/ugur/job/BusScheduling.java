@@ -74,8 +74,12 @@ public class BusScheduling {
                                 node.get("status").get("lon").asText()
                         );
 
-                        this.busSservice.store(bus);
-                        buses.add(busDTO);
+                        Bus busUpdate = this.busSservice.findByCarNumber(node.get("vehiclenumber").asText());
+
+                        if(busUpdate != null)
+                            this.busSservice.store(bus);
+                        else
+                            this.busSservice.update(busUpdate.getId(), bus);
                     }
                 }
                 ObjectMapper mapper = new ObjectMapper();

@@ -28,8 +28,13 @@ public class BusSservice {
         return this.busRepository.findById(id).orElse(null);
     }
 
+    public Bus findByCarNumber(String carNumber){
+        return this.busRepository.findByCarNumber(carNumber).orElse(null);
+    }
+
     @Transactional
     public void store(Bus bus){
+
         this.busRepository.save(bus);
     }
 

@@ -21,7 +21,6 @@ public class BusApiController {
     }
 
     @GetMapping
-
     public List<BusDTO> getBuses(){
         return this.busSservice.getBuses();
     }
