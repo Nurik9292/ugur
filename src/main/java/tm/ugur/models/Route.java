@@ -44,6 +44,12 @@ public class Route {
     private List<Stop> startStops;
 
     @ManyToMany
+    @JoinTable(name = "route_favorites",
+            joinColumns = @JoinColumn(name = "route_id"),
+            inverseJoinColumns = @JoinColumn(name = "client_id"))
+    private List<Client> clients;
+
+    @ManyToMany
     @JoinTable(name = "end_route_stop",
             joinColumns = @JoinColumn(name = "route_id"),
             inverseJoinColumns = @JoinColumn(name = "stop_id"))
@@ -166,6 +172,30 @@ public class Route {
         this.endRouteStops = endRouteStops;
     }
 
+    public String getBack_line() {
+        return back_line;
+    }
+
+    public void setBack_line(String back_line) {
+        this.back_line = back_line;
+    }
+
+    public String getFront_line() {
+        return front_line;
+    }
+
+    public void setFront_line(String front_line) {
+        this.front_line = front_line;
+    }
+
+    public List<Client> getClients() {
+        return clients;
+    }
+
+    public void setClients(List<Client> clients) {
+        this.clients = clients;
+    }
+
     @Override
     public String toString() {
         return "Route{" +
@@ -188,21 +218,7 @@ public class Route {
         return Objects.hash(id, name, number);
     }
 
-    public String getBack_line() {
-        return back_line;
-    }
 
-    public void setBack_line(String back_line) {
-        this.back_line = back_line;
-    }
-
-    public String getFront_line() {
-        return front_line;
-    }
-
-    public void setFront_line(String front_line) {
-        this.front_line = front_line;
-    }
 }
 
 
