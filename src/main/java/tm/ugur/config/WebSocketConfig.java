@@ -7,12 +7,10 @@ import org.springframework.security.config.annotation.web.messaging.MessageSecur
 import org.springframework.security.config.annotation.web.socket.AbstractSecurityWebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
-import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 @Configuration
 @EnableScheduling
 @EnableWebSocketMessageBroker
-//public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfigurer {
 
     @Override
@@ -20,7 +18,9 @@ public class WebSocketConfig extends AbstractSecurityWebSocketMessageBrokerConfi
             MessageSecurityMetadataSourceRegistry messages) {
         messages
                 .simpDestMatchers("/topic/**").permitAll()
+                .simpDestMatchers("/topic/mobile").permitAll()
                 .simpSubscribeDestMatchers("/topic/**").permitAll()
+                .simpSubscribeDestMatchers("/topic/mobile").permitAll()
                 .anyMessage().permitAll();
     }
 
