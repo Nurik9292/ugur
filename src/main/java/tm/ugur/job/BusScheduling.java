@@ -45,6 +45,7 @@ public class BusScheduling {
         try {
             Map<String, String> map = this.imdataService.getDataBus();
             JsonNode jsonNode = this.atLogisticService.getDataBus();
+            List<BusDTO> buses = new ArrayList<>();
 
             if (isApiAvailable) {
                 for (JsonNode node : jsonNode.get("list")) {
@@ -58,11 +59,11 @@ public class BusScheduling {
                                 node.get("status").get("lat").asText(),
                                 node.get("status").get("lon").asText()
                         );
-
-                        ObjectMapper mapper = new ObjectMapper();
-                        this.mobWebSocketHandler.sendToMobileApp(mapper.writeValueAsString(bus));
+                        buses.add(bus);
                     }
                 }
+                ObjectMapper mapper = new ObjectMapper();
+                this.mobWebSocketHandler.sendToMobileApp(mapper.writeValueAsString(buses));
             }
         } catch (Exception e) {
             isApiAvailable = false;
