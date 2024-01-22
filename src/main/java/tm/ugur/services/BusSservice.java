@@ -7,6 +7,7 @@ import tm.ugur.models.Bus;
 import tm.ugur.repo.BusRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -28,8 +29,8 @@ public class BusSservice {
         return this.busRepository.findById(id).orElse(null);
     }
 
-    public Bus findByCarNumber(String carNumber){
-        return this.busRepository.findByCarNumber(carNumber).orElse(null);
+    public Optional<Bus>  findByCarNumber(String carNumber){
+        return this.busRepository.findByCarNumber(carNumber);
     }
 
     @Transactional

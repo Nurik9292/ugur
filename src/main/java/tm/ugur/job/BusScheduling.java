@@ -19,6 +19,7 @@ import tm.ugur.ws.MobWebSocketHandler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @EnableAsync
@@ -43,7 +44,7 @@ public class BusScheduling {
     }
 
     @Async
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedDelay = 30000)
     public void scheduleFixedDelayTask(){
         try {
             Map<String, String> map = this.imdataService.getDataBus();
@@ -73,13 +74,13 @@ public class BusScheduling {
                                 node.get("status").get("lon").asText()
                         );
 
-                        Bus busUpdate = this.busSservice.findByCarNumber(node.get("vehiclenumber").asText());
+                        Optional<Bus> busUpdate = this.busSservice.findByCarNumber(node.get("vehiclenumber").asText());
 //                        buses.add(busDTO);
-
-                        if(busUpdate != null)
+                        System.out.println(bus);
+                        if(!busUpdate.isPresent())
                             this.busSservice.store(bus);
                         else
-                            this.busSservice.update(busUpdate.getId(), bus);
+                            this.busSservice.update(busUpdate.get().getId(), bus);
                     }
                 }
 //                ObjectMapper mapper = new ObjectMapper();
