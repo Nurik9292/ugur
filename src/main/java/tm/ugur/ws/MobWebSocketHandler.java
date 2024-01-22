@@ -20,7 +20,7 @@ public class MobWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        session.setTextMessageSizeLimit(1024 * 1024); // Здесь установите такой же размер буфера, как в WebSocketConfig
+        session.setTextMessageSizeLimit(1048576); // Здесь установите такой же размер буфера, как в WebSocketConfig
         super.afterConnectionEstablished(session);
     }
 
