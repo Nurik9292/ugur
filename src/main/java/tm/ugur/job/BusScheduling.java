@@ -53,15 +53,15 @@ public class BusScheduling {
             if (isApiAvailable) {
                 for (JsonNode node : jsonNode.get("list")) {
                     if (map.containsKey(node.get("vehiclenumber").asText())) {
-                        BusDTO busDTO = new BusDTO(
-                                node.get("vehiclenumber").asText(),
-                                map.get(node.get("vehiclenumber").asText()),
-                                node.get("status").get("speed").asText(),
-                                node.get("imei").asText(),
-                                node.get("status").get("dir").asText(),
-                                node.get("status").get("lat").asText(),
-                                node.get("status").get("lon").asText()
-                        );
+//                        BusDTO busDTO = new BusDTO(
+//                                node.get("vehiclenumber").asText(),
+//                                map.get(node.get("vehiclenumber").asText()),
+//                                node.get("status").get("speed").asText(),
+//                                node.get("imei").asText(),
+//                                node.get("status").get("dir").asText(),
+//                                node.get("status").get("lat").asText(),
+//                                node.get("status").get("lon").asText()
+//                        );
 
                         Bus bus = new Bus(
                                 node.get("vehiclenumber").asText(),
@@ -74,7 +74,7 @@ public class BusScheduling {
                         );
 
                         Bus busUpdate = this.busSservice.findByCarNumber(node.get("vehiclenumber").asText());
-                        buses.add(busDTO);
+//                        buses.add(busDTO);
 
                         if(busUpdate != null)
                             this.busSservice.store(bus);
@@ -82,8 +82,8 @@ public class BusScheduling {
                             this.busSservice.update(busUpdate.getId(), bus);
                     }
                 }
-                ObjectMapper mapper = new ObjectMapper();
-                this.mobWebSocketHandler.sendToMobileApp(mapper.writeValueAsString(buses));
+//                ObjectMapper mapper = new ObjectMapper();
+//                this.mobWebSocketHandler.sendToMobileApp(mapper.writeValueAsString(buses));
             }
         } catch (Exception e) {
             isApiAvailable = false;
