@@ -6,6 +6,8 @@ public class BusDTO {
     private String number;
     private String speed;
     private String imei;
+
+    private String location;
     private String dir;
     private String lat;
     private String lng;
@@ -89,5 +91,13 @@ public class BusDTO {
                 ", lat='" + lat + '\'' +
                 ", lng='" + lng + '\'' +
                 '}';
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }

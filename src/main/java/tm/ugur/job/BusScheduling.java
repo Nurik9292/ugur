@@ -11,6 +11,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import tm.ugur.dto.BusDTO;
+import tm.ugur.models.Bus;
+import tm.ugur.services.BusSservice;
 import tm.ugur.services.data_bus.AtLogisticService;
 import tm.ugur.services.data_bus.ImdataService;
 import tm.ugur.ws.MobWebSocketHandler;
@@ -26,6 +28,7 @@ public class BusScheduling {
     private final ImdataService imdataService;
     private final AtLogisticService atLogisticService;
     private final MobWebSocketHandler mobWebSocketHandler;
+    private final BusSservice busSservice;
 
     private boolean isApiAvailable = true;
 
@@ -33,10 +36,11 @@ public class BusScheduling {
 
 
     @Autowired
-    public BusScheduling(ImdataService imdataService, AtLogisticService atLogisticService, MobWebSocketHandler mobWebSocketHandler) {
+    public BusScheduling(ImdataService imdataService, AtLogisticService atLogisticService, MobWebSocketHandler mobWebSocketHandler, BusSservice busSservice) {
         this.imdataService = imdataService;
         this.atLogisticService = atLogisticService;
         this.mobWebSocketHandler = mobWebSocketHandler;
+        this.busSservice = busSservice;
     }
 
     @Async
@@ -50,7 +54,7 @@ public class BusScheduling {
             if (isApiAvailable) {
                 for (JsonNode node : jsonNode.get("list")) {
                     if (map.containsKey(node.get("vehiclenumber").asText())) {
-                        BusDTO bus = new BusDTO(
+                        BusDTO busDTO = new BusDTO(
                                 node.get("vehiclenumber").asText(),
                                 map.get(node.get("vehiclenumber").asText()),
                                 node.get("status").get("speed").asText(),
@@ -59,7 +63,19 @@ public class BusScheduling {
                                 node.get("status").get("lat").asText(),
                                 node.get("status").get("lon").asText()
                         );
-                        buses.add(bus);
+
+                        Bus bus = new Bus(
+                                node.get("vehiclenumber").asText(),
+                                map.get(node.get("vehiclenumber").asText()),
+                                node.get("status").get("speed").asText(),
+                                node.get("imei").asText(),
+                                node.get("status").get("dir").asText(),
+                                node.get("status").get("lat").asText(),
+                                node.get("status").get("lon").asText()
+                        );
+
+                        this.busSservice.store(bus);
+                        buses.add(busDTO);
                     }
                 }
                 ObjectMapper mapper = new ObjectMapper();
