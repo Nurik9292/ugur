@@ -5,6 +5,10 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import tm.ugur.models.City;
+import tm.ugur.models.Client;
+import tm.ugur.models.Stop;
+
+import java.util.List;
 
 public class RouteDTO {
 
@@ -33,7 +37,24 @@ public class RouteDTO {
     @JoinColumn(name = "city_id", referencedColumnName = "id")
     private City city;
 
+    @ManyToMany
+    @JoinTable(name = "start_route_stop",
+            joinColumns = @JoinColumn(name = "route_id"),
+            inverseJoinColumns = @JoinColumn(name = "stop_id"))
+    private List<Stop> startStops;
+
+    @ManyToMany
+    @JoinTable(name = "end_route_stop",
+            joinColumns = @JoinColumn(name = "route_id"),
+            inverseJoinColumns = @JoinColumn(name = "stop_id"))
+    private List<Stop> endStops;
+
+    private List<Integer> startStopIds;
+
+    private List<Integer> endStopIds;
+
     private int cityId;
+
 
     @Column(name = "front_line")
     private String front_line;
@@ -116,5 +137,24 @@ public class RouteDTO {
 
     public int getCityId(){
         return this.cityId;
+    }
+
+//    public List<Stop> getStartStops() {
+//        return startStops;
+//    }
+
+    public void setStartStops(List<Stop> startStops) {
+        startStops.forEach(stop -> this.startStopIds.add(stop.getId()));
+        this.startStops = startStops;
+    }
+
+
+//    public List<Stop> getEndStops() {
+//        return endStops;
+//    }
+
+    public void setEndStops(List<Stop> endStops) {
+        endStops.forEach(stop -> this.endStopIds.add(stop.getId()));
+        this.endStops = endStops;
     }
 }
