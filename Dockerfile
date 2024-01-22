@@ -1,10 +1,19 @@
-FROM openjdk:21-jdk-alpine
+FROM maven:3.8.4-openjdk-17 as builder
+WORKDIR /app
+COPY . /app/.
+RUN mvn -f /app/pom.xml clean package -Dmaven.test.skip=true
 
-ARG JAR_FILE=target/*.jar
+FROM eclipse-temurin:21-jre-alpine
 
-COPY ${JAR_FILE} ugur_backend-0.0.1-SNAPSHOT.jar
+#ARG JAR_FILE=target/*.jar
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+WORKDIR /app
+
+#COPY ${JAR_FILE} app/app.jar
+
+COPY --from=builder /app/target/*.jar /app/app.jar
+
+ENTRYPOINT ["java", "-jar", "app/app.jar"]
 
 LABEL authors="nury"
 
