@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import tm.ugur.dto.BusDTO;
 import tm.ugur.models.Bus;
 import tm.ugur.repo.BusRepository;
+import tm.ugur.util.errors.buses.BusNotFoundException;
+import tm.ugur.util.mappers.BusMapper;
 
 import java.util.List;
 
@@ -15,21 +17,22 @@ import java.util.List;
 public class BusApiService {
 
     private final BusRepository busRepository;
-    private final ModelMapper modelMapper;
 
+    private final BusMapper busMapper;
 
     @Autowired
-    public BusApiService(BusRepository busRepository, ModelMapper modelMapper) {
+    public BusApiService(BusRepository busRepository, BusMapper busMapper) {
         this.busRepository = busRepository;
-        this.modelMapper = modelMapper;
+        this.busMapper = busMapper;
     }
 
     public List<BusDTO> getBuses(){
         return this.busRepository.findAll().stream().map(this::convertToBusDTO).toList();
     }
 
-    public Bus getBus(long id){
-        return this.busRepository.findById(id).orElse(null);
+    public BusDTO getBus(long id){
+        Bus bus = this.busRepository.findById(id).orElseThrow(BusNotFoundException::new);
+        return this.convertToBusDTO(bus);
     }
 
     @Transactional
@@ -45,11 +48,10 @@ public class BusApiService {
 
 
     public Bus converToBus(BusDTO busDTO){
-        return this.modelMapper.map(busDTO, Bus.class);
+        return this.busMapper.toEntity(busDTO);
     }
 
     public BusDTO convertToBusDTO(Bus bus){
-        ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(bus, BusDTO.class);
+        return this.busMapper.toDto(bus);
     }
 }
