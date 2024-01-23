@@ -82,7 +82,7 @@
                         <span class="sidebar-text">Города</span>
                     </a>
                 </li>
-                <li th:class="'nav-item' + ' ' + ${page.startsWith('user') ? 'active' : ''}">
+                <li th:if="${user}" th:class="'nav-item' + ' ' + ${page.startsWith('user') ? 'active' : ''}">
                     <a th:href="@{/users}" class="nav-link">
                         <span class="sidebar-icon">
                             <svg class="icon icon-xs me-2" data-slot="icon" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">

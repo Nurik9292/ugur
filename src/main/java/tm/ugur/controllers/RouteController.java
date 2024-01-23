@@ -2,16 +2,20 @@ package tm.ugur.controllers;
 
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.expression.Numbers;
 import tm.ugur.models.Route;
+import tm.ugur.security.PersonDetails;
 import tm.ugur.services.*;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.stream.IntStream;
 
 @Controller
@@ -95,5 +99,12 @@ public class RouteController {
         model.addAttribute("page", "route-craete");
         model.addAttribute("cities", this.cityService.findAll());
         model.addAttribute("stops", this.stopService.findAll());
+    }
+
+
+    @ModelAttribute("user")
+    public boolean isSuperAdmin(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return Objects.equals(((PersonDetails) auth.getPrincipal()).getUser().getRole().name(), "ROLE_SUPER");
     }
 }

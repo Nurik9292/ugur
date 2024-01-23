@@ -2,11 +2,14 @@ package tm.ugur.controllers;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import tm.ugur.models.Person;
+import tm.ugur.security.PersonDetails;
 import tm.ugur.services.PersonService;
 
 import java.util.Objects;
@@ -90,5 +93,11 @@ public class UserController {
         this.personService.delete(id);
 
         return "redirect:/users";
+    }
+
+    @ModelAttribute("user")
+    public boolean isSuperAdmin(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return Objects.equals(((PersonDetails) auth.getPrincipal()).getUser().getRole().name(), "ROLE_SUPER");
     }
 }

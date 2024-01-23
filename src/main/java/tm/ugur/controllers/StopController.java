@@ -5,12 +5,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.expression.Numbers;
 import tm.ugur.models.Stop;
+import tm.ugur.security.PersonDetails;
 import tm.ugur.services.CityService;
 import tm.ugur.services.StopService;
 import tm.ugur.util.errors.stop.StopErrorResponse;
@@ -148,11 +151,17 @@ public class StopController {
     }
 
 
-//    @ExceptionHandler
-//    private ResponseEntity<StopErrorResponse> handleException(StopNotFoundException e){
-//        StopErrorResponse errorResponse = new StopErrorResponse(
-//                "Stop with this id wasn't found!", System.currentTimeMillis());
-//
-//        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-//    }
+    @ExceptionHandler
+    private ResponseEntity<StopErrorResponse> handleException(StopNotFoundException e){
+        StopErrorResponse errorResponse = new StopErrorResponse(
+                "Stop with this id wasn't found!", System.currentTimeMillis());
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ModelAttribute("user")
+    public boolean isSuperAdmin(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return Objects.equals(((PersonDetails) auth.getPrincipal()).getUser().getRole().name(), "ROLE_SUPER");
+    }
 }

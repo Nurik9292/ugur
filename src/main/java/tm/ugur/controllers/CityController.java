@@ -2,11 +2,14 @@ package tm.ugur.controllers;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import tm.ugur.models.City;
+import tm.ugur.security.PersonDetails;
 import tm.ugur.services.CityService;
 
 import java.util.Objects;
@@ -59,5 +62,11 @@ public class CityController {
     public String delete(@PathVariable("id") int id){
         this.cityService.delete(id);
         return "redirect:/cities";
+    }
+
+    @ModelAttribute("user")
+    public boolean isSuperAdmin(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return Objects.equals(((PersonDetails) auth.getPrincipal()).getUser().getRole().name(), "ROLE_SUPER");
     }
 }
