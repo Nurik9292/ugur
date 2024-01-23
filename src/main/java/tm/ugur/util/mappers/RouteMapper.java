@@ -1,5 +1,7 @@
 package tm.ugur.util.mappers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
@@ -7,6 +9,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import tm.ugur.dto.RouteDTO;
+import tm.ugur.dto.geo.LineStringDTO;
+import tm.ugur.dto.geo.PointDTO;
 import tm.ugur.models.Route;
 import tm.ugur.models.Stop;
 import tm.ugur.repo.StopRepository;
@@ -44,6 +48,7 @@ public class RouteMapper extends AbstractMapper<Route, RouteDTO> {
         destination.setStartStopIds(getStopIds(source, "start"));
         destination.setEndStopIds(getStopIds(source, "end"));
         destination.setFrontLine(getLine(source, "front"));
+        destination.setBackLine(getLine(source, "back"));
     }
 
     private List<Long> getStopIds(Route source, String dir){
@@ -61,22 +66,20 @@ public class RouteMapper extends AbstractMapper<Route, RouteDTO> {
         return source.getEndStops().stream().map(Stop::getId).collect(Collectors.toList());
     }
 
-    private List<Double[]> getLine(Route source, String line){
+    private LineStringDTO getLine(Route source, String line){
 
         if(Objects.isNull(source) || Objects.isNull(source.getFrontLine()))
             return null;
 
-        List<Double[]> points = new ArrayList<>();
-
         LineString lineString = line.equals("front") ? source.getFrontLine() : source.getBackLine();
-
         Coordinate[] coordinates = lineString.getCoordinates();
+        List<PointDTO> points = new ArrayList<>();
 
         for(Coordinate coordinate : coordinates){
-            points.add(new Double[]{coordinate.getX(), coordinate.getY()});
+            points.add(new PointDTO(coordinate.getX(), coordinate.getY()));
         }
 
-        return points;
+        return new LineStringDTO(points);
 
     }
 

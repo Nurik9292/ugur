@@ -1,5 +1,7 @@
 package tm.ugur.dto;
 
+import tm.ugur.dto.geo.LineStringDTO;
+
 import java.util.List;
 
 public class RouteDTO extends AbstractDTO{
@@ -16,9 +18,9 @@ public class RouteDTO extends AbstractDTO{
 
     private List<Long> endStopIds;
 
-    private List<Double[]> frontLine;
+    private LineStringDTO frontLine;
 
-    private List<Double[]> backLine;
+    private LineStringDTO backLine;
 
 
     public RouteDTO(){
@@ -74,19 +76,19 @@ public class RouteDTO extends AbstractDTO{
         this.endStopIds = endStopIds;
     }
 
-    public List<Double[]> getFrontLine() {
+    public LineStringDTO getFrontLine() {
         return frontLine;
     }
 
-    public void setFrontLine(List<Double[]> frontLine) {
+    public void setFrontLine(LineStringDTO frontLine) {
         this.frontLine = frontLine;
     }
 
-    public List<Double[]> getBackLine() {
+    public LineStringDTO getBackLine() {
         return backLine;
     }
 
-    public void setBackLine(List<Double[]> backLine) {
+    public void setBackLine(LineStringDTO backLine) {
         this.backLine = backLine;
     }
 }

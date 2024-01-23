@@ -1,5 +1,7 @@
 package tm.ugur.dto;
 
+import tm.ugur.dto.geo.PointDTO;
+
 import java.util.List;
 
 public class BusDTO extends  AbstractDTO{
@@ -9,7 +11,7 @@ public class BusDTO extends  AbstractDTO{
     private String speed;
     private String imei;
     private String dir;
-    private List<Double> location;
+    private PointDTO location;
 
 
     public BusDTO(){}
@@ -55,6 +57,13 @@ public class BusDTO extends  AbstractDTO{
         this.dir = dir;
     }
 
+    public PointDTO getLocation() {
+        return location;
+    }
+
+    public void setLocation(PointDTO location) {
+        this.location = location;
+    }
 
     @Override
     public String toString() {
@@ -67,11 +76,4 @@ public class BusDTO extends  AbstractDTO{
                 '}';
     }
 
-    public List<Double> getLocation() {
-        return location;
-    }
-
-    public void setLocation(List<Double> location) {
-        this.location = location;
-    }
 }

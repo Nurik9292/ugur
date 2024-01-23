@@ -1,15 +1,16 @@
 package tm.ugur.dto;
 
 
-import tm.ugur.models.Route;
-
-import java.util.List;
+import tm.ugur.dto.geo.PointDTO;
 
 public class StopDTO extends AbstractDTO{
 
     private String name;
 
     private CityDTO city;
+
+    private PointDTO location;
+
 
     public StopDTO(){}
 
@@ -32,5 +33,13 @@ public class StopDTO extends AbstractDTO{
 
     public void setCity(CityDTO city) {
         this.city = city;
+    }
+
+    public PointDTO getLocation() {
+        return location;
+    }
+
+    public void setLocation(PointDTO location) {
+        this.location = location;
     }
 }

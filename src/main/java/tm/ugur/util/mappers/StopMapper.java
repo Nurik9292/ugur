@@ -1,15 +1,42 @@
 package tm.ugur.util.mappers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import tm.ugur.dto.RouteDTO;
 import tm.ugur.dto.StopDTO;
+import tm.ugur.dto.geo.PointDTO;
+import tm.ugur.models.Route;
 import tm.ugur.models.Stop;
+
+import java.util.Objects;
 
 @Component
 public class StopMapper extends AbstractMapper<Stop, StopDTO>{
-    public StopMapper() {
+
+    private final ModelMapper modelMapper;
+
+    @Autowired
+    public StopMapper(ModelMapper modelMapper) {
         super(Stop.class, StopDTO.class);
+        this.modelMapper = modelMapper;
     }
 
 
+    @PostConstruct
+    public void setupMapper() {
+        this.modelMapper.createTypeMap(Stop.class, StopDTO.class)
+                .addMappings(m -> m.skip(StopDTO::setId)).setPostConverter(toDtoConverter());
+        this.modelMapper.createTypeMap(StopDTO.class, Stop.class)
+                .addMappings(m -> m.skip(Stop::setId)).setPostConverter(toEntityConverter());
+    }
+
+
+    @Override
+    public void mapSpecificFields(Stop source, StopDTO destination) {
+        destination.setLocation(new PointDTO(source.getLocation().getX(), source.getLocation().getY()));
+    }
 }
