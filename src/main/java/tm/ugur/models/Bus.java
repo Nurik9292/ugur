@@ -29,7 +29,7 @@ public class Bus extends AbstractEntity{
     private String imei;
 
     @Column(name = "number")
-    private String number;
+    private Integer number;
 
     @Column(name = "dir")
     private String dir;
@@ -38,7 +38,7 @@ public class Bus extends AbstractEntity{
 
     public Bus(){}
 
-    public Bus(String carNumber, String number, String speed, String imei, String dir, String lat, String lng) {
+    public Bus(String carNumber, Integer number, String speed, String imei, String dir, String lat, String lng) {
         this.carNumber = carNumber;
         this.number = number;
         this.speed = speed;
@@ -85,11 +85,11 @@ public class Bus extends AbstractEntity{
         this.carNumber = carNumber;
     }
 
-    public String getNumber() {
+    public Integer getNumber() {
         return number;
     }
 
-    public void setNumber(String number) {
+    public void setNumber(Integer number) {
         this.number = number;
     }
 

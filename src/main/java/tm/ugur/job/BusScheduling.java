@@ -66,7 +66,7 @@ public class BusScheduling {
 
                         Bus bus = new Bus(
                                 node.get("vehiclenumber").asText(),
-                                map.get(node.get("vehiclenumber").asText()),
+                                Integer.parseInt(map.get(node.get("vehiclenumber").asText())),
                                 node.get("status").get("speed").asText(),
                                 node.get("imei").asText(),
                                 node.get("status").get("dir").asText(),

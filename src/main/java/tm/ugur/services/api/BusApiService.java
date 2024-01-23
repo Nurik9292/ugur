@@ -35,6 +35,10 @@ public class BusApiService {
         return this.convertToBusDTO(bus);
     }
 
+    public List<BusDTO> getBusForNumber(int number){
+        return this.busRepository.findAllByNumber(number).stream().map(this::convertToBusDTO).toList();
+    }
+
     @Transactional
     public void store(Bus bus){
         this.busRepository.save(bus);

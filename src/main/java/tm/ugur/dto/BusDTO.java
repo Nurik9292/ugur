@@ -7,7 +7,7 @@ import java.util.List;
 public class BusDTO extends  AbstractDTO{
 
     private String carNumber;
-    private String number;
+    private Integer number;
     private String speed;
     private String imei;
     private String dir;
@@ -25,11 +25,11 @@ public class BusDTO extends  AbstractDTO{
         this.carNumber = carNumber;
     }
 
-    public String getNumber() {
+    public Integer getNumber() {
         return number;
     }
 
-    public void setNumber(String number) {
+    public void setNumber(Integer number) {
         this.number = number;
     }
 

@@ -27,15 +27,21 @@ public class BusApiController {
         return this.busSservice.getBuses();
     }
 
-    @PostMapping("/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<BusDTO> getBus(@PathVariable("id") Long id){
         return ResponseEntity.ok(this.busSservice.getBus(id));
     }
 
+    @GetMapping("/number/{number}")
+    public ResponseEntity<List<BusDTO>> getBusesForNumber(@PathVariable("number") Integer number){
+        return ResponseEntity.ok(this.busSservice.getBusForNumber(number));
+    }
+
+
     @ExceptionHandler
     private ResponseEntity<BusErrorResponse> handleException(BusNotFoundException e){
         BusErrorResponse errorResponse =
-                new BusErrorResponse("Stop with this id wasn't found!", System.currentTimeMillis());
+                new BusErrorResponse("There is no such bus!", System.currentTimeMillis());
 
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
