@@ -3,6 +3,7 @@ package tm.ugur.dto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
+import org.locationtech.jts.geom.Point;
 import tm.ugur.models.City;
 
 public class StopDTO {
@@ -15,7 +16,7 @@ public class StopDTO {
     private String name;
 
     @Column(name = "location")
-    private String location;
+    private Point location;
 
     @ManyToOne
     @JoinColumn(name = "city_id", referencedColumnName = "id")
@@ -25,7 +26,7 @@ public class StopDTO {
 
     public StopDTO(){}
 
-    public StopDTO(String name, String location){
+    public StopDTO(String name, Point location){
         this.name = name;
         this.location = location;
     }
@@ -38,11 +39,11 @@ public class StopDTO {
         this.name = name;
     }
 
-    public String getLocation() {
+    public Point getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(Point location) {
         this.location = location;
     }
 

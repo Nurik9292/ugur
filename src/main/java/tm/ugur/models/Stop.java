@@ -3,6 +3,7 @@ package tm.ugur.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
+import org.locationtech.jts.geom.Point;
 
 import java.util.List;
 import java.util.Objects;
@@ -22,8 +23,8 @@ public class Stop {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "location")
-    private String location;
+    @Column(name = "location", columnDefinition = "Geometry(Point, 4326)")
+    private Point location;
 
     @ManyToOne
     private City city;
@@ -37,11 +38,11 @@ public class Stop {
 
     @NotEmpty(message = "Заполните поле")
     @Transient
-    private String lat;
+    private Double lat;
 
     @NotEmpty(message = "Заполните поле")
     @Transient
-    private String lng;
+    private Double lng;
 
     @OneToMany(mappedBy = "stop")
     private List<StartRouteStop> startRouteStops;
@@ -73,11 +74,11 @@ public class Stop {
         this.name = name;
     }
 
-    public String getLocation() {
+    public Point getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(Point location) {
         this.location = location;
     }
 
@@ -90,19 +91,19 @@ public class Stop {
         this.city = city;
     }
 
-    public String getLat() {
+    public Double getLat() {
         return lat;
     }
 
-    public void setLat(String lat) {
+    public void setLat(Double lat) {
         this.lat = lat;
     }
 
-    public String getLng() {
+    public Double getLng() {
         return lng;
     }
 
-    public void setLng(String lng) {
+    public void setLng(Double lng) {
         this.lng = lng;
     }
 

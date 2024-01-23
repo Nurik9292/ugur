@@ -75,7 +75,6 @@ public class BusScheduling {
                         );
 
                         Optional<Bus> busUpdate = this.busSservice.findByCarNumber(node.get("vehiclenumber").asText());
-//                        buses.add(busDTO);
                         System.out.println(bus);
                         if(!busUpdate.isPresent())
                             this.busSservice.store(bus);

@@ -1,12 +1,13 @@
 package tm.ugur.services;
 
-import com.google.gson.Gson;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tm.ugur.models.Stop;
-import tm.ugur.pojo.CustomPoint;
 import tm.ugur.repo.StopRepository;
 import tm.ugur.util.errors.stop.StopNotFoundException;
 
@@ -19,10 +20,12 @@ import java.util.Objects;
 public class StopService {
 
     private final StopRepository stopRepository;
+    private final GeometryFactory factory;
 
     @Autowired
-    public StopService(StopRepository stopRepository) {
+    public StopService(StopRepository stopRepository, GeometryFactory factory) {
         this.stopRepository = stopRepository;
+        this.factory = factory;
     }
 
     public List<Stop> findAll(){
@@ -55,13 +58,13 @@ public class StopService {
 
     @Transactional
     public void store(Stop stop){
-        stop.setLocation("{\"lat\": " + stop.getLat()  + ", " +  "\"lng\": " + stop.getLng() + "}");
+        stop.setLocation(this.factory.createPoint(new Coordinate(stop.getLat(), stop.getLng())));
         this.stopRepository.save(stop);
     }
 
     @Transactional
     public void update(int id, Stop stop){
-        stop.setLocation("{\"lat\": " + stop.getLat()  + ", " +  "\"lng\": " + stop.getLng() + "}");
+        stop.setLocation(this.factory.createPoint(new Coordinate(stop.getLat(), stop.getLng())));
         stop.setId(id);
         this.stopRepository.save(stop);
     }
@@ -74,10 +77,9 @@ public class StopService {
     }
 
     private void setLatLng(Stop stop){
-        Gson gson = new Gson();
-        CustomPoint point = gson.fromJson(stop.getLocation(), CustomPoint.class);
-        stop.setLat(point.getLat());
-        stop.setLng(point.getLng());
+        Point point = stop.getLocation();
+        stop.setLat(point.getX());
+        stop.setLng(point.getY());
     }
 
     private Page<Stop> findPaginated(Pageable pageable, List<Stop> stops, String sortBy){

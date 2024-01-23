@@ -1,10 +1,15 @@
 package tm.ugur.models;
 
 import jakarta.persistence.*;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.PrecisionModel;
 
 @Entity
 @Table(name = "buses")
 public class Bus {
+
 
     @Id
     @Column(name = "id")
@@ -14,11 +19,8 @@ public class Bus {
     @Column(name = "car_number")
     private String carNumber;
 
-    @Column(name = "lat")
-    private String lat;
-
-    @Column(name = "lng")
-    private String lng;
+    @Column(name = "location")
+    private Point location;
 
     @Column(name = "speed")
     private String speed;
@@ -42,8 +44,9 @@ public class Bus {
         this.speed = speed;
         this.imei = imei;
         this.dir = dir;
-        this.lat = lat;
-        this.lng = lng;
+
+        GeometryFactory factory = new GeometryFactory(new PrecisionModel(), 4326);
+        this.location = factory.createPoint(new Coordinate(Double.parseDouble(lat), Double.parseDouble(lng)));
     }
 
     public long getId() {
@@ -73,13 +76,6 @@ public class Bus {
         this.imei = imei;
     }
 
-    @Override
-    public String toString() {
-        return "Bus{" +
-                "id=" + id +
-                ", carNumber='" + carNumber + '\'' +
-                '}';
-    }
 
     public String getCarNumber() {
         return carNumber;
@@ -105,19 +101,20 @@ public class Bus {
         this.dir = dir;
     }
 
-    public String getLat() {
-        return lat;
+    public Point getLocation() {
+        return location;
     }
 
-    public void setLat(String lat) {
-        this.lat = lat;
+    public void setLocation(Point location) {
+        this.location = location;
     }
 
-    public String getLng() {
-        return lng;
+    @Override
+    public String toString() {
+        return "Bus{" +
+                "id=" + id +
+                ", carNumber='" + carNumber + '\'' +
+                '}';
     }
 
-    public void setLng(String lng) {
-        this.lng = lng;
-    }
 }

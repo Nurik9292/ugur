@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-import tm.ugur.pojo.CustomLine;
+import org.locationtech.jts.geom.LineString;
 
 import java.util.List;
 import java.util.Objects;
@@ -61,17 +61,12 @@ public class Route {
     @OneToMany(mappedBy = "route")
     private List<EndRouteStop> endRouteStops;
 
-    @Transient
-    private CustomLine frontLine;
-
-    @Transient
-    private CustomLine backLine;
 
     @Column(name = "front_line")
-    private String front_line;
+    private LineString frontLine;
 
     @Column(name = "back_line")
-    private String back_line;
+    private LineString backLine;
 
     public Route(){}
 
@@ -139,23 +134,6 @@ public class Route {
         this.endStops = endStops;
     }
 
-    public CustomLine getFrontLine() {
-        return frontLine;
-    }
-
-    public void setFrontLine(CustomLine frontLine) {
-        this.frontLine = frontLine;
-    }
-
-    public CustomLine getBackLine() {
-        return backLine;
-    }
-
-    public void setBackLine(CustomLine backLine) {
-        this.backLine = backLine;
-    }
-
-
     public List<StartRouteStop> getStartRouteStops() {
         return startRouteStops;
     }
@@ -172,20 +150,20 @@ public class Route {
         this.endRouteStops = endRouteStops;
     }
 
-    public String getBack_line() {
-        return back_line;
+    public LineString getBackLine() {
+        return backLine;
     }
 
-    public void setBack_line(String back_line) {
-        this.back_line = back_line;
+    public void setBackLine(LineString backLine) {
+        this.backLine = backLine;
     }
 
-    public String getFront_line() {
-        return front_line;
+    public LineString getFrontLine() {
+        return frontLine;
     }
 
-    public void setFront_line(String front_line) {
-        this.front_line = front_line;
+    public void setFrontLine(LineString frontLine) {
+        this.frontLine = frontLine;
     }
 
     public List<Client> getClients() {

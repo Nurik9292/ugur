@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
+import org.locationtech.jts.geom.LineString;
 import tm.ugur.models.City;
-import tm.ugur.models.Client;
 import tm.ugur.models.Stop;
 
 import java.util.List;
@@ -57,10 +57,10 @@ public class RouteDTO {
 
 
     @Column(name = "front_line")
-    private String front_line;
+    private LineString frontLine;
 
     @Column(name = "back_line")
-    private String back_line;
+    private LineString back_line;
 
     public RouteDTO(){
 
@@ -115,20 +115,20 @@ public class RouteDTO {
         this.cityId = city.getId();
     }
 
-    public String getFront_line() {
-        return front_line;
+    public LineString getFrontLine() {
+        return frontLine;
     }
 
-    public void setFront_line(String front_line) {
-        this.front_line = front_line;
+    public void setFrontLine(LineString frontLine) {
+        this.frontLine = frontLine;
     }
 
-    public String getBack_line() {
+    public LineString getBackLine() {
         return back_line;
     }
 
-    public void setBack_line(String back_line) {
-        this.back_line = back_line;
+    public void setBackLine(LineString backLine) {
+        this.back_line = backLine;
     }
 
     public void setCityId(int cityId){
