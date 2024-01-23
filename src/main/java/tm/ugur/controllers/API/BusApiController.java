@@ -5,12 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tm.ugur.dto.BusDTO;
-import tm.ugur.models.Bus;
 import tm.ugur.services.api.BusApiService;
 import tm.ugur.util.errors.buses.BusErrorResponse;
 import tm.ugur.util.errors.buses.BusNotFoundException;
-import tm.ugur.util.errors.stop.StopErrorResponse;
-import tm.ugur.util.errors.stop.StopNotFoundException;
 
 import java.util.List;
 
