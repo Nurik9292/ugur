@@ -1,7 +1,9 @@
 package tm.ugur.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.locationtech.jts.geom.Point;
 
@@ -12,19 +14,21 @@ import java.util.Objects;
 @Table(name = "stops")
 public class Stop {
 
-
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    @Id
     private int id;
+
 
     @NotEmpty(message = "Заполните название.")
     @Size(min = 3, max = 10, message = "Назвние города должен состоять от 3 до 10 символов.")
     @Column(name = "name")
     private String name;
 
+
     @Column(name = "location", columnDefinition = "Geometry(Point, 4326)")
     private Point location;
+
 
     @ManyToOne
     private City city;
@@ -36,11 +40,13 @@ public class Stop {
     @ManyToMany(mappedBy = "endStops")
     List<Route> endRoutes;
 
-    @NotEmpty(message = "Заполните поле")
+    @NotNull
+    @Min(value = 0, message = "Заполните поле")
     @Transient
     private Double lat;
 
-    @NotEmpty(message = "Заполните поле")
+    @NotNull
+    @Min(value = 0, message = "Заполните поле")
     @Transient
     private Double lng;
 
