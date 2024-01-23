@@ -8,6 +8,7 @@ import tm.ugur.dto.RouteDTO;
 import tm.ugur.models.Route;
 import tm.ugur.repo.RouteRepository;
 import tm.ugur.util.errors.route.RouteNotFoundException;
+import tm.ugur.util.mappers.RouteMapper;
 
 import java.util.List;
 
@@ -16,22 +17,23 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class RouteApiService {
     private final RouteRepository routeRepository;
-    private final ModelMapper modelMapper;
+    private final RouteMapper routeMapper;
 
     @Autowired
-    public RouteApiService(RouteRepository routeRepository, ModelMapper modelMapper) {
+    public RouteApiService(RouteRepository routeRepository, RouteMapper routeMapper) {
         this.routeRepository = routeRepository;
-        this.modelMapper = modelMapper;
+        this.routeMapper = routeMapper;
     }
 
 
     public List<RouteDTO> findAll(){
+        System.out.println(this.routeRepository.findAll().getFirst().getStartStops());
         return this.routeRepository.findAll().stream().map(this::convertToRouteDTO).toList();
     }
 
 
 
-    public RouteDTO findOne(int id){
+    public RouteDTO findOne(long id){
         return this.convertToRouteDTO(
                 this.routeRepository.findById(Long.valueOf(id)).orElseThrow(RouteNotFoundException::new));
     }
@@ -39,12 +41,11 @@ public class RouteApiService {
 
 
     public Route converToRoute(RouteDTO routeDTO){
-        return this.modelMapper.map(routeDTO, Route.class);
+        return this.routeMapper.toEntity(routeDTO);
     }
 
     public RouteDTO convertToRouteDTO(Route route){
-        ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(route, RouteDTO.class);
+        return this.routeMapper.toDto(route);
     }
 
 }

@@ -1,26 +1,19 @@
 package tm.ugur.dto;
 
-public class BusDTO {
+import java.util.List;
+
+public class BusDTO extends  AbstractDTO{
 
     private String carNumber;
     private String number;
     private String speed;
     private String imei;
     private String dir;
-    private String lat;
-    private String lng;
+    private List<Double> location;
+
 
     public BusDTO(){}
 
-    public BusDTO(String carNumber, String number, String speed, String imei, String dir, String lat, String lng) {
-        this.carNumber = carNumber;
-        this.number = number;
-        this.speed = speed;
-        this.imei = imei;
-        this.dir = dir;
-        this.lat = lat;
-        this.lng = lng;
-    }
 
     public String getCarNumber() {
         return carNumber;
@@ -62,21 +55,6 @@ public class BusDTO {
         this.dir = dir;
     }
 
-    public String getLat() {
-        return lat;
-    }
-
-    public void setLat(String lat) {
-        this.lat = lat;
-    }
-
-    public String getLng() {
-        return lng;
-    }
-
-    public void setLng(String lng) {
-        this.lng = lng;
-    }
 
     @Override
     public String toString() {
@@ -86,9 +64,14 @@ public class BusDTO {
                 ", speed='" + speed + '\'' +
                 ", imei='" + imei + '\'' +
                 ", dir='" + dir + '\'' +
-                ", lat='" + lat + '\'' +
-                ", lng='" + lng + '\'' +
                 '}';
     }
 
+    public List<Double> getLocation() {
+        return location;
+    }
+
+    public void setLocation(List<Double> location) {
+        this.location = location;
+    }
 }

@@ -50,7 +50,7 @@ public class StopService {
         return this.findPaginated(PageRequest.of(0, 10), stops, "");
     }
 
-    public Stop findOne(int id){
+    public Stop findOne(Long id){
         Stop stop = this.stopRepository.findById(id).orElseThrow(StopNotFoundException::new);
         this.setLatLng(Objects.requireNonNull(stop));
         return stop;
@@ -63,7 +63,7 @@ public class StopService {
     }
 
     @Transactional
-    public void update(int id, Stop stop){
+    public void update(Long id, Stop stop){
         stop.setLocation(this.factory.createPoint(new Coordinate(stop.getLat(), stop.getLng())));
         stop.setId(id);
         this.stopRepository.save(stop);
@@ -72,7 +72,7 @@ public class StopService {
 
 
     @Transactional
-    public void delete(int id){
+    public void delete(Long id){
         this.stopRepository.deleteById(id);
     }
 

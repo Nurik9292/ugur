@@ -1,77 +1,28 @@
 package tm.ugur.dto;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
-import org.locationtech.jts.geom.LineString;
-import tm.ugur.models.City;
-import tm.ugur.models.Stop;
-
 import java.util.List;
 
-public class RouteDTO {
+public class RouteDTO extends AbstractDTO{
 
-
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
-    @Column(name = "name")
-    @NotEmpty(message = "Заполните поле.")
-    @Size(min = 3, max = 70, message = "Назвние маршрута должен состоять от 3 до 100 символов.")
     private String name;
 
-    @Column(name = "interval")
     private String interval;
 
-    @Column(name = "number")
-    @Min(value = 1, message = "Номер маршрута не может быть меньше 1")
     private int number;
 
-    @Column(name = "routing_time")
-    private int routeTime;
+    private CityDTO city;
 
-    @ManyToOne
-    @JoinColumn(name = "city_id", referencedColumnName = "id")
-    private City city;
+    private List<Long> startStopIds;
 
-    @ManyToMany
-    @JoinTable(name = "start_route_stop",
-            joinColumns = @JoinColumn(name = "route_id"),
-            inverseJoinColumns = @JoinColumn(name = "stop_id"))
-    private List<Stop> startStops;
+    private List<Long> endStopIds;
 
-    @ManyToMany
-    @JoinTable(name = "end_route_stop",
-            joinColumns = @JoinColumn(name = "route_id"),
-            inverseJoinColumns = @JoinColumn(name = "stop_id"))
-    private List<Stop> endStops;
+    private List<Double[]> frontLine;
 
-    private List<Integer> startStopIds;
+    private List<Double[]> backLine;
 
-    private List<Integer> endStopIds;
-
-    private int cityId;
-
-
-    @Column(name = "front_line")
-    private LineString frontLine;
-
-    @Column(name = "back_line")
-    private LineString back_line;
 
     public RouteDTO(){
 
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -98,63 +49,44 @@ public class RouteDTO {
         this.number = number;
     }
 
-    public int getRouteTime() {
-        return routeTime;
+    public CityDTO getCity() {
+        return city;
     }
 
-    public void setRouteTime(int routeTime) {
-        this.routeTime = routeTime;
-    }
-
-//    public City getCity() {
-//        return city;
-//    }
-
-    public void setCity(City city) {
+    public void setCity(CityDTO city) {
         this.city = city;
-        this.cityId = city.getId();
     }
 
-    public LineString getFrontLine() {
+
+    public List<Long> getStartStopIds() {
+        return startStopIds;
+    }
+
+    public void setStartStopIds(List<Long> startStopIds) {
+        this.startStopIds = startStopIds;
+    }
+
+    public List<Long> getEndStopIds() {
+        return endStopIds;
+    }
+
+    public void setEndStopIds(List<Long> endStopIds) {
+        this.endStopIds = endStopIds;
+    }
+
+    public List<Double[]> getFrontLine() {
         return frontLine;
     }
 
-    public void setFrontLine(LineString frontLine) {
+    public void setFrontLine(List<Double[]> frontLine) {
         this.frontLine = frontLine;
     }
 
-    public LineString getBackLine() {
-        return back_line;
+    public List<Double[]> getBackLine() {
+        return backLine;
     }
 
-    public void setBackLine(LineString backLine) {
-        this.back_line = backLine;
-    }
-
-    public void setCityId(int cityId){
-        this.cityId = cityId;
-    }
-
-    public int getCityId(){
-        return this.cityId;
-    }
-
-//    public List<Stop> getStartStops() {
-//        return startStops;
-//    }
-
-    public void setStartStops(List<Stop> startStops) {
-        startStops.forEach(stop -> this.startStopIds.add(stop.getId()));
-        this.startStops = startStops;
-    }
-
-
-//    public List<Stop> getEndStops() {
-//        return endStops;
-//    }
-
-    public void setEndStops(List<Stop> endStops) {
-        endStops.forEach(stop -> this.endStopIds.add(stop.getId()));
-        this.endStops = endStops;
+    public void setBackLine(List<Double[]> backLine) {
+        this.backLine = backLine;
     }
 }

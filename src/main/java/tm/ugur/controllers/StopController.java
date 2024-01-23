@@ -99,7 +99,7 @@ public class StopController {
 
 
     @GetMapping("/{id}/edit")
-    public String edit(@PathVariable("id") int id, Model model){
+    public String edit(@PathVariable("id") Long id, Model model){
 
         model.addAttribute("title", "Изменить Остановку");
         model.addAttribute("page", "stop-edit");
@@ -110,7 +110,7 @@ public class StopController {
     }
 
     @PatchMapping("/{id}")
-    public String update(@PathVariable("id") int id,
+    public String update(@PathVariable("id") Long id,
                          @ModelAttribute("stop") @Valid Stop stop, BindingResult result,
                          Model model){
 
@@ -127,7 +127,7 @@ public class StopController {
     }
 
     @DeleteMapping("{id}")
-    public String delete(@PathVariable("id") int id){
+    public String delete(@PathVariable("id") Long id){
         this.stopService.delete(id);
         return "redirect:/stops";
     }

@@ -27,7 +27,7 @@ public class EndRouteStopService {
 
     @Transactional
     public void updateIndexs(String ids, Route route) {
-        Map<Integer, Stop> stopMap = new HashMap<>();  // Map for efficient stop lookup
+        Map<Long, Stop> stopMap = new HashMap<>();  // Map for efficient stop lookup
         route.getStartStops().forEach(stop -> stopMap.put(stop.getId(), stop));
 
         AtomicInteger count = new AtomicInteger(1);

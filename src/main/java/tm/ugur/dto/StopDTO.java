@@ -1,34 +1,20 @@
 package tm.ugur.dto;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
-import org.locationtech.jts.geom.Point;
-import tm.ugur.models.City;
 
-public class StopDTO {
+import tm.ugur.models.Route;
 
-    @Column(name = "id")
-    private int id;
-    @NotEmpty(message = "Заполните название.")
-    @Size(min = 3, max = 10, message = "Назвние города должен состоять от 3 до 10 символов.")
-    @Column(name = "name")
+import java.util.List;
+
+public class StopDTO extends AbstractDTO{
+
     private String name;
 
-    @Column(name = "location")
-    private Point location;
-
-    @ManyToOne
-    @JoinColumn(name = "city_id", referencedColumnName = "id")
-    private City city;
-
-    private int cityId;
+    private CityDTO city;
 
     public StopDTO(){}
 
-    public StopDTO(String name, Point location){
+    public StopDTO(String name){
         this.name = name;
-        this.location = location;
     }
 
     public String getName() {
@@ -39,36 +25,12 @@ public class StopDTO {
         this.name = name;
     }
 
-    public Point getLocation() {
-        return location;
+
+    public CityDTO getCity() {
+        return city;
     }
 
-    public void setLocation(Point location) {
-        this.location = location;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-//    public City getCity() {
-//        return city;
-//    }
-
-    public void setCity(City city) {
-        this.setCityId(city.getId());
+    public void setCity(CityDTO city) {
         this.city = city;
-    }
-
-    public int getCityId(){
-        return this.cityId;
-    }
-
-    public void setCityId(int cityId){
-        this.cityId = cityId;
     }
 }

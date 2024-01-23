@@ -8,7 +8,7 @@ import org.locationtech.jts.geom.PrecisionModel;
 
 @Entity
 @Table(name = "buses")
-public class Bus {
+public class Bus extends AbstractEntity{
 
 
     @Id

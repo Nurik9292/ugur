@@ -8,6 +8,6 @@ import tm.ugur.models.Stop;
 import java.util.List;
 
 @Repository
-public interface StopRepository extends JpaRepository<Stop, Integer> {
+public interface StopRepository extends JpaRepository<Stop, Long> {
     List<Stop> findByNameStartingWith(@NotEmpty(message = "Заполните название.") String name);
 }

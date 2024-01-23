@@ -28,7 +28,7 @@ public class StartRouteStopService {
 
     @Transactional
     public void updateIndexs(String ids, Route route) {
-        Map<Integer, Stop> stopMap = new HashMap<>();
+        Map<Long, Stop> stopMap = new HashMap<>();
         route.getStartStops().forEach(stop -> stopMap.put(stop.getId(), stop));
 
         AtomicInteger count = new AtomicInteger(1);

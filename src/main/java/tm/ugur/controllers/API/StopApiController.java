@@ -23,14 +23,14 @@ public class StopApiController {
     }
 
     @GetMapping
-    public List<StopDTO> getStops(){
-        return this.stopService.getStops();
+    public ResponseEntity<List<StopDTO>>  getStops(){
+        return ResponseEntity.ok(this.stopService.getStops());
     }
 
 
 
     @GetMapping("/{id}")
-    public StopDTO getStop(@PathVariable("id") int id){
+    public StopDTO getStop(@PathVariable("id") Long id){
         return this.stopService.getStop(id);
     }
 

@@ -11,7 +11,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "routes")
-public class Route {
+public class Route extends AbstractEntity{
 
     @Id
     @Column(name = "id")

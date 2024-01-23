@@ -8,6 +8,7 @@ import tm.ugur.dto.StopDTO;
 import tm.ugur.models.Stop;
 import tm.ugur.repo.StopRepository;
 import tm.ugur.util.errors.stop.StopNotFoundException;
+import tm.ugur.util.mappers.StopMapper;
 
 import java.util.List;
 
@@ -16,12 +17,13 @@ import java.util.List;
 public class StopAPiService {
 
     private final StopRepository stopRepository;
-    private final ModelMapper modelMapper;
+
+    private final StopMapper stopMapper;
 
     @Autowired
-    public StopAPiService(StopRepository stopRepository, ModelMapper modelMapper) {
+    public StopAPiService(StopRepository stopRepository, ModelMapper modelMapper, StopMapper stopMapper) {
         this.stopRepository = stopRepository;
-        this.modelMapper = modelMapper;
+        this.stopMapper = stopMapper;
     }
 
     public List<StopDTO> getStops(){
@@ -29,19 +31,12 @@ public class StopAPiService {
     }
 
 
-    public StopDTO getStop(int id){
-        return this.convertToStopDTO(
-                this.stopRepository.findById(id).orElseThrow(StopNotFoundException::new));
-    }
-
-
-
-    public Stop converToStop(StopDTO stopDTO){
-        return this.modelMapper.map(stopDTO, Stop.class);
+    public StopDTO getStop(Long id){
+        return this.convertToStopDTO(this.stopRepository.findById(id).orElseThrow(StopNotFoundException::new));
     }
 
     public StopDTO convertToStopDTO(Stop stop){
-        return this.modelMapper.map(stop, StopDTO.class);
+        return this.stopMapper.toDto(stop);
     }
 
 }

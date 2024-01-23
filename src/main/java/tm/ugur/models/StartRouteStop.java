@@ -9,7 +9,7 @@ public class StartRouteStop {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "route_id", referencedColumnName = "id")
