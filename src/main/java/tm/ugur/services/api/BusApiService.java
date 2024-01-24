@@ -31,7 +31,7 @@ public class BusApiService {
     }
 
     public BusDTO getBus(long id){
-        Bus bus = this.busRepository.findById(id).orElseThrow(BusNotFoundException::new);
+        Bus bus = this.busRepository.findById(id).orElse(null);
         return this.convertToBusDTO(bus);
     }
 

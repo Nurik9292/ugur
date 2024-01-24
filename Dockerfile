@@ -7,7 +7,7 @@ RUN mv -f target/*.jar app.jar
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 COPY --from=builder /app/app.jar .
-ENTRYPOINT ["java", "-jar", "app/app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
 
 LABEL authors="nury"
 
