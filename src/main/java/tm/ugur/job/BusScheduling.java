@@ -44,7 +44,7 @@ public class BusScheduling {
     }
 
     @Async
-    @Scheduled(fixedDelay = 30000)
+    @Scheduled(fixedDelay = 5000)
     public void scheduleFixedDelayTask(){
         try {
             Map<String, String> map = this.imdataService.getDataBus();

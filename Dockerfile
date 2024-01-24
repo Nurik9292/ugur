@@ -1,18 +1,12 @@
-FROM maven:3.8.4-openjdk-17 as builder
+FROM  eclipse-temurin:21-jdk as builder
 WORKDIR /app
-COPY . /app/.
-RUN mvn -f /app/pom.xml clean package -Dmaven.test.skip=true
+COPY . /app
+RUN ./mvnw package -DskipTests
+RUN mv -f target/*.jar app.jar
 
-FROM eclipse-temurin:21-jre-alpine
-
-#ARG JAR_FILE=target/*.jar
-
+FROM eclipse-temurin:21-jre
 WORKDIR /app
-
-#COPY ${JAR_FILE} app/app.jar
-
-COPY --from=builder /app/target/*.jar /app/app.jar
-
+COPY --from=builder /app/app.jar .
 ENTRYPOINT ["java", "-jar", "app/app.jar"]
 
 LABEL authors="nury"
