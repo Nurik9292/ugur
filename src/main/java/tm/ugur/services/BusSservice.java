@@ -35,7 +35,6 @@ public class BusSservice {
 
     @Transactional
     public void store(Bus bus){
-
         this.busRepository.save(bus);
     }
 
