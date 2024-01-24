@@ -4,7 +4,7 @@ import tm.ugur.dto.geo.PointDTO;
 
 import java.util.List;
 
-public class BusDTO extends  AbstractDTO{
+public class BusDTO extends AbstractDTO{
 
     private String carNumber;
     private Integer number;
