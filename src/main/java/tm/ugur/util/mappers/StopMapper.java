@@ -21,6 +21,15 @@ public class StopMapper extends AbstractMapper<Stop, StopDTO>{
     }
 
 
+    @PostConstruct
+    public void setupMapper() {
+        this.modelMapper.createTypeMap(Stop.class, StopDTO.class)
+                .addMappings(m -> m.skip(StopDTO::setLocation)).setPostConverter(toDtoConverter());
+        this.modelMapper.createTypeMap(StopDTO.class, Stop.class)
+                .addMappings(m -> m.skip(Stop::setLocation)).setPostConverter(toEntityConverter());
+    }
+
+
     @Override
     public void mapSpecificFields(Stop source, StopDTO destination) {
         destination.setLocation(new PointDTO(source.getLocation().getX(), source.getLocation().getY()));

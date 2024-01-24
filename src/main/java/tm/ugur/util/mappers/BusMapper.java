@@ -19,6 +19,14 @@ public class BusMapper extends AbstractMapper<Bus, BusDTO>{
         this.modelMapper = modelMapper;
     }
 
+    @PostConstruct
+    public void setupMapper(){
+        this.modelMapper.createTypeMap(Bus.class, BusDTO.class)
+                .addMappings(m -> m.skip(BusDTO::setLocation)).setPostConverter(toDtoConverter());
+        this.modelMapper.createTypeMap(BusDTO.class, Bus.class)
+                .addMappings(m -> m.skip(Bus::setLocation)).setPostConverter(toEntityConverter());
+    }
+
 
     @Override
     public void mapSpecificFields(Bus source, BusDTO destination) {
