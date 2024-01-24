@@ -86,7 +86,7 @@ public class BusScheduling {
 //                this.mobWebSocketHandler.sendToMobileApp(mapper.writeValueAsString(buses));
             }
         } catch (Exception e) {
-            isApiAvailable = false;
+//            isApiAvailable = false;
             logger.error("API unavailable: " + e.getMessage());
 
             mobWebSocketHandler.sendToMobileApp("API temporarily unavailable");
