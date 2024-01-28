@@ -48,9 +48,6 @@ public class BusScheduling {
             JsonNode jsonNode = this.atLogisticService.getDataBus();
 
                 for (JsonNode node : jsonNode.get("list")) {
-                    System.out.println(node.get("vehiclenumber").asText());
-                    System.out.println(node.get("vehiclenumber"));
-                    System.out.println(map.containsKey(node.get("vehiclenumber").asText()));
                     if (map.containsKey(node.get("vehiclenumber").asText())) {
                         Bus bus = new Bus(
                                 node.get("vehiclenumber").asText(),

@@ -27,7 +27,6 @@ public class RouteApiService {
 
 
     public List<RouteDTO> findAll(){
-        System.out.println(this.routeRepository.findAll().getFirst().getStartStops());
         return this.routeRepository.findAll().stream().map(this::convertToRouteDTO).toList();
     }
 
