@@ -45,10 +45,10 @@ public class BusScheduling {
     public void scheduleFixedDelayTask(){
         try {
             Map<String, String> map = this.imdataService.getDataBus();
-            System.out.println(map);
             JsonNode jsonNode = this.atLogisticService.getDataBus();
-            System.out.println(jsonNode.get("list"));
                 for (JsonNode node : jsonNode.get("list")) {
+                    System.out.println(node.get("vehiclenumber").asText());
+                    System.out.println(map.containsKey(node.get("vehiclenumber").asText()));
                     if (map.containsKey(node.get("vehiclenumber").asText())) {
                         Bus bus = new Bus(
                                 node.get("vehiclenumber").asText(),
@@ -61,8 +61,6 @@ public class BusScheduling {
                         );
 
                         Optional<Bus> busUpdate = this.busSservice.findByCarNumber(node.get("vehiclenumber").asText());
-                        System.out.println(bus);
-                        System.out.println(busUpdate);
                         if(!busUpdate.isPresent())
                             this.busSservice.store(bus);
                         else
