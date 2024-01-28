@@ -46,7 +46,7 @@ public class BusScheduling {
         try {
             Map<String, String> map = this.imdataService.getDataBus();
             JsonNode jsonNode = this.atLogisticService.getDataBus();
-            System.out.println(jsonNode.get("list"));
+
                 for (JsonNode node : jsonNode.get("list")) {
                     System.out.println(node.get("vehiclenumber").asText());
                     System.out.println(node.get("vehiclenumber"));
