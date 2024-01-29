@@ -1,17 +1,22 @@
 package tm.ugur.dto;
 
+import jakarta.persistence.Column;
 import tm.ugur.dto.geo.LineStringDTO;
 
 import java.util.List;
 
 public class RouteDTO extends AbstractDTO{
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "interval")
     private String interval;
 
+    @Column(name = "number")
     private int number;
 
+    @Column(name = "city_id")
     private CityDTO city;
 
     private List<Long> startStopIds;
@@ -25,6 +30,14 @@ public class RouteDTO extends AbstractDTO{
 
     public RouteDTO(){
 
+    }
+
+    public RouteDTO(long id, String name, String interval, int number, CityDTO city) {
+        this.id = id;
+        this.name = name;
+        this.interval = interval;
+        this.number = number;
+        this.city = city;
     }
 
     public String getName() {

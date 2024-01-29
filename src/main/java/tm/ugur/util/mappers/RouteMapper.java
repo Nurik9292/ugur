@@ -52,18 +52,24 @@ public class RouteMapper extends AbstractMapper<Route, RouteDTO> {
     }
 
     private List<Long> getStopIds(Route source, String dir){
-        if(Objects.isNull(source) || Objects.isNull(source.getId()))
+        if(Objects.isNull(source) || Objects.isNull(source.getId()) || Objects.isNull(source.getStartStops()))
             return null;
 
         return  dir.equals("start") ? this.getStartStopIds(source) : this.getEndStopIds(source);
     }
 
     private List<Long> getStartStopIds(Route source) {
-        return source.getStartStops().stream().map(Stop::getId).collect(Collectors.toList());
+        List<Stop> stops = source.getStartStops();
+        if(Objects.isNull(stops))
+            return null;
+        return stops.stream().map(Stop::getId).collect(Collectors.toList());
     }
 
     private List<Long> getEndStopIds(Route source) {
-        return source.getEndStops().stream().map(Stop::getId).collect(Collectors.toList());
+        List<Stop> stops = source.getEndStops();
+        if(Objects.isNull(stops))
+            return null;
+        return stops.stream().map(Stop::getId).collect(Collectors.toList());
     }
 
     private LineStringDTO getLine(Route source, String line){

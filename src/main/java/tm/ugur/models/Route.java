@@ -70,6 +70,14 @@ public class Route extends AbstractEntity{
 
     public Route(){}
 
+    public Route(long id, String name, String interval, int number, City city) {
+        this.id = id;
+        this.name = name;
+        this.interval = interval;
+        this.number = number;
+        this.city = city;
+    }
+
     public long getId() {
         return id;
     }

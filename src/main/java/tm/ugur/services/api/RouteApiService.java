@@ -27,7 +27,8 @@ public class RouteApiService {
 
 
     public List<RouteDTO> findAll(){
-        return this.routeRepository.findAll().stream().map(this::convertToRouteDTO).toList();
+        return this.routeRepository.findAllWithIdNameIntervalNumberCityRouteTime()
+                .stream().map(this::convertToRouteDTO).toList();
     }
 
 
