@@ -94,13 +94,49 @@ public class RouteController {
         return  "redirect:/routes";
     }
 
+
+    @GetMapping("/{id}/edit")
+    public String edit(@PathVariable("id") Long id, Model model){
+        model.addAttribute("route", this.routeService.findOne(id));
+       this.modalAtribitesForEdit(model);
+        return "layouts/routes/edit";
+    }
+
+    @PatchMapping("/{id}")
+    public String update(@PathVariable("id") Long id,
+                        @RequestParam(name = "selectedStart") String selectedStart,
+                        @RequestParam(name = "selectedEnd") String selectedEnd,
+                        @ModelAttribute("route") @Valid Route route, BindingResult result, Model model){
+
+        if(result.hasErrors()){
+            this.modalAtribitesForCreate(model);
+            return "layouts/routes/edit";
+        }
+
+        this.routeService.update(id, route);
+        this.startRouteStopService.updateIndexs(selectedStart, route);
+        this.endRouteStopService.updateIndexs(selectedEnd, route);
+
+        return  "redirect:/routes";
+    }
+
     private void modalAtribitesForCreate(Model model){
         model.addAttribute("title", "Создать маршрут");
         model.addAttribute("page", "route-craete");
+        this.modelForCitiesAndStops(model);
+    }
+
+    private void modalAtribitesForEdit(Model model){
+        model.addAttribute("title", "Изменить  Маршрут");
+        model.addAttribute("page", "route-edit");
+        this.modelForCitiesAndStops(model);
+    }
+
+
+    private void modelForCitiesAndStops(Model model){
         model.addAttribute("cities", this.cityService.findAll());
         model.addAttribute("stops", this.stopService.findAll());
     }
-
 
     @ModelAttribute("user")
     public boolean isSuperAdmin(){

@@ -16,7 +16,7 @@ public class Route extends AbstractEntity{
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "name")
     @NotEmpty(message = "Заполните поле.")
@@ -62,7 +62,7 @@ public class Route extends AbstractEntity{
     private List<EndRouteStop> endRouteStops;
 
 
-    @Column(name = "front_line")
+    @Column(name = "front_lа нарушает ограничение ine")
     private LineString frontLine;
 
     @Column(name = "back_line")
