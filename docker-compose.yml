@@ -1,20 +1,19 @@
 version: '3.8'
 
 services:
-  db:
-    build:
-      context: ./docker/postgres
-    container_name: db
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: ugur
-    ports:
-      - 5433:5432
-    volumes:
-      - ./docker/postgres/pgdata:/var/lib/postgresql/data
-
+#  db:
+#    build:
+#      context: ./docker/postgres
+#    container_name: db
+#    restart: always
+#    environment:
+#      POSTGRES_USER: postgres
+#      POSTGRES_PASSWORD: postgres
+#      POSTGRES_DB: ugur
+#    ports:
+#      - 5433:5432
+#    volumes:
+#      - ./docker/postgres/pgdata:/var/lib/postgresql/data
 
   app:
     build:
@@ -22,11 +21,9 @@ services:
       dockerfile: Dockerfile
     container_name: app
     restart: always
-    links:
-      - db
-    depends_on:
-      - db
     ports:
       - 8081:8080
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/ugur
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/ugur
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 841992
