@@ -1,5 +1,9 @@
+const host = "http://127.0.0.1:8080";
+let sortByStop = "";
+let sortByRoute = "";
+
 function onChagePageItems(){
-    const url='http://127.0.0.1:8080/stops';
+    const url= host + '/stops';
     const element = data();
 
     const params = {
@@ -15,8 +19,8 @@ function onChagePageItems(){
     window.location.href = fullUrl;
 }
 
-function onClickSort(){
-    const url='http://127.0.0.1:8080/stops';
+function onClickSortStop(){
+    const url= host + '/stops';
     const element = data();
 
     const params = {
@@ -25,6 +29,7 @@ function onClickSort(){
         sortBy: "name"
     };
 
+    sortByStop = "name";
 
     const queryString = Object.entries(params)
         .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
@@ -34,32 +39,24 @@ function onClickSort(){
     window.location.href = fullUrl;
 }
 
-if(document.getElementById("search")){
-    const search = document.getElementById("search");
+function onClickSortRoute(sortBy){
+    const url= host + '/routes';
+    const element = data();
 
-    search.addEventListener("input", function(event) {
-        const inputValue = event.target.value;
+    const params = {
+        page: element.page,
+        items: element.items,
+        sortBy: sortBy
+    };
 
-        const url = 'http://127.0.0.1:8080/stops/search';
-        const params = {
-            search: inputValue
-        };
+    sortByRoute = sortBy;
 
-        const formData = new FormData();
+    const queryString = Object.entries(params)
+        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+        .join('&');
 
-        const queryString = Object.entries(params)
-            .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
-            .join('&');
-
-        const fullUrl = `${url}?${queryString}`;
-        search.onkeyup = function (e){
-            console.log(e.code);
-            if(e.code === "Enter"){
-                window.location.href = fullUrl;
-            }
-        }
-
-    });
+    const fullUrl = `${url}?${queryString}`;
+    window.location.href = fullUrl;
 }
 
 function  data(){

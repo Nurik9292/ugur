@@ -6,7 +6,8 @@
                data-page="1">‹</a>
         </li>
         <li th:if="${elemets.getNumber() - 3 > 1}">
-            <a th:href="'/'+${link}+'?page=1&items='+${elemets.getSize()}" data-page="1">1</a>
+            <a th:href="'/'+${link}+'?page=1&items='+${elemets.getSize()}"
+               data-page="1">1</a>
         </li>
         <li class="ellipsis" th:if="${elemets.getNumber() - 3 > 1}">
             <a href="#">…</a>
@@ -22,7 +23,8 @@
         </li>
         <li th:if="${elemets.getNumber() + 4 < elemets.getTotalPages()}">
             <a th:href="'/'+${link}+'?page='+${elemets.getTotalPages()}+'&items='+${elemets.getSize()}"
-               th:data-page="${elemets.getTotalPages()}" th:text="${elemets.getTotalPages()}"></a>
+               th:data-page="${elemets.getTotalPages()}"
+               th:text="${elemets.getTotalPages()}"></a>
         </li>
         <li class="pager" th:classappend="${elemets.getNumber() == elemets.getTotalPages() - 1} ? 'disabled'">
             <a th:href="'/'+${link}+'?page='+${elemets.getNumber()+2}+'&items='+${elemets.getSize()}"

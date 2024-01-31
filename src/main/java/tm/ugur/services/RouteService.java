@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.thymeleaf.expression.Numbers;
 import tm.ugur.dto.RouteDTO;
 import tm.ugur.models.Route;
 import tm.ugur.models.Stop;
@@ -18,6 +19,7 @@ import tm.ugur.util.mappers.RouteMapper;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 @Transactional(readOnly = true)
@@ -33,18 +35,34 @@ public class RouteService {
         this.routeMapper = routeMapper;
     }
 
+    public Page<Route> getRoutePages(String page, String items, String sortBy){
+        int pageNumber = page == null ? 1 : Integer.parseInt(page);
+        int itemsPerPage = items == null ? 10 : Integer.parseInt(items);
+
+        Page<Route> routes = null;
+
+        if(sortBy != null && sortBy.equals("name") || sortBy != null && sortBy.equals("number")){
+            routes = this.findAll(pageNumber - 1, itemsPerPage, sortBy);
+        }else{
+                routes = this.findAll(pageNumber - 1, itemsPerPage);
+        }
+
+        return routes;
+    }
+
+
     public List<Route> findAll(){
         return this.routeRepository.findAll();
     }
 
     public Page<Route> findAll(int pageNumber, int itemsPerPage, String sortBy)
     {
-        return this.findPaginated(PageRequest.of(pageNumber, itemsPerPage), this.routeRepository.findAll(), sortBy);
+        return this.findPaginated(PageRequest.of(pageNumber, itemsPerPage), this.routeRepository.findAll(Sort.by(sortBy)));
     }
 
     public Page<Route> findAll(int pageNumber, int itemsPerPage)
     {
-        return this.findPaginated(PageRequest.of(pageNumber, itemsPerPage), this.routeRepository.findAll(), "");
+        return this.findPaginated(PageRequest.of(pageNumber, itemsPerPage), this.routeRepository.findAll());
     }
 
     public Route findOne(long id){
@@ -74,7 +92,7 @@ public class RouteService {
     }
 
 
-    private Page<Route> findPaginated(Pageable pageable, List<Route> routes, String sortBy){
+    private Page<Route> findPaginated(Pageable pageable, List<Route> routes){
         int pageSize = pageable.getPageSize();
         int currentPage = pageable.getPageNumber();
         int startItem = currentPage * pageSize;
@@ -88,11 +106,12 @@ public class RouteService {
             list = routes.subList(startItem, toIndex);
         }
 
-        if(sortBy.isEmpty()){
             return new PageImpl<Route>(list, PageRequest.of(currentPage, pageSize), routes.size());
-        }else{
-            return new PageImpl<Route>(list, PageRequest.of(currentPage, pageSize, Sort.by(sortBy)), routes.size());
-        }
+    }
+
+    public Integer[] getTotalPage(int totalPages, int currentPage){
+        Numbers numbers = new Numbers(Locale.getDefault());
+        return numbers.sequence(currentPage > 4 ? currentPage - 1 : 1, currentPage + 4 < totalPages ? currentPage + 3 : totalPages);
     }
 
     private Route converToRoute(RouteDTO routeDTO){

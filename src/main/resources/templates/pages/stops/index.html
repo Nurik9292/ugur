@@ -50,7 +50,7 @@
                             <thead class="thead-light">
                                  <tr>
                                     <th data-sortable="" style="width: 28.8589%;">
-                                        <a href="#" class="dataTable-sorter" onclick="onClickSort()">
+                                        <a href="#" class="dataTable-sorter" onclick="onClickSortStop()">
                                             Название
                                             <svg class="icon icon-xxs" data-slot="icon" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5 7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5"></path>
@@ -102,7 +102,7 @@
                         <div class="dataTable-info"
                              th:text="'Showing 1 to ' + ${stops.getSize()} + ' of ' + ${stops.getTotalElements()} + ' entries'">
                         </div>
-                        <th:block th:insert="pagination/pagination :: paginate(${stops}, ${totalPage}, 'stops')"></th:block>
+                        <th:block th:insert="~{pagination/pagination :: paginate(${stops}, ${totalPage}, 'stops')}"></th:block>
                     </div>
                 </div>
             </div>

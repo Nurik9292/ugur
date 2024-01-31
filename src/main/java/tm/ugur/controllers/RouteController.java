@@ -30,6 +30,8 @@ public class RouteController {
     private final StartRouteStopService startRouteStopService;
     private final EndRouteStopService endRouteStopService;
 
+    private static String sortByStatic = "";
+
 
     public RouteController(RouteService routeService, CityService cityService,
                            StopService stopService, StartRouteStopService startRouteStopService,
@@ -45,24 +47,17 @@ public class RouteController {
     public String index(@RequestParam(name = "page", required = false) String page,
                         @RequestParam(name = "items", required = false) String items,
                         @RequestParam(value = "sortBy", required = false) String sortBy, Model model){
-        int pageNumber = page == null ? 1 : Integer.parseInt(page);
-        int itemsPerPage = items == null ? 10 : Integer.parseInt(items);
-        Page<Route> routes = null;
 
-        if(sortBy != null && sortBy.equals("name")){
-            routes = this.routeService.findAll(pageNumber - 1, itemsPerPage, sortBy);
-        }else{
-            routes = this.routeService.findAll(pageNumber - 1, itemsPerPage);
+        if(sortBy != null){
+            sortByStatic = sortBy;
         }
 
+        Page<Route> routes = this.routeService.getRoutePages(page, items, sortByStatic);
         int totalPages = routes.getTotalPages();
-        int currentPage = routes.getNumber();
+        Integer[] totalPage = this.routeService.getTotalPage(totalPages, routes.getNumber());
 
-        Numbers numbers = new Numbers(Locale.getDefault());
-        Integer[] totalPage = numbers.sequence(currentPage > 4 ? currentPage - 1 : 1, currentPage + 4 < totalPages ? currentPage + 3 : totalPages);
-
-        if(totalPages > 0){
-            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages).boxed().toList();
+        if(routes.getTotalPages() > 0){
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, routes.getTotalPages()).boxed().toList();
             model.addAttribute("pageNumbers", pageNumbers);
         }
 
@@ -76,6 +71,7 @@ public class RouteController {
 
     @GetMapping("/create")
     public String create(@ModelAttribute("route") Route route, Model model){
+        sortByStatic = "";
         this.modalAtribitesForCreate(model);
         return "layouts/routes/create";
     }
@@ -100,6 +96,7 @@ public class RouteController {
 
     @GetMapping("/{id}/edit")
     public String edit(@PathVariable("id") Long id, Model model){
+        sortByStatic = "";
         model.addAttribute("route", this.routeService.findOne(id));
        this.modalAtribitesForEdit(model);
         return "layouts/routes/edit";

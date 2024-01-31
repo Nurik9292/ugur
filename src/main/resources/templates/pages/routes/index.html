@@ -50,10 +50,20 @@
                             <thead class="thead-light">
                                  <tr>
                                     <th data-sortable="" style="width: 60%;">
-                                        <a href="#" class="dataTable-sorter" onclick="onClickSort()">Название</a>
+                                        <a href="#" class="dataTable-sorter" onclick="onClickSortRoute('name')">
+                                            Название
+                                            <svg class="icon icon-xxs" data-slot="icon" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5 7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5"></path>
+                                            </svg>
+                                        </a>
                                     </th>
                                     <th data-sortable="" style="width: 20%;">
-                                        <a href="#" class="dataTable-sorter">Номер</a>
+                                        <a href="#" class="dataTable-sorter" onclick="onClickSortRoute('number')">
+                                            Номер
+                                            <svg class="icon icon-xxs" data-slot="icon" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5 7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5"></path>
+                                            </svg>
+                                        </a>
                                     </th>
                                     <th data-sortable="" style="width: 20%;">
                                         <a href="#" class="dataTable-sorter">Действие</a>
@@ -89,7 +99,7 @@
                         <div class="dataTable-info"
                              th:text="'Showing 1 to ' + ${routes.getSize()} + ' of ' + ${routes.getTotalElements()} + ' entries'">
                         </div>
-                        <th:block th:insert="pagination/pagination :: paginate(${routes}, ${totalPage}, 'routes')"></th:block>
+                        <th:block th:insert="~{pagination/pagination :: paginate(${routes}, ${totalPage}, 'routes')}"></th:block>
                     </div>
                 </div>
             </div>
