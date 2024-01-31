@@ -27,6 +27,8 @@ public class RouteDTO extends AbstractDTO{
 
     private LineStringDTO backLine;
 
+    private int routingTime;
+
 
     public RouteDTO(){
 
@@ -103,5 +105,27 @@ public class RouteDTO extends AbstractDTO{
 
     public void setBackLine(LineStringDTO backLine) {
         this.backLine = backLine;
+    }
+
+    public int getRoutingTime() {
+        return routingTime;
+    }
+
+    public void setRoutingTime(int routingTime) {
+        this.routingTime = routingTime;
+    }
+
+
+    @Override
+    public String toString() {
+        return "RouteDTO{" +
+                "name='" + name + '\'' +
+                ", interval='" + interval + '\'' +
+                ", number=" + number +
+                ", city=" + city +
+                ", frontLine=" + frontLine +
+                ", backLine=" + backLine +
+                ", id=" + id +
+                '}';
     }
 }

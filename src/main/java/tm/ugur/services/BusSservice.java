@@ -48,4 +48,10 @@ public class BusSservice {
     public void delete(long id){
         this.busRepository.deleteById(id);
     }
+
+
+    @Transactional
+    public void  deleteAll(){
+        this.busRepository.deleteAll();
+    }
 }

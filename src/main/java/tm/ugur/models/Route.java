@@ -31,7 +31,7 @@ public class Route extends AbstractEntity{
     private int number;
 
     @Column(name = "routing_time")
-    private int routeTime;
+    private int routingTime;
 
     @ManyToOne
     @JoinColumn(name = "city_id", referencedColumnName = "id")
@@ -62,7 +62,7 @@ public class Route extends AbstractEntity{
     private List<EndRouteStop> endRouteStops;
 
 
-    @Column(name = "front_lа нарушает ограничение ine")
+    @Column(name = "front_line")
     private LineString frontLine;
 
     @Column(name = "back_line")
@@ -110,12 +110,12 @@ public class Route extends AbstractEntity{
         this.number = number;
     }
 
-    public int getRouteTime() {
-        return routeTime;
+    public int getRoutingTime() {
+        return routingTime;
     }
 
-    public void setRouteTime(int routeTime) {
-        this.routeTime = routeTime;
+    public void setRoutingTime(int routingTime) {
+        this.routingTime = routingTime;
     }
 
     public City getCity() {
@@ -188,6 +188,7 @@ public class Route extends AbstractEntity{
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", number=" + number +
+                ", frontLine=" + frontLine +
                 '}';
     }
 

@@ -1,5 +1,6 @@
 package tm.ugur.controllers;
 
+
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
@@ -12,6 +13,7 @@ import org.thymeleaf.expression.Numbers;
 import tm.ugur.models.Route;
 import tm.ugur.security.PersonDetails;
 import tm.ugur.services.*;
+import tm.ugur.services.api.RouteApiService;
 
 import java.util.List;
 import java.util.Locale;
@@ -27,6 +29,7 @@ public class RouteController {
     private final StopService stopService;
     private final StartRouteStopService startRouteStopService;
     private final EndRouteStopService endRouteStopService;
+
 
     public RouteController(RouteService routeService, CityService cityService,
                            StopService stopService, StartRouteStopService startRouteStopService,
@@ -82,7 +85,7 @@ public class RouteController {
                         @RequestParam(name = "selectedEnd") String selectedEnd,
             @ModelAttribute("route") @Valid Route route, BindingResult result, Model model){
 
-        if(result.hasErrors()){
+        if(result.hasErrors() || selectedStart.isEmpty() || selectedEnd.isEmpty()){
                 this.modalAtribitesForCreate(model);
             return "layouts/routes/create";
         }
@@ -119,6 +122,7 @@ public class RouteController {
 
         return  "redirect:/routes";
     }
+
 
     private void modalAtribitesForCreate(Model model){
         model.addAttribute("title", "Создать маршрут");

@@ -20,4 +20,11 @@ public class LineStringDTO {
     public void setCoordinates(List<PointDTO> coordinates) {
         this.coordinates = coordinates;
     }
+
+    @Override
+    public String toString() {
+        return "LineStringDTO{" +
+                "coordinates=" + coordinates +
+                '}';
+    }
 }

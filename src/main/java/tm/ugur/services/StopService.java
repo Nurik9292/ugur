@@ -56,11 +56,13 @@ public class StopService {
         return stop;
     }
 
+
     @Transactional
     public void store(Stop stop){
         stop.setLocation(this.factory.createPoint(new Coordinate(stop.getLat(), stop.getLng())));
         this.stopRepository.save(stop);
     }
+
 
     @Transactional
     public void update(Long id, Stop stop){
@@ -76,11 +78,13 @@ public class StopService {
         this.stopRepository.deleteById(id);
     }
 
+
     private void setLatLng(Stop stop){
         Point point = stop.getLocation();
         stop.setLat(point.getX());
         stop.setLng(point.getY());
     }
+
 
     private Page<Stop> findPaginated(Pageable pageable, List<Stop> stops, String sortBy){
        int pageSize = pageable.getPageSize();

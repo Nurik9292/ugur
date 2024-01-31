@@ -35,7 +35,8 @@
 
 </head>
 <body>
-<div th:replace="includes/sidebar :: sidebar"></div>
+<div th:replace="~{includes/sidebar :: sidebar}"></div>
+
 
 <main class="content">
 <th:block th:insert="includes/navbar :: navbar"></th:block>

@@ -60,15 +60,16 @@ public class BusScheduling {
                         );
 
                         Optional<Bus> busUpdate = this.busSservice.findByCarNumber(node.get("vehiclenumber").asText());
-                        if(!busUpdate.isPresent())
+                        if(busUpdate.isEmpty()) {
                             this.busSservice.store(bus);
-                        else
+                        }else {
                             this.busSservice.update(busUpdate.get().getId(), bus);
+                        }
                     }
                 }
-;
         } catch (Exception e) {
             logger.error("API unavailable: " + e.getMessage());
+            this.busSservice.deleteAll();
         }
     }
 }

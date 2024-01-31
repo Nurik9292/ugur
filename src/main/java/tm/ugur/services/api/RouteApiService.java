@@ -1,6 +1,5 @@
 package tm.ugur.services.api;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +15,7 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 public class RouteApiService {
+
     private final RouteRepository routeRepository;
     private final RouteMapper routeMapper;
 
@@ -31,7 +31,9 @@ public class RouteApiService {
                 .stream().map(this::convertToRouteDTO).toList();
     }
 
-
+    public List<RouteDTO> getRoutes(){
+        return this.routeRepository.findAll().stream().map(this::convertToRouteDTO).toList();
+    }
 
     public RouteDTO findOne(long id){
         return this.convertToRouteDTO(

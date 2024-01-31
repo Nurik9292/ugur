@@ -16,8 +16,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Transactional(readOnly = true)
 public class StartRouteStopService {
 
-    private static int count = 1;
-
     private final StartRouteStopRepository startRouteStopRepository;
 
 
