@@ -121,6 +121,13 @@ public class RouteController {
     }
 
 
+    @DeleteMapping("/{id}")
+    public String delete(Long id){
+        this.routeService.delete(id);
+        return "redirect:/routes";
+    }
+
+
     private void modalAtribitesForCreate(Model model){
         model.addAttribute("title", "Создать маршрут");
         model.addAttribute("page", "route-craete");
