@@ -59,7 +59,7 @@ public class CityController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable("id") int id){
+    public String delete(@PathVariable("id") Long id){
         this.cityService.delete(id);
         return "redirect:/cities";
     }

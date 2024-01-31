@@ -21,7 +21,6 @@ public class Stop extends AbstractEntity{
 
 
     @NotEmpty(message = "Заполните название.")
-    @Size(min = 3, max = 10, message = "Назвние города должен состоять от 3 до 10 символов.")
     @Column(name = "name")
     private String name;
 

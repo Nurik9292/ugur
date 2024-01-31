@@ -42,4 +42,13 @@ public class StopDTO extends AbstractDTO{
     public void setLocation(PointDTO location) {
         this.location = location;
     }
+
+    @Override
+    public String toString() {
+        return "StopDTO{" +
+                "name='" + name + '\'' +
+                ", city=" + city +
+                ", location=" + location +
+                '}';
+    }
 }

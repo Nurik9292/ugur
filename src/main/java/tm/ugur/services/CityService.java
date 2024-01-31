@@ -29,7 +29,7 @@ public class CityService {
     }
 
     @Transactional
-    public void delete(int id){
+    public void delete(Long id){
         this.cityRepository.deleteById(id);
     }
 }

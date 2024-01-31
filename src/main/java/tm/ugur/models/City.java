@@ -14,9 +14,8 @@ public class City {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
-    @Size(min = 3, max = 10)
     @NotEmpty(message = "Заполните название города")
     @Column(name = "name")
     private String name;
@@ -36,11 +35,11 @@ public class City {
         this.name = name;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

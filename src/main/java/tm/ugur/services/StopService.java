@@ -7,25 +7,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tm.ugur.dto.StopDTO;
 import tm.ugur.models.Stop;
+import tm.ugur.repo.CityRepository;
 import tm.ugur.repo.StopRepository;
 import tm.ugur.util.errors.stop.StopNotFoundException;
+import tm.ugur.util.mappers.StopMapper;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
 public class StopService {
 
     private final StopRepository stopRepository;
+    private final CityRepository cityRepository;
     private final GeometryFactory factory;
+    private final StopMapper stopMapper;
 
     @Autowired
-    public StopService(StopRepository stopRepository, GeometryFactory factory) {
+    public StopService(StopRepository stopRepository, CityRepository cityRepository, GeometryFactory factory, StopMapper stopMapper) {
         this.stopRepository = stopRepository;
+        this.cityRepository = cityRepository;
         this.factory = factory;
+        this.stopMapper = stopMapper;
     }
 
     public List<Stop> findAll(){
@@ -63,6 +71,17 @@ public class StopService {
         this.stopRepository.save(stop);
     }
 
+    @Transactional
+    public void save(StopDTO stopDTO){
+        Stop stop = new Stop();
+        stop.setName(stopDTO.getName());
+        stop.setLocation(this.factory.createPoint(new Coordinate(stopDTO.getLocation().getLat(), stopDTO.getLocation().getLng())));
+        stop.setCity(this.cityRepository.findById(stopDTO.getCity().getId()).orElse(null));
+        stop.setLat(0.0);
+        stop.setLng(0.0);
+        this.stopRepository.save(stop);
+    }
+
 
     @Transactional
     public void update(Long id, Stop stop){
@@ -71,7 +90,9 @@ public class StopService {
         this.stopRepository.save(stop);
     }
 
-
+    public Optional<Stop> findStopByName(String name){
+        return this.stopRepository.findByName(name);
+    }
 
     @Transactional
     public void delete(Long id){
@@ -108,5 +129,13 @@ public class StopService {
     }
 
 
+
+    public StopDTO convertToStopDTO(Stop stop){
+        return this.stopMapper.toDto(stop);
+    }
+
+    public Stop convertToStop(StopDTO stopDTO) {
+        return this.stopMapper.toEntity(stopDTO);
+    }
 
 }

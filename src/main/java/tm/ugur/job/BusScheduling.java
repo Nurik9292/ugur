@@ -40,7 +40,6 @@ public class BusScheduling {
         this.busSservice = busSservice;
     }
 
-    @Async
     @Scheduled(fixedDelay = 5000)
     public void scheduleFixedDelayTask(){
         try {
