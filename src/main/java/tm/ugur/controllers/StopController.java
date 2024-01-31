@@ -38,6 +38,7 @@ public class StopController {
     private final StopService stopService;
     private final CityService cityService;
 
+    private static String sortByStatic = "";
 
     @Autowired
     public StopController(StopService stopService, CityService cityService) {
@@ -49,21 +50,14 @@ public class StopController {
     public String  index(@RequestParam(name = "page", required = false) String page,
                          @RequestParam(name = "items", required = false) String items,
                          @RequestParam(value = "sortBy", required = false) String sortBy, Model model){
-        int pageNumber = page == null ? 1 : Integer.parseInt(page);
-        int itemsPerPage = items == null ? 10 : Integer.parseInt(items);
-        Page<Stop> stops = null;
 
-        if(sortBy != null && sortBy.equals("name")){
-            stops = this.stopService.findAll(pageNumber - 1, itemsPerPage, sortBy);
-        }else{
-            stops = this.stopService.findAll(pageNumber - 1, itemsPerPage);
+        if(sortBy != null){
+            sortByStatic = sortBy;
         }
 
+        Page<Stop> stops = this.stopService.getStopPages(page, items, sortByStatic);
         int totalPages = stops.getTotalPages();
-        int currentPage = stops.getNumber();
-
-        Numbers numbers = new Numbers(Locale.getDefault());
-        Integer[] totalPage = numbers.sequence(currentPage > 4 ? currentPage - 1 : 1, currentPage + 4 < totalPages ? currentPage + 3 : totalPages);
+        Integer[] totalPage = this.stopService.getTotalPage(totalPages, stops.getNumber());
 
         if(totalPages > 0){
             List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages).boxed().toList();
@@ -79,6 +73,7 @@ public class StopController {
 
     @GetMapping("/create")
     public String create(@ModelAttribute("stop")Stop stop, Model model){
+        sortByStatic = "";
         model.addAttribute("title", "Создать остановку");
         model.addAttribute("page", "stop-create");
         model.addAttribute("cities", this.cityService.findAll());
@@ -107,7 +102,7 @@ public class StopController {
 
     @GetMapping("/{id}/edit")
     public String edit(@PathVariable("id") Long id, Model model){
-
+        sortByStatic = "";
         model.addAttribute("title", "Изменить Остановку");
         model.addAttribute("page", "stop-edit");
         model.addAttribute("stop", this.stopService.findOne(id));

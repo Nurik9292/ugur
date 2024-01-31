@@ -7,17 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.expression.Numbers;
 import tm.ugur.dto.StopDTO;
+import tm.ugur.models.Route;
 import tm.ugur.models.Stop;
 import tm.ugur.repo.CityRepository;
 import tm.ugur.repo.StopRepository;
 import tm.ugur.util.errors.stop.StopNotFoundException;
 import tm.ugur.util.mappers.StopMapper;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -34,6 +33,21 @@ public class StopService {
         this.cityRepository = cityRepository;
         this.factory = factory;
         this.stopMapper = stopMapper;
+    }
+
+    public Page<Stop> getStopPages(String page, String items, String sortBy){
+        int pageNumber = page == null ? 1 : Integer.parseInt(page);
+        int itemsPerPage = items == null ? 10 : Integer.parseInt(items);
+
+        Page<Stop> stops = null;
+
+        if(sortBy != null && sortBy.equals("name")){
+            stops = this.findAll(pageNumber - 1, itemsPerPage, sortBy);
+        }else{
+            stops = this.findAll(pageNumber - 1, itemsPerPage);
+        }
+
+        return stops;
     }
 
     public List<Stop> findAll(){
@@ -121,13 +135,14 @@ public class StopService {
            list = stops.subList(startItem, toIndex);
        }
 
-       if(sortBy.isEmpty()){
            return new PageImpl<Stop>(list, PageRequest.of(currentPage, pageSize), stops.size());
-       }else{
-           return new PageImpl<Stop>(list, PageRequest.of(currentPage, pageSize, Sort.by(sortBy)), stops.size());
-       }
     }
 
+
+    public Integer[] getTotalPage(int totalPages, int currentPage){
+        Numbers numbers = new Numbers(Locale.getDefault());
+        return numbers.sequence(currentPage > 4 ? currentPage - 1 : 1, currentPage + 4 < totalPages ? currentPage + 3 : totalPages);
+    }
 
 
     public StopDTO convertToStopDTO(Stop stop){
