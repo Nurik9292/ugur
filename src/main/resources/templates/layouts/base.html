@@ -39,7 +39,7 @@
 
 
 <main class="content">
-<th:block th:insert="includes/navbar :: navbar"></th:block>
+<th:block th:insert="~{includes/navbar :: navbar}"></th:block>
 <th:block th:switch="${page}">
     <th:block th:case="main" th:insert="~{pages/main :: main}"></th:block>
     <th:block th:case="user-index" th:insert="~{pages/users/index :: index}"></th:block>
@@ -55,7 +55,7 @@
     <th:block th:case="route-edit" th:insert="~{pages/routes/edit :: edit}"></th:block>
 </th:block>
 
-<div th:replace="includes/footer :: footer"></div>
+<div th:replace="~{includes/footer :: footer}"></div>
 </main>
 </body>
 </html>

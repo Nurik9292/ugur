@@ -70,7 +70,10 @@
                 <div class="col-md-6 mb-3">
                     <label for="end_stops">Остановки обратного маршрута</label>
                     <select name="endStops" id="end_stops" class="form-select mb-0" multiple>
-                        <option th:each="stop : ${stops}" th:value="${stop.getId()}" th:text="${stop.getName()}"></option>
+                        <option th:each="stop : ${stops}"
+                                th:value="${stop.getId()}"
+                                th:selected="${route.getEndStops().contains(stop)}"
+                                th:text="${stop.getName()}"></option>
                     </select>
                 </div>
             </div>
