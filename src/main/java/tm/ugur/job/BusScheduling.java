@@ -45,11 +45,11 @@ public class BusScheduling {
             StringBuilder carNumbmer = new StringBuilder();
 
                 for (JsonNode node : jsonNode.get("list")) {
-                    if(node.get("vehiclenumber").asText().length() > 0){
+                    if(!node.get("vehiclenumber").asText().isEmpty()){
                         if(!carNumbmer.isEmpty()){
-                        carNumbmer.append(node.get("vehiclenumber").asText().trim());
+                        carNumbmer.append(node.get("vehiclenumber").asText().replace(" ", ""));
                         }
-                        carNumbmer.replace(0, carNumbmer.length(), node.get("vehiclenumber").asText().trim());
+                        carNumbmer.replace(0, carNumbmer.length(), node.get("vehiclenumber").asText().replace(" ", ""));
                     }
 
                     String number = map.get(node.get("vehiclenumber").asText());
@@ -65,7 +65,8 @@ public class BusScheduling {
                                 node.get("status").get("lon").asText()
                         );
 
-                        Optional<Bus> busUpdate = this.busSservice.findByCarNumber(node.get("vehiclenumber").asText());
+
+                        Optional<Bus> busUpdate = this.busSservice.findByCarNumber(carNumbmer.toString());
                         if(busUpdate.isEmpty()) {
                             this.busSservice.store(bus);
                         }else {
