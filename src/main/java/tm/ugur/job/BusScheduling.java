@@ -16,10 +16,7 @@ import tm.ugur.services.data_bus.AtLogisticService;
 import tm.ugur.services.data_bus.ImdataService;
 import tm.ugur.ws.MobWebSocketHandler;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @EnableAsync
@@ -50,15 +47,17 @@ public class BusScheduling {
                 for (JsonNode node : jsonNode.get("list")) {
                     if(node.get("vehiclenumber").asText().length() > 0){
                         if(!carNumbmer.isEmpty()){
-                        carNumbmer.append(node.get("vehiclenumber").asText().replace(" ", ""));
+                        carNumbmer.append(node.get("vehiclenumber").asText().trim());
                         }
-                        carNumbmer.replace(0, carNumbmer.length(), node.get("vehiclenumber").asText().replace(" ", ""));
+                        carNumbmer.replace(0, carNumbmer.length(), node.get("vehiclenumber").asText().trim());
                     }
+
+                    String number = map.get(node.get("vehiclenumber").asText());
 
                     if (map.containsKey(carNumbmer.toString())) {
                         Bus bus = new Bus(
                                 carNumbmer.toString(),
-                                Integer.parseInt(map.get(node.get("vehiclenumber").asText())),
+                                Integer.parseInt(number.isEmpty() ? "0" : number),
                                 node.get("status").get("speed").asText(),
                                 node.get("imei").asText(),
                                 node.get("status").get("dir").asText(),
