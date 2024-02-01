@@ -44,17 +44,16 @@ public class BusScheduling {
     public void scheduleFixedDelayTask(){
         try {
             Map<String, String> map = this.imdataService.getDataBus();
-            System.out.println(map);
             JsonNode jsonNode = this.atLogisticService.getDataBus();
             StringBuilder carNumbmer = new StringBuilder();
 
                 for (JsonNode node : jsonNode.get("list")) {
-                if(!node.get("vehiclenumber").asText().isEmpty()){
-                    if(!carNumbmer.isEmpty()){
-                        carNumbmer.append(node.get("vehiclenumber").asText().trim());
+                    if(node.get("vehiclenumber").asText().length() > 0){
+                        if(!carNumbmer.isEmpty()){
+                        carNumbmer.append(node.get("vehiclenumber").asText().replace(" ", ""));
+                        }
+                        carNumbmer.replace(0, carNumbmer.length(), node.get("vehiclenumber").asText().replace(" ", ""));
                     }
-                    carNumbmer.replace(0, carNumbmer.length(), node.get("vehiclenumber").asText().trim());
-                }
 
                     if (map.containsKey(carNumbmer.toString())) {
                         Bus bus = new Bus(
@@ -77,6 +76,7 @@ public class BusScheduling {
                 }
         } catch (Exception e) {
             logger.error("API unavailable: " + e.getMessage());
+            e.printStackTrace();
             this.busSservice.deleteAll();
         }
     }
