@@ -50,6 +50,9 @@ public class BusScheduling {
 
                 for (JsonNode node : jsonNode.get("list")) {
                 if(!node.get("vehiclenumber").asText().isEmpty()){
+                    if(!carNumbmer.isEmpty()){
+                        carNumbmer.append(node.get("vehiclenumber").asText().trim());
+                    }
                     carNumbmer.replace(0, carNumbmer.length(), node.get("vehiclenumber").asText().trim());
                 }
 
