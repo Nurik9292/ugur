@@ -46,17 +46,17 @@ public class BusScheduling {
             Map<String, String> map = this.imdataService.getDataBus();
             System.out.println(map);
             JsonNode jsonNode = this.atLogisticService.getDataBus();
-            StringBuilder carNumber = new StringBuilder();
+            StringBuilder carNumbmer = new StringBuilder();
 
                 for (JsonNode node : jsonNode.get("list")) {
-                    if(!node.get("vehiclenumber").asText().isEmpty()){
-                        carNumber.replace(0, carNumber.length(), node.get("vehiclenumber").asText().replace(" ", ""));
-                    }
+                if(!node.get("vehiclenumber").asText().isEmpty()){
+                    carNumbmer.replace(0, carNumbmer.length(), node.get("vehiclenumber").asText().trim());
+                }
 
-                    if (map.containsKey(carNumber.toString())) {
+                    if (map.containsKey(carNumbmer.toString())) {
                         Bus bus = new Bus(
-                                node.get("vehiclenumber").asText(),
-                                Integer.parseInt(map.get(carNumber.toString().trim())),
+                                carNumbmer.toString(),
+                                Integer.parseInt(map.get(node.get("vehiclenumber").asText())),
                                 node.get("status").get("speed").asText(),
                                 node.get("imei").asText(),
                                 node.get("status").get("dir").asText(),
