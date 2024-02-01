@@ -57,7 +57,7 @@ public class BusScheduling {
                     if (map.containsKey(carNumbmer.toString())) {
                         Bus bus = new Bus(
                                 carNumbmer.toString(),
-                                Integer.parseInt(number.isEmpty() ? "0" : number),
+                                Integer.parseInt(number == null ? "0" : number),
                                 node.get("status").get("speed").asText(),
                                 node.get("imei").asText(),
                                 node.get("status").get("dir").asText(),
