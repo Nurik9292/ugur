@@ -2,6 +2,10 @@ package tm.ugur.controllers;
 
 
 import jakarta.validation.Valid;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -9,16 +13,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.thymeleaf.expression.Numbers;
 import tm.ugur.models.Route;
 import tm.ugur.security.PersonDetails;
 import tm.ugur.services.*;
-import tm.ugur.services.api.RouteApiService;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Controller
 @RequestMapping("/routes")
@@ -79,14 +81,16 @@ public class RouteController {
     @PostMapping
     public String store(@RequestParam(name = "selectedStart") String selectedStart,
                         @RequestParam(name = "selectedEnd") String selectedEnd,
+                        @RequestParam(name = "frontCoordinates", required = false) String frontCoordinates,
             @ModelAttribute("route") @Valid Route route, BindingResult result, Model model){
+
 
         if(result.hasErrors() || selectedStart.isEmpty() || selectedEnd.isEmpty()){
                 this.modalAtribitesForCreate(model);
             return "layouts/routes/create";
         }
 
-        this.routeService.store(route);
+        this.routeService.store(route, frontCoordinates);
         this.startRouteStopService.updateIndexs(selectedStart, route);
         this.endRouteStopService.updateIndexs(selectedEnd, route);
 
@@ -98,7 +102,7 @@ public class RouteController {
     public String edit(@PathVariable("id") Long id, Model model){
         sortByStatic = "";
         model.addAttribute("route", this.routeService.findOne(id));
-       this.modalAtribitesForEdit(model);
+        this.modalAtribitesForEdit(model);
         return "layouts/routes/edit";
     }
 
@@ -122,7 +126,7 @@ public class RouteController {
 
 
     @DeleteMapping("/{id}")
-    public String delete(Long id){
+    public String delete(@PathVariable("id") Long id){
         this.routeService.delete(id);
         return "redirect:/routes";
     }

@@ -67,3 +67,43 @@ function  data(){
 
     return {page: pageNumber, items: items};
 }
+
+if(document.getElementById("nav-data-tab")){
+    const divData = document.getElementById("data-route");
+    const divFront = document.getElementById("front-route");
+    const divBack = document.getElementById("front-route");
+    document.getElementById("nav-data-tab").addEventListener("click", function (){
+
+        if(!divFront.classList.contains("d-none")){
+            divFront.classList.add("d-none")
+        }
+        if(!divBack.classList.contains("d-none")){
+            divBack.classList.add("d-none")
+        }
+
+        divData.classList.remove("d-none");
+    });
+    document.getElementById("nav-front-tab").addEventListener("click", function (){
+
+        if(!divData.classList.contains("d-none")){
+            divData.classList.add("d-none")
+        }
+        if(!divBack.classList.contains("d-none")){
+            divBack.classList.add("d-none")
+        }
+
+        divFront.classList.remove("d-none");
+    });
+
+    document.getElementById("nav-front-tab").addEventListener("click", function (){
+
+        if(!divData.classList.contains("d-none")){
+            divData.classList.add("d-none")
+        }
+        if(!divBack.classList.contains("d-none")){
+            divBack.classList.add("d-none")
+        }
+
+        divBack.classList.remove("d-none");
+    });
+}

@@ -51,3 +51,53 @@ if (document.getElementById("map-stop")) {
         marker.addTo(map);
     }
 }
+
+if(document.getElementById("map-route-front")){
+    let coordinates = [];
+
+    const inputFrontCoordinates = document.getElementById("frontCoordinates");
+    const map = L.map('map-route-front', { pmIgnore: false }).setView([37.93585208752015, 58.39120934103419], 13);
+    const osm = L.tileLayer('http://95.85.127.213:8083/tile/{z}/{x}/{y}.png', {
+    }).addTo(map);
+
+
+    map.pm.addControls({
+        position: 'topleft',
+    drawCircleMarker: false,
+    drawMarker: false,
+    drawRectangle: false,
+    drawPolygon: false,
+    drawCircle: false,
+    drawText: false,
+    dragMode: false,
+    cutPolygon: false,
+    rotateMode: false,
+    });
+
+    map.pm.setPathOptions({
+        color: "red",
+    fillColor: "re",
+    fillOpacity: 0.8,
+    });
+
+    map.on("pm:drawstart", ({ workingLayer}) => {
+        workingLayer.on("pm:vertexadded", (e) => {
+            coordinates = e.layer.getLatLngs();
+            inputFrontCoordinates.value = coordinates.join(",");
+        });
+    });
+
+    map.on('pm:create', ({ layer}) => {
+        layer.on('pm:edit', e => {
+            e.layer.on("pm:vertexadded", e =>{
+                coordinates = e.layer.getLatLngs();
+                inputFrontCoordinates.value = coordinates.join(",");
+            })
+        });
+    });
+
+    map.on("pm:remove", (e) => {
+        coordinates = [];
+        inputFrontCoordinates.value = "";
+    })
+}

@@ -1,6 +1,10 @@
 package tm.ugur.services;
 
 import org.hibernate.SessionFactory;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
@@ -17,6 +21,7 @@ import tm.ugur.util.errors.route.RouteErrorResponse;
 import tm.ugur.util.errors.route.RouteNotFoundException;
 import tm.ugur.util.mappers.RouteMapper;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -28,11 +33,13 @@ public class RouteService {
 
     private final RouteRepository routeRepository;
     private final RouteMapper routeMapper;
+    private final GeometryFactory factory;
 
     @Autowired
-    public RouteService(RouteRepository routeRepository, RouteMapper routeMapper) {
+    public RouteService(RouteRepository routeRepository, RouteMapper routeMapper, GeometryFactory factory) {
         this.routeRepository = routeRepository;
         this.routeMapper = routeMapper;
+        this.factory = factory;
     }
 
     public Page<Route> getRoutePages(String page, String items, String sortBy){
@@ -70,7 +77,8 @@ public class RouteService {
     }
 
     @Transactional
-    public void store(Route route){
+    public void store(Route route, String frontCoordinates){
+        route.setFrontLine(this.getLineString(frontCoordinates));
         this.routeRepository.save(route);
     }
 
@@ -107,6 +115,19 @@ public class RouteService {
         }
 
             return new PageImpl<Route>(list, PageRequest.of(currentPage, pageSize), routes.size());
+    }
+
+    private LineString getLineString(String coordinates) {
+        String[] points = coordinates.split(",");
+        List<Coordinate> coors = new ArrayList<>();
+
+        for (int i = 0; i < points.length - 1; i += 2) {
+            String xCoordinate = points[i].replaceAll("LatLng|\\(|\\)", "").trim();
+            String yCoordinate = points[i + 1].replaceAll("\\(", "").replaceAll("\\)", "").trim();
+            coors.add(new Coordinate(Double.parseDouble(xCoordinate), Double.parseDouble(yCoordinate)));
+        }
+
+        return this.factory.createLineString(coors.toArray(Coordinate[]::new));
     }
 
     public Integer[] getTotalPage(int totalPages, int currentPage){

@@ -9,3 +9,12 @@
 #map-stop{
     height: 500px;
 }
+
+
+#map-route-front{
+    height: 800px;
+}
+
+#map-route-back{
+    height: 800px;
+}

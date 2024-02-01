@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <title th:text="${title}">Title</title>
     <!-- Favicon -->
-    <link rel="apple-touch-icon" sizes="120x120" th:href="@{/assets/img/favicon/apple-touch-icon.png}">
-    <link rel="icon" type="image/png" sizes="32x32" th:href="@{/assets/img/favicon/favicon-32x32.png}">
-    <link rel="icon" type="image/png" sizes="16x16" th:href="@{/assets/img/favicon/favicon-16x16.png}">
+    <link rel="apple-touch-icon" sizes="120x120" th:href="@{/assets/img/ugur/favicon.ico}">
+    <link rel="icon" type="image/png" sizes="32x32" th:href="@{/assets/img/ugur/favicon.ico}">
+    <link rel="icon" type="image/png" sizes="16x16" th:href="@{/assets/img/ugur/favicon.ico}">
     <link rel="manifest" th:href="@{/assets/img/favicon/site.webmanifest}">
     <link rel="mask-icon" th:href="@{/assets/img/favicon/safari-pinned-tab.svg}" color="#ffffff">
     <meta name="msapplication-TileColor" content="#ffffff">
@@ -105,10 +105,14 @@
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
             crossorigin=""></script>
 
+    <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css"/>
+    <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.min.js"></script>
+
     <script th:src="@{/js/map.js}"></script>
     <script th:src="@{/js/myfunction.js}"></script>
     <script th:src="@{/js/searchTable.js}"></script>
     <script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@2.0.1/dist/js/multi-select-tag.js"></script>
+
 
 
     <script>
