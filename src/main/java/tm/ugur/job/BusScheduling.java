@@ -44,13 +44,19 @@ public class BusScheduling {
     public void scheduleFixedDelayTask(){
         try {
             Map<String, String> map = this.imdataService.getDataBus();
+            System.out.println(map);
             JsonNode jsonNode = this.atLogisticService.getDataBus();
+            StringBuilder carNumber = new StringBuilder();
 
                 for (JsonNode node : jsonNode.get("list")) {
-                    if (map.containsKey(node.get("vehiclenumber").asText())) {
+                    if(!node.get("vehiclenumber").asText().isEmpty()){
+                        carNumber.replace(0, carNumber.length(), node.get("vehiclenumber").asText().replace(" ", ""));
+                    }
+
+                    if (map.containsKey(carNumber.toString())) {
                         Bus bus = new Bus(
                                 node.get("vehiclenumber").asText(),
-                                Integer.parseInt(map.get(node.get("vehiclenumber").asText())),
+                                Integer.parseInt(map.get(carNumber.toString().trim())),
                                 node.get("status").get("speed").asText(),
                                 node.get("imei").asText(),
                                 node.get("status").get("dir").asText(),

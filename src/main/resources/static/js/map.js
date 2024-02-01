@@ -61,24 +61,39 @@ if(document.getElementById("map-route-front")){
     }).addTo(map);
 
 
+
     map.pm.addControls({
         position: 'topleft',
-    drawCircleMarker: false,
-    drawMarker: false,
-    drawRectangle: false,
-    drawPolygon: false,
-    drawCircle: false,
-    drawText: false,
-    dragMode: false,
-    cutPolygon: false,
-    rotateMode: false,
+        drawCircleMarker: false,
+        drawMarker: false,
+        drawRectangle: false,
+        drawPolygon: false,
+        drawCircle: false,
+        drawText: false,
+        dragMode: false,
+        cutPolygon: false,
+        rotateMode: false,
     });
 
     map.pm.setPathOptions({
         color: "red",
-    fillColor: "re",
-    fillOpacity: 0.8,
+        fillColor: "red",
+        fillOpacity: 0.8,
     });
+
+    if(coordinatesEdit){
+        let coors = [];
+        coordinatesEdit.forEach(function(coordinate) {
+            coors.push([coordinate.x, coordinate.y]);
+        });
+        let polyLine = L.polyline(coors).addTo(map);
+        polyLine.pm.setOptions({
+            color: "red",
+            fillColor: "red",
+            fillOpacity: 0.8,
+        });
+        map.fitBounds(polyLine.getBounds());
+    }
 
     map.on("pm:drawstart", ({ workingLayer}) => {
         workingLayer.on("pm:vertexadded", (e) => {

@@ -1,7 +1,11 @@
 package tm.ugur.controllers;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.geolatte.geom.M;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -13,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import tm.ugur.models.Route;
 import tm.ugur.security.PersonDetails;
 import tm.ugur.services.*;
@@ -101,7 +106,8 @@ public class RouteController {
     @GetMapping("/{id}/edit")
     public String edit(@PathVariable("id") Long id, Model model){
         sortByStatic = "";
-        model.addAttribute("route", this.routeService.findOne(id));
+        Route route = this.routeService.findOne(id);
+        model.addAttribute("route", route);
         this.modalAtribitesForEdit(model);
         return "layouts/routes/edit";
     }
