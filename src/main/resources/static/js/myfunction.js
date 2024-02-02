@@ -83,12 +83,11 @@ if(document.getElementById("nav-data-tab")){
 
         divData.classList.remove("d-none");
     });
-    document.getElementById("nav-front-tab").addEventListener("click", function (){
-
-        if(!divData.classList.contains("d-none")){
+    document.getElementById("nav-front-tab").addEventListener("click", function () {
+        if (!divData.classList.contains("d-none")) {
             divData.classList.add("d-none")
         }
-        if(!divBack.classList.contains("d-none")){
+        if (!divBack.classList.contains("d-none")) {
             divBack.classList.add("d-none")
         }
 

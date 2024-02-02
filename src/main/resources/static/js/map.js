@@ -53,16 +53,19 @@ if (document.getElementById("map-stop")) {
 }
 
 if(document.getElementById("map-route-front")){
+
     let coordinates = [];
 
     const inputFrontCoordinates = document.getElementById("frontCoordinates");
-    const map = L.map('map-route-front', { pmIgnore: false }).setView([37.93585208752015, 58.39120934103419], 13);
-    const osm = L.tileLayer('http://95.85.127.213:8083/tile/{z}/{x}/{y}.png', {
-    }).addTo(map);
+    const mapFront = L.map('map-route-front', { pmIgnore: false }).setView([37.93585208752015, 58.39120934103419], 13);
+    const osmFront = L.tileLayer('http://95.85.127.213:8083/tile/{z}/{x}/{y}.png', {
+    }).addTo(mapFront);
 
+    document.getElementById("map-route-front").addEventListener("mousemove", e => {
+        mapFront.invalidateSize()
+    });
 
-
-    map.pm.addControls({
+    mapFront.pm.addControls({
         position: 'topleft',
         drawCircleMarker: false,
         drawMarker: false,
@@ -75,34 +78,37 @@ if(document.getElementById("map-route-front")){
         rotateMode: false,
     });
 
-    map.pm.setPathOptions({
+    mapFront.pm.setPathOptions({
         color: "red",
         fillColor: "red",
         fillOpacity: 0.8,
     });
+
 
     if(coordinatesEdit){
         let coors = [];
         coordinatesEdit.forEach(function(coordinate) {
             coors.push([coordinate.x, coordinate.y]);
         });
-        let polyLine = L.polyline(coors).addTo(map);
-        polyLine.pm.setOptions({
+        let polyLine = L.polyline(coors).addTo(mapFront);
+        mapFront.fitBounds(polyLine.getBounds());
+        mapFront.setView([37.93585208752015, 58.39120934103419], 13)
+        mapFront.pm.setPathOptions({
             color: "red",
             fillColor: "red",
             fillOpacity: 0.8,
         });
-        map.fitBounds(polyLine.getBounds());
+
     }
 
-    map.on("pm:drawstart", ({ workingLayer}) => {
+    mapFront.on("pm:drawstart", ({ workingLayer}) => {
         workingLayer.on("pm:vertexadded", (e) => {
             coordinates = e.layer.getLatLngs();
             inputFrontCoordinates.value = coordinates.join(",");
         });
     });
 
-    map.on('pm:create', ({ layer}) => {
+    mapFront.on('pm:create', ({ layer}) => {
         layer.on('pm:edit', e => {
             e.layer.on("pm:vertexadded", e =>{
                 coordinates = e.layer.getLatLngs();
@@ -111,8 +117,11 @@ if(document.getElementById("map-route-front")){
         });
     });
 
-    map.on("pm:remove", (e) => {
+    mapFront.on("pm:remove", (e) => {
         coordinates = [];
         inputFrontCoordinates.value = "";
     })
+
+
 }
+

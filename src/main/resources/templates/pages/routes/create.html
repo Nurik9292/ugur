@@ -79,7 +79,7 @@
             <div id="back-route" class="d-none">
                 <div id="map-route-back"></div>
             </div>
-
+            <div id="render"></div>
             <input type="hidden" id="selectedOptionsOrderStart" name="selectedStart" />
             <input type="hidden" id="selectedOptionsOrderEnd" name="selectedEnd" />
             <input type="hidden" id="frontCoordinates" name="frontCoordinates">
@@ -88,4 +88,8 @@
             </div>
         </form>
     </div>
+
+    <script th:inline="javascript">
+        let coordinatesEdit = /*[[${route.getFrontLine() == null ? '' : route.getFrontLine().getCoordinates()}]]*/ '';
+    </script>
 </th:block>
