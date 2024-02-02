@@ -39,12 +39,10 @@ public class Stop extends AbstractEntity{
     @ManyToMany(mappedBy = "endStops")
     List<Route> endRoutes;
 
-    @NotNull
     @Min(value = 0, message = "Заполните поле")
     @Transient
     private Double lat;
 
-    @NotNull
     @Min(value = 0, message = "Заполните поле")
     @Transient
     private Double lng;

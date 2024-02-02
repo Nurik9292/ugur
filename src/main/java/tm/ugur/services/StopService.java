@@ -99,8 +99,9 @@ public class StopService {
 
     @Transactional
     public void update(Long id, Stop stop){
-        stop.setLocation(this.factory.createPoint(new Coordinate(stop.getLat(), stop.getLng())));
+        System.out.println(12321321);
         stop.setId(id);
+        stop.setLocation(this.factory.createPoint(new Coordinate(stop.getLat(), stop.getLng())));
         this.stopRepository.save(stop);
     }
 

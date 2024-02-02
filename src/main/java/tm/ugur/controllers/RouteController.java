@@ -89,7 +89,6 @@ public class RouteController {
                         @RequestParam(name = "frontCoordinates", required = false) String frontCoordinates,
             @ModelAttribute("route") @Valid Route route, BindingResult result, Model model){
 
-
         if(result.hasErrors() || selectedStart.isEmpty() || selectedEnd.isEmpty()){
                 this.modalAtribitesForCreate(model);
             return "layouts/routes/create";
@@ -113,17 +112,18 @@ public class RouteController {
     }
 
     @PatchMapping("/{id}")
-    public String update(@PathVariable("id") Long id,
+    public String update(@PathVariable("id") long id,
                         @RequestParam(name = "selectedStart") String selectedStart,
                         @RequestParam(name = "selectedEnd") String selectedEnd,
+                         @RequestParam(name = "frontCoordinates", required = false) String frontCoordinates,
                         @ModelAttribute("route") @Valid Route route, BindingResult result, Model model){
 
         if(result.hasErrors()){
             this.modalAtribitesForCreate(model);
             return "layouts/routes/edit";
         }
-
-        this.routeService.update(id, route);
+        System.out.println(frontCoordinates + " test");
+        this.routeService.update(id, route, frontCoordinates);
         this.startRouteStopService.updateIndexs(selectedStart, route);
         this.endRouteStopService.updateIndexs(selectedEnd, route);
 

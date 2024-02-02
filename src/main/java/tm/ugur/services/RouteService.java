@@ -21,10 +21,7 @@ import tm.ugur.util.errors.route.RouteErrorResponse;
 import tm.ugur.util.errors.route.RouteNotFoundException;
 import tm.ugur.util.mappers.RouteMapper;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -89,8 +86,9 @@ public class RouteService {
 
 
     @Transactional
-    public void update(long id, Route route){
+    public void update(long id, Route route, String frontCoordinates){
         route.setId(id);
+        route.setFrontLine(this.getLineString(frontCoordinates));
         this.routeRepository.save(route);
     }
 
@@ -120,7 +118,7 @@ public class RouteService {
     private LineString getLineString(String coordinates) {
         String[] points = coordinates.split(",");
         List<Coordinate> coors = new ArrayList<>();
-
+        System.out.println(Arrays.toString(points));
         for (int i = 0; i < points.length - 1; i += 2) {
             String xCoordinate = points[i].replaceAll("LatLng|\\(|\\)", "").trim();
             String yCoordinate = points[i + 1].replaceAll("\\(", "").replaceAll("\\)", "").trim();

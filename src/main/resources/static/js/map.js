@@ -85,42 +85,52 @@ if(document.getElementById("map-route-front")){
     });
 
 
+
     if(coordinatesEdit){
         let coors = [];
         coordinatesEdit.forEach(function(coordinate) {
             coors.push([coordinate.x, coordinate.y]);
         });
-        let polyLine = L.polyline(coors).addTo(mapFront);
+
+        let polyLine = L.polyline(coors);
+        polyLine.pm.enable();
+
+        polyLine.addTo(mapFront);
         mapFront.fitBounds(polyLine.getBounds());
-        mapFront.setView([37.93585208752015, 58.39120934103419], 13)
-        mapFront.pm.setPathOptions({
-            color: "red",
-            fillColor: "red",
-            fillOpacity: 0.8,
-        });
+        mapFront.setView([37.93585208752015, 58.39120934103419], 13);
 
-    }
-
-    mapFront.on("pm:drawstart", ({ workingLayer}) => {
-        workingLayer.on("pm:vertexadded", (e) => {
-            coordinates = e.layer.getLatLngs();
+        polyLine.on('pm:update', function(e) {
+             coordinates = e.getLatLngs();
             inputFrontCoordinates.value = coordinates.join(",");
         });
-    });
 
-    mapFront.on('pm:create', ({ layer}) => {
-        layer.on('pm:edit', e => {
-            e.layer.on("pm:vertexadded", e =>{
+        mapFront.on("pm:drawstart", ({ workingLayer}) => {
+            workingLayer.on("pm:vertexadded", (e) => {
+                coordinates = [...polyLine.getLatLngs(), ...e.layer.getLatLngs()]
+                inputFrontCoordinates.value = coordinates.join(",");
+            });
+        });
+
+    }else{
+        mapFront.on("pm:drawstart", ({ workingLayer}) => {
+            workingLayer.on("pm:vertexadded", (e) => {
                 coordinates = e.layer.getLatLngs();
                 inputFrontCoordinates.value = coordinates.join(",");
-            })
+            });
         });
-    });
+
+        mapFront.on('pm:create', ({ layer}) => {
+            layer.on('pm:edit', e => {
+                coordinates = e.layer.getLatLngs();
+                inputFrontCoordinates.value = coordinates.join(",");
+            });
+        });
+    }
 
     mapFront.on("pm:remove", (e) => {
         coordinates = [];
         inputFrontCoordinates.value = "";
-    })
+    });
 
 
 }
