@@ -87,6 +87,7 @@ public class RouteController {
     public String store(@RequestParam(name = "selectedStart") String selectedStart,
                         @RequestParam(name = "selectedEnd") String selectedEnd,
                         @RequestParam(name = "frontCoordinates", required = false) String frontCoordinates,
+                        @RequestParam(name = "backCoordinates", required = false) String backCoordinates,
             @ModelAttribute("route") @Valid Route route, BindingResult result, Model model){
 
         if(result.hasErrors() || selectedStart.isEmpty() || selectedEnd.isEmpty()){
@@ -94,7 +95,7 @@ public class RouteController {
             return "layouts/routes/create";
         }
 
-        this.routeService.store(route, frontCoordinates);
+        this.routeService.store(route, frontCoordinates, backCoordinates);
         this.startRouteStopService.updateIndexs(selectedStart, route);
         this.endRouteStopService.updateIndexs(selectedEnd, route);
 
@@ -112,19 +113,22 @@ public class RouteController {
     }
 
     @PatchMapping("/{id}")
-    public String update(@PathVariable("id") long id,
+    public String update(@PathVariable("id") Long id,
                         @RequestParam(name = "selectedStart") String selectedStart,
                         @RequestParam(name = "selectedEnd") String selectedEnd,
                          @RequestParam(name = "frontCoordinates", required = false) String frontCoordinates,
+                         @RequestParam(name = "backCoordinates", required = false) String backCoordinates,
                         @ModelAttribute("route") @Valid Route route, BindingResult result, Model model){
 
         if(result.hasErrors()){
             this.modalAtribitesForCreate(model);
             return "layouts/routes/edit";
         }
-
+        System.out.println(id);
+        System.out.println(route);
         System.out.println(frontCoordinates);
-        this.routeService.update(id, route, frontCoordinates);
+        System.out.println(backCoordinates);
+        this.routeService.update(id, route, frontCoordinates, backCoordinates);
         this.startRouteStopService.updateIndexs(selectedStart, route);
         this.endRouteStopService.updateIndexs(selectedEnd, route);
 

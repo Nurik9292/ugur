@@ -83,7 +83,8 @@
 
             <input type="hidden" id="selectedOptionsOrderStart" name="selectedStart" />
             <input type="hidden" id="selectedOptionsOrderEnd" name="selectedEnd" />
-            <input type="hidden" id="frontCoordinates" name="frontCoordinates" >
+            <input type="hidden" id="frontCoordinates" name="frontCoordinates" />
+            <input type="hidden" id="backCoordinates" name="backCoordinates" />
             <div class="mt-3">
                 <button class="btn btn-lg btn-info mt-2 animate-up-2" type="submit">Создать</button>
             </div>
@@ -91,6 +92,7 @@
     </div>
 
     <script th:inline="javascript">
-        let coordinatesEdit = /*[[${route.getFrontLine() == null ? '' : route.getFrontLine().getCoordinates()}]]*/ '';
+        let coordinatesFrontEdit = /*[[${route.getFrontLine() == null ? '' : route.getFrontLine().getCoordinates()}]]*/ '';
+        let coordinatesBackEdit = /*[[${route.getBackLine() == null ? '' : route.getBackLine().getCoordinates()}]]*/ '';
     </script>
 </th:block>

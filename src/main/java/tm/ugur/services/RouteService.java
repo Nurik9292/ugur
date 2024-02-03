@@ -74,8 +74,9 @@ public class RouteService {
     }
 
     @Transactional
-    public void store(Route route, String frontCoordinates){
+    public void store(Route route, String frontCoordinates, String backCoordinates){
         route.setFrontLine(this.getLineString(frontCoordinates));
+        route.setBackLine(this.getLineString(backCoordinates));
         this.routeRepository.save(route);
     }
 
@@ -86,9 +87,17 @@ public class RouteService {
 
 
     @Transactional
-    public void update(long id, Route route, String frontCoordinates){
+    public void update(long id, Route route, String frontCoordinates, String backCoordinates){
         route.setId(id);
-        route.setFrontLine(this.getLineString(frontCoordinates));
+
+        LineString frontLine = !frontCoordinates.isEmpty() ? getLineString(frontCoordinates) :
+                Objects.requireNonNull(this.routeRepository.findById(id).orElse(null)).getFrontLine();
+        route.setFrontLine(frontLine);
+
+        LineString backLine = !backCoordinates.isEmpty() ? getLineString(backCoordinates) :
+                Objects.requireNonNull(this.routeRepository.findById(id).orElse(null)).getBackLine();
+        route.setBackLine(backLine);
+
         this.routeRepository.save(route);
     }
 

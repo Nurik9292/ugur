@@ -22,7 +22,7 @@
         </div>
     </div>
     <div class="card card-body border-0 shadow mb-4">
-        <h2 class="h5 mb-4">Создать маршрут</h2>
+        <h2 class="h5 mb-4">Обновить маршрут</h2>
         <nav>
             <div class="nav nav-tabs mb-4" id="nav-tab" role="tablist">
                 <a class="nav-item nav-link active" id="nav-data-tab" data-bs-toggle="tab" href="#nav-data-route" role="tab" aria-controls="nav-data-route" aria-selected="true">Данные</a>
@@ -81,9 +81,10 @@
                 </div>
             </div>
 
-            <input type="hidden" id="selectedOptionsOrderStart" name="selectedStart" />
-            <input type="hidden" id="selectedOptionsOrderEnd" name="selectedEnd" />
-            <input type="hidden" id="frontCoordinates" name="frontCoordinates" >
+            <input type="hidden" id="selectedOptionsOrderStart" name="selectedStart">
+            <input type="hidden" id="selectedOptionsOrderEnd" name="selectedEnd">
+            <input type="hidden" id="frontCoordinates" name="frontCoordinates">
+            <input type="hidden" id="backCoordinates" name="backCoordinates">
             <div class="mt-3">
                 <button class="btn btn-lg btn-info mt-2 animate-up-2" type="submit">Обновить</button>
             </div>
@@ -91,6 +92,7 @@
     </div>
 
     <script th:inline="javascript">
-        let coordinatesEdit = /*[[${route.getFrontLine() == null ? '' : route.getFrontLine().getCoordinates()}]]*/ '';
+        let coordinatesFrontEdit = /*[[${route.getFrontLine() == null ? '' : route.getFrontLine().getCoordinates()}]]*/ '';
+        let coordinatesBackEdit = /*[[${route.getBackLine() == null ? '' : route.getBackLine().getCoordinates()}]]*/ '';
     </script>
 </th:block>
