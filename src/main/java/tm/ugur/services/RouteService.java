@@ -118,7 +118,6 @@ public class RouteService {
     private LineString getLineString(String coordinates) {
         String[] points = coordinates.split(",");
         List<Coordinate> coors = new ArrayList<>();
-        System.out.println(Arrays.toString(points));
         for (int i = 0; i < points.length - 1; i += 2) {
             String xCoordinate = points[i].replaceAll("LatLng|\\(|\\)", "").trim();
             String yCoordinate = points[i + 1].replaceAll("\\(", "").replaceAll("\\)", "").trim();

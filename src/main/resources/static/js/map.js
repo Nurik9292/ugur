@@ -55,6 +55,7 @@ if (document.getElementById("map-stop")) {
 if(document.getElementById("map-route-front")){
 
     let coordinates = [];
+    let mapLayers = [];
 
     const inputFrontCoordinates = document.getElementById("frontCoordinates");
     const mapFront = L.map('map-route-front', { pmIgnore: false }).setView([37.93585208752015, 58.39120934103419], 13);
@@ -62,10 +63,19 @@ if(document.getElementById("map-route-front")){
     }).addTo(mapFront);
 
     document.getElementById("map-route-front").addEventListener("mousemove", e => {
-        mapFront.invalidateSize()
+        mapFront.invalidateSize();
     });
 
-    mapFront.pm.addControls({
+
+    const drawControl = {
+        draw: {
+
+        },
+    };
+
+
+    mapFront.pm.addControls(
+        {
         position: 'topleft',
         drawCircleMarker: false,
         drawMarker: false,
@@ -76,7 +86,13 @@ if(document.getElementById("map-route-front")){
         dragMode: false,
         cutPolygon: false,
         rotateMode: false,
-    });
+        },
+        {
+            polyline: {
+                simplifyFactor: 0, // Устанавливаем фактор упрощения в 0
+            },
+        }
+    );
 
     mapFront.pm.setPathOptions({
         color: "red",
@@ -84,7 +100,7 @@ if(document.getElementById("map-route-front")){
         fillOpacity: 0.8,
     });
 
-
+    let polyLine;
 
     if(coordinatesEdit){
         let coors = [];
@@ -92,46 +108,72 @@ if(document.getElementById("map-route-front")){
             coors.push([coordinate.x, coordinate.y]);
         });
 
-        let polyLine = L.polyline(coors);
+        polyLine = L.polyline(coors, { noClip: true});
         polyLine.pm.enable();
 
         polyLine.addTo(mapFront);
         mapFront.fitBounds(polyLine.getBounds());
         mapFront.setView([37.93585208752015, 58.39120934103419], 13);
-
-        polyLine.on('pm:update', function(e) {
-             coordinates = e.getLatLngs();
-            inputFrontCoordinates.value = coordinates.join(",");
-        });
-
-        mapFront.on("pm:drawstart", ({ workingLayer}) => {
-            workingLayer.on("pm:vertexadded", (e) => {
-                coordinates = [...polyLine.getLatLngs(), ...e.layer.getLatLngs()]
-                inputFrontCoordinates.value = coordinates.join(",");
-            });
-        });
-
-    }else{
-        mapFront.on("pm:drawstart", ({ workingLayer}) => {
-            workingLayer.on("pm:vertexadded", (e) => {
-                coordinates = e.layer.getLatLngs();
-                inputFrontCoordinates.value = coordinates.join(",");
-            });
-        });
-
-        mapFront.on('pm:create', ({ layer}) => {
-            layer.on('pm:edit', e => {
-                coordinates = e.layer.getLatLngs();
-                inputFrontCoordinates.value = coordinates.join(",");
-            });
-        });
     }
 
-    mapFront.on("pm:remove", (e) => {
-        coordinates = [];
-        inputFrontCoordinates.value = "";
+    mapFront.on("pm:drawstart", ({ workingLayer}) => {
+        workingLayer.on("pm:vertexadded", (e) => {
+        });
     });
 
+    mapFront.on('pm:create', ({ layer}) => {
+        layer.on('pm:edit', e => {
+            mapLayers = [];
+            for (let key in mapFront._layers) {
+                if (mapFront._layers[key].hasOwnProperty("_bounds") && !mapFront._layers[key].hasOwnProperty("_layers")) {
+                    mapLayers[key] = mapFront._layers[key];
+                }
+            }
+
+            let arrCoordinates = [];
+            mapLayers.forEach(ls => {
+                arrCoordinates =[...arrCoordinates, ...ls.getLatLngs()];
+            })
+            coordinates = arrCoordinates;
+            inputFrontCoordinates.value = coordinates.join(",");
+        });
+    });
+
+
+
+
+    mapFront.on('pm:drawend', (e) => {
+        let i = 0;
+        mapLayers = [];
+        for (let key in mapFront._layers) {
+            if (mapFront._layers[key].hasOwnProperty("_bounds") && !mapFront._layers[key].hasOwnProperty("_layers")) {
+                mapLayers[key] = mapFront._layers[key];
+            }
+        }
+        let arrCoordinates = [];
+        mapLayers.forEach(ls => {
+           arrCoordinates =[...arrCoordinates, ...ls.getLatLngs()];
+        })
+        coordinates = arrCoordinates;
+        inputFrontCoordinates.value = coordinates.join(",");
+    })
+
+
+    mapFront.on("pm:remove", (e) => {
+        mapLayers = [];
+        for (let key in mapFront._layers) {
+            if (mapFront._layers[key].hasOwnProperty("_bounds") && !mapFront._layers[key].hasOwnProperty("_layers")) {
+                mapLayers[key] = mapFront._layers[key];
+            }
+        }
+
+        let arrCoordinates = [];
+        mapLayers.forEach(ls => {
+            arrCoordinates =[...arrCoordinates, ...ls.getLatLngs()];
+        })
+        coordinates = arrCoordinates;
+        inputFrontCoordinates.value = coordinates.join(",");
+    });
 
 }
 

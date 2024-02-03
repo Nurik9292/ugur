@@ -116,8 +116,20 @@
 
 
     <script>
-        if(document.getElementById("start_stops")){
+        const startStops = document.getElementById("start_stops");
+        const endStops = document.getElementById("end_stops");
+
+        if(startStops){
             let selectedStart = [];
+
+            if(startStops.selectedOptions){
+                for(const item of startStops.selectedOptions){
+                    selectedStart.push(item.value);
+                }
+
+                document.getElementById("selectedOptionsOrderStart").value = selectedStart.join(",");
+            }
+
             new MultiSelectTag('start_stops', {
                 rounded: true,
                 shadow: true,
@@ -149,11 +161,21 @@
 
                    document.getElementById("selectedOptionsOrderStart").value = selectedStart.join(",");
                 }
+
             })}
 
 
-        if(document.getElementById("end_stops")){
+        if(endStops){
             let selectedEnd = [];
+
+            if(endStops.selectedOptions){
+                for(const item of endStops.selectedOptions){
+                    selectedEnd.push(item.value);
+                }
+
+                document.getElementById("selectedOptionsOrderEnd").value = selectedEnd.join(",");
+            }
+
             new MultiSelectTag('end_stops', {
                 rounded: true,
                 shadow: true,

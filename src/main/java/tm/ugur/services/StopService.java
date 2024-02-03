@@ -91,15 +91,12 @@ public class StopService {
         stop.setName(stopDTO.getName());
         stop.setLocation(this.factory.createPoint(new Coordinate(stopDTO.getLocation().getLat(), stopDTO.getLocation().getLng())));
         stop.setCity(this.cityRepository.findById(stopDTO.getCity().getId()).orElse(null));
-        stop.setLat(0.0);
-        stop.setLng(0.0);
         this.stopRepository.save(stop);
     }
 
 
     @Transactional
     public void update(Long id, Stop stop){
-        System.out.println(12321321);
         stop.setId(id);
         stop.setLocation(this.factory.createPoint(new Coordinate(stop.getLat(), stop.getLng())));
         this.stopRepository.save(stop);
