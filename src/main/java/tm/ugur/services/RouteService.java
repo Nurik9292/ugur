@@ -1,10 +1,8 @@
 package tm.ugur.services;
 
-import org.hibernate.SessionFactory;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
-import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.thymeleaf.expression.Numbers;
 import tm.ugur.dto.RouteDTO;
 import tm.ugur.models.Route;
-import tm.ugur.models.Stop;
 import tm.ugur.repo.RouteRepository;
 import tm.ugur.util.errors.route.RouteErrorResponse;
 import tm.ugur.util.errors.route.RouteNotFoundException;

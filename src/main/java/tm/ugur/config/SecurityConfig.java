@@ -34,8 +34,9 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        return http.csrf().disable().authorizeHttpRequests(auth ->
-                auth
+        return http.csrf().ignoringRequestMatchers("/api/**").and()
+                .authorizeHttpRequests(auth ->
+                        auth
                         .requestMatchers("/users/create", "/users", "/users/store").hasRole("SUPER")
                         .requestMatchers("/api/buses", "/api/**").permitAll()
                         .requestMatchers("/websocket-ugur", "/websocket-ugur/**").permitAll()
