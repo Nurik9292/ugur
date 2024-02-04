@@ -31,7 +31,7 @@
             </div>
         </nav>
         <form action="/routes" method="POST" th:object="${route}">
-<!--            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">-->
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
             <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="nav-data-route" role="tabpanel" aria-labelledby="nav-data-route-tab">
                     <div class="row">
