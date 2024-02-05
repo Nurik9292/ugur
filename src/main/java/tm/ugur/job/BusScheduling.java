@@ -48,6 +48,7 @@ public class BusScheduling {
     public void scheduleFixedDelayTask(){
         try {
             map = this.imdataService.getDataBus();
+            this.carNumbmer.setLength(0);
             for (JsonNode node : this.atLogisticService.getDataBus().get("list")) {
                 this.lock.lock();
                 try {

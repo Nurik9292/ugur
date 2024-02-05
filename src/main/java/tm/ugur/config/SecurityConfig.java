@@ -33,8 +33,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        return http.csrf().ignoringRequestMatchers("/api/**").and()
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+        return http.csrf(csrf -> { csrf.ignoringRequestMatchers("/api/**"); })
                 .authorizeHttpRequests(auth ->
                         auth
                         .requestMatchers("/users/create", "/users", "/users/store").hasRole("SUPER")
