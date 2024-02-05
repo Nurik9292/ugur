@@ -15,7 +15,7 @@ public class AtLogisticService {
     }
 
     public JsonNode getDataBus(){
-        String url = "http://atlogistika.com/api/api.php?cmd=list";
-        return this.responseService.getData(url, "turkmenavtoulag", "Awto996");
+        return this.responseService.getData("http://atlogistika.com/api/api.php?cmd=list",
+                "turkmenavtoulag", "Awto996");
     }
 }

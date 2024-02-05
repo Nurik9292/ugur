@@ -42,22 +42,19 @@ public class BusScheduling {
         this.carNumbmer = new StringBuffer();
     }
 
-
+    @Async
     @Scheduled(cron = "0/1 * * * * *")
     public void scheduleFixedDelayTask(){
         try {
             map = this.imdataService.getDataBus();
-            this.carNumbmer.setLength(0);
+
             for (JsonNode node : this.atLogisticService.getDataBus().get("list")) {
                 this.lock.lock();
                 try {
                     if (!node.get("vehiclenumber").asText().isEmpty()) {
-                        if (!carNumbmer.isEmpty()) {
-                            carNumbmer.append(node.get("vehiclenumber").asText().trim());
-                        }
-                        carNumbmer.replace(0, carNumbmer.length(), node.get("vehiclenumber").asText().trim());
+                        this.carNumbmer.setLength(0);
+                        carNumbmer.append(node.get("vehiclenumber").asText().trim());
                     }
-
                     String number = map.get(carNumbmer.toString());
 
                     if (map.containsKey(carNumbmer.toString())) {
