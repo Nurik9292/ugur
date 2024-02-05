@@ -22,7 +22,6 @@ public class BusResponseService {
         try {
             ResponseEntity<String> response = this.connection(url, user, password);
             ObjectMapper mapper = new ObjectMapper();
-
             return mapper.readTree(response.getBody());
         } catch (JsonProcessingException e) {
             logger.error("Api json parsing: " + e.getMessage());

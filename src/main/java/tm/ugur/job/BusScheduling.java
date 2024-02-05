@@ -42,7 +42,6 @@ public class BusScheduling {
         this.carNumbmer = new StringBuffer();
     }
 
-    @Async
     @Scheduled(cron = "0/1 * * * * *")
     public void scheduleFixedDelayTask(){
         this.lock.lock();
