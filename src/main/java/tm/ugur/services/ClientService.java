@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tm.ugur.models.Client;
 import tm.ugur.repo.ClientRepository;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -29,12 +30,15 @@ public class ClientService {
 
     @Transactional
     public void store(Client client){
+        client.setCreatedAt(new Date());
+        client.setUpdatedAt(new Date());
         this.clientRepository.save(client);
     }
 
     @Transactional
     public void update(long id, Client client){
         client.setId(id);
+        client.setUpdatedAt(new Date());
         this.clientRepository.save(client);
     }
 

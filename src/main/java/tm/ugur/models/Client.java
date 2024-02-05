@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -39,6 +40,14 @@ public class Client {
 
     @ManyToMany(mappedBy = "clients")
     private List<Route> routes;
+
+    @Column(name = "create_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "updated_at")
+    private Date updatedAt;
 
 
     public Client(){}
@@ -107,6 +116,22 @@ public class Client {
         this.routes = routes;
     }
 
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     @Override
     public String toString() {
         return "Client{" +
@@ -114,5 +139,4 @@ public class Client {
                 ", phone='" + phone + '\'' +
                 '}';
     }
-
 }
