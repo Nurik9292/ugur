@@ -38,7 +38,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth ->
                         auth
                         .requestMatchers("/users/create", "/users", "/users/store").hasRole("SUPER")
-                        .requestMatchers("/api/buses", "/api/**").permitAll()
+                        .requestMatchers("/test", "/api/buses", "/api/**").permitAll()
                         .requestMatchers("/websocket-ugur", "/websocket-ugur/**").permitAll()
                         .requestMatchers("/topic", "/topic/mobile", "/topic/**").permitAll()
                         .anyRequest().authenticated())
