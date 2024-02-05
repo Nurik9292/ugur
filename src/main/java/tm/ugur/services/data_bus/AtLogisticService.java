@@ -15,7 +15,7 @@ public class AtLogisticService {
     }
 
     public JsonNode getDataBus(){
-        return this.responseService.getData("http://atlogistika.com/api/api.php?cmd=list",
+        return this.responseService.getData("https://atlogistika.com/api/api.php?cmd=list",
                 "turkmenavtoulag", "Awto996");
     }
 }
