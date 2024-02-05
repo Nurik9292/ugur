@@ -45,12 +45,10 @@ public class BusScheduling {
     @Async
     @Scheduled(cron = "0/1 * * * * *")
     public void scheduleFixedDelayTask(){
+        this.lock.lock();
         try {
             map = this.imdataService.getDataBus();
-
             for (JsonNode node : this.atLogisticService.getDataBus().get("list")) {
-                this.lock.lock();
-                try {
                     if (!node.get("vehiclenumber").asText().isEmpty()) {
                         this.carNumbmer.setLength(0);
                         carNumbmer.append(node.get("vehiclenumber").asText().trim());
@@ -75,13 +73,13 @@ public class BusScheduling {
                             this.busSservice.update(busUpdate.get().getId(), bus);
                         }
                     }
-                }finally {
-                    this.lock.unlock();
-                }
             }
         } catch (Exception e) {
             logger.error("API unavailable: " + e.getMessage());
+            e.printStackTrace();
             this.busSservice.deleteAll();
+        }finally {
+            this.lock.unlock();
         }
     }
 }
