@@ -43,7 +43,6 @@ public class BusScheduling {
     }
 
 
-    @Async
     @Scheduled(cron = "0/1 * * * * *")
     public void scheduleFixedDelayTask(){
         try {
