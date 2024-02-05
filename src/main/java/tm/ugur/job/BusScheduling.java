@@ -24,6 +24,8 @@ public class BusScheduling {
     private final AtLogisticService atLogisticService;
     private final BusSservice busSservice;
     private final Lock  lock;
+    StringBuffer carNumbmer;
+    StringBuffer number;
 
 
     private final static Logger logger = LoggerFactory.getLogger(BusScheduling.class);
@@ -35,16 +37,18 @@ public class BusScheduling {
         this.atLogisticService = atLogisticService;
         this.busSservice = busSservice;
         this.lock = lock;
+        this.carNumbmer = new StringBuffer();
+        this.number = new StringBuffer();
     }
 
 
     @Async
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(cron = "0/1 * * * * *")
     public void scheduleFixedDelayTask(){
         try {
             Map<String, String> map = this.imdataService.getDataBus();
             JsonNode jsonNode = this.atLogisticService.getDataBus();
-            StringBuilder carNumbmer = new StringBuilder();
+
 
                 for (JsonNode node : jsonNode.get("list")) {
                     this.lock.lock();
@@ -55,12 +59,16 @@ public class BusScheduling {
                             }
                             carNumbmer.replace(0, carNumbmer.length(), node.get("vehiclenumber").asText().trim());
                         }
-                        String number = map.get(carNumbmer.toString());
+                        if(this.number.isEmpty()){
+                            this.number.append(map.get(carNumbmer.toString()));
+                        }else{
+                            this.number.replace(0, this.number.length(), map.get(carNumbmer.toString()));
+                        }
 
                         if (map.containsKey(carNumbmer.toString())) {
                             Bus bus = new Bus(
                                     carNumbmer.toString(),
-                                    Integer.parseInt(number),
+                                    Integer.parseInt(this.number.toString()),
                                     node.get("status").get("speed").asText(),
                                     node.get("imei").asText(),
                                     node.get("status").get("dir").asText(),
