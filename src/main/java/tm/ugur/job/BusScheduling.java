@@ -59,7 +59,7 @@ public class BusScheduling {
                             }
                             carNumbmer.replace(0, carNumbmer.length(), node.get("vehiclenumber").asText().trim());
                         }
-                        if(this.number.isEmpty()){
+                        if(!this.number.isEmpty()){
                             this.number.append(map.get(carNumbmer.toString()));
                         }else{
                             this.number.replace(0, this.number.length(), map.get(carNumbmer.toString()));
