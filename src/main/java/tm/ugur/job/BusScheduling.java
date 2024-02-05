@@ -24,8 +24,10 @@ public class BusScheduling {
     private final AtLogisticService atLogisticService;
     private final BusSservice busSservice;
     private final Lock  lock;
-    StringBuffer carNumbmer;
-    StringBuffer number;
+    private StringBuffer carNumbmer;
+
+    private Map<String, String> map;
+
 
 
     private final static Logger logger = LoggerFactory.getLogger(BusScheduling.class);
@@ -38,7 +40,6 @@ public class BusScheduling {
         this.busSservice = busSservice;
         this.lock = lock;
         this.carNumbmer = new StringBuffer();
-        this.number = new StringBuffer();
     }
 
 
@@ -46,48 +47,41 @@ public class BusScheduling {
     @Scheduled(cron = "0/1 * * * * *")
     public void scheduleFixedDelayTask(){
         try {
-            Map<String, String> map = this.imdataService.getDataBus();
-            JsonNode jsonNode = this.atLogisticService.getDataBus();
-
-
-                for (JsonNode node : jsonNode.get("list")) {
-                    this.lock.lock();
-                    try {
-                        if (!node.get("vehiclenumber").asText().isEmpty()) {
-                            if (!carNumbmer.isEmpty()) {
-                                carNumbmer.append(node.get("vehiclenumber").asText().trim());
-                            }
-                            carNumbmer.replace(0, carNumbmer.length(), node.get("vehiclenumber").asText().trim());
+            map = this.imdataService.getDataBus();
+            for (JsonNode node : this.atLogisticService.getDataBus().get("list")) {
+                this.lock.lock();
+                try {
+                    if (!node.get("vehiclenumber").asText().isEmpty()) {
+                        if (!carNumbmer.isEmpty()) {
+                            carNumbmer.append(node.get("vehiclenumber").asText().trim());
                         }
-                        if(!this.number.isEmpty()){
-                            this.number.append(map.get(carNumbmer.toString()));
-                        }else{
-                            this.number.replace(0, this.number.length(), map.get(carNumbmer.toString()));
-                        }
-
-                        if (map.containsKey(carNumbmer.toString())) {
-                            Bus bus = new Bus(
-                                    carNumbmer.toString(),
-                                    Integer.parseInt(this.number.toString()),
-                                    node.get("status").get("speed").asText(),
-                                    node.get("imei").asText(),
-                                    node.get("status").get("dir").asText(),
-                                    node.get("status").get("lat").asText(),
-                                    node.get("status").get("lon").asText()
-                            );
-
-
-                            Optional<Bus> busUpdate = this.busSservice.findByCarNumber(carNumbmer.toString());
-                            if (busUpdate.isEmpty()) {
-                                this.busSservice.store(bus);
-                            } else {
-                                this.busSservice.update(busUpdate.get().getId(), bus);
-                            }
-                        }
-                    }finally {
-                        this.lock.unlock();
+                        carNumbmer.replace(0, carNumbmer.length(), node.get("vehiclenumber").asText().trim());
                     }
+
+                    String number = map.get(carNumbmer.toString());
+
+                    if (map.containsKey(carNumbmer.toString())) {
+                        Bus bus = new Bus(
+                            carNumbmer.toString(),
+                            Integer.parseInt(number),
+                            node.get("status").get("speed").asText(),
+                            node.get("imei").asText(),
+                            node.get("status").get("dir").asText(),
+                            node.get("status").get("lat").asText(),
+                            node.get("status").get("lon").asText()
+                        );
+
+                        Optional<Bus> busUpdate = this.busSservice.findByCarNumber(carNumbmer.toString());
+                        if (busUpdate.isEmpty()) {
+                            this.busSservice.store(bus);
+                        } else {
+                            this.busSservice.update(busUpdate.get().getId(), bus);
+                        }
+                    }
+                }finally {
+                    this.lock.unlock();
                 }
+            }
         } catch (Exception e) {
             logger.error("API unavailable: " + e.getMessage());
             this.busSservice.deleteAll();
