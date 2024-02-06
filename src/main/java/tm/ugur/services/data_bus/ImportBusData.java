@@ -1,8 +1,9 @@
 package tm.ugur.services.data_bus;
 
-import com.fasterxml.jackson.databind.JsonNode;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 public interface ImportBusData {
 
-    Object getDataBus();
+    Object getDataBus() throws JsonProcessingException;
 }

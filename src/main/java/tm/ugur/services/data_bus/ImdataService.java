@@ -1,5 +1,6 @@
 package tm.ugur.services.data_bus;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ public class ImdataService implements ImportBusData {
         this.builder = new StringBuilder();
     }
 
-    public Map<String, String> getDataBus(){
+    public Map<String, String> getDataBus() throws JsonProcessingException {
         JsonNode json = this.response.getData("https://edu.ayauk.gov.tm/gps/buses/info",
                 "turkmenportal", "turkmenportal");
 

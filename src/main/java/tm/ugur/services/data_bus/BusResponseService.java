@@ -18,16 +18,10 @@ public class BusResponseService {
 
     private final static Logger logger = LoggerFactory.getLogger(BusScheduling.class);
 
-    public JsonNode getData(String url, String user, String password){
-        try {
+    public JsonNode getData(String url, String user, String password) throws JsonProcessingException{
             ResponseEntity<String> response = this.connection(url, user, password);
             ObjectMapper mapper = new ObjectMapper();
             return mapper.readTree(response.getBody());
-        } catch (JsonProcessingException e) {
-            logger.error("Api json parsing: " + e.getMessage());
-            e.printStackTrace();
-            return null;
-        }
     }
 
     public ResponseEntity<String> connection(String url, String user, String password){
