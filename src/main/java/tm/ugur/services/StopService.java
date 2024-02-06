@@ -82,12 +82,16 @@ public class StopService {
     @Transactional
     public void store(Stop stop){
         stop.setLocation(this.factory.createPoint(new Coordinate(stop.getLat(), stop.getLng())));
+        stop.setCreatedAt(new Date());
+        stop.setUpdatedAt(new Date());
         this.stopRepository.save(stop);
     }
 
     @Transactional
     public void save(StopDTO stopDTO){
         Stop stop = new Stop();
+        stop.setCreatedAt(new Date());
+        stop.setUpdatedAt(new Date());
         stop.setName(stopDTO.getName());
         stop.setLocation(this.factory.createPoint(new Coordinate(stopDTO.getLocation().getLat(), stopDTO.getLocation().getLng())));
         stop.setCity(this.cityRepository.findById(stopDTO.getCity().getId()).orElse(null));
@@ -98,6 +102,7 @@ public class StopService {
     @Transactional
     public void update(Long id, Stop stop){
         stop.setId(id);
+        stop.setUpdatedAt(new Date());
         stop.setLocation(this.factory.createPoint(new Coordinate(stop.getLat(), stop.getLng())));
         this.stopRepository.save(stop);
     }

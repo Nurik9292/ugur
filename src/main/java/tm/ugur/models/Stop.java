@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.locationtech.jts.geom.Point;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,6 +39,14 @@ public class Stop extends AbstractEntity{
 
     @ManyToMany(mappedBy = "endStops")
     List<Route> endRoutes;
+
+    @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+
+    @Column(name = "updated_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
 
     @Min(value = 0, message = "Заполните поле")
     @Transient
@@ -140,6 +149,22 @@ public class Stop extends AbstractEntity{
 
     public void setEndRouteStops(List<EndRouteStop> endRouteStops) {
         this.endRouteStops = endRouteStops;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     @Override
