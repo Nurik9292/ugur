@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import org.locationtech.jts.geom.LineString;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -68,6 +69,14 @@ public class Route extends AbstractEntity{
     @Column(name = "back_line")
     private LineString backLine;
 
+    @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+
+    @Column(name = "updated_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
+
     public Route(){}
 
     public Route(long id, String name, String interval, int number, City city) {
@@ -78,11 +87,11 @@ public class Route extends AbstractEntity{
         this.city = city;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -180,6 +189,23 @@ public class Route extends AbstractEntity{
 
     public void setClients(List<Client> clients) {
         this.clients = clients;
+    }
+
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     @Override

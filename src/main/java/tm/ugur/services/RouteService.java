@@ -74,18 +74,24 @@ public class RouteService {
     public void store(Route route, String frontCoordinates, String backCoordinates){
         route.setFrontLine(this.getLineString(frontCoordinates));
         route.setBackLine(this.getLineString(backCoordinates));
+        route.setUpdatedAt(new Date());
+        route.setCreatedAt(new Date());
         this.routeRepository.save(route);
     }
 
     @Transactional
     public void save(RouteDTO routeDTO){
-        this.routeRepository.save(this.converToRoute(routeDTO));
+        Route route = this.converToRoute(routeDTO);
+        route.setCreatedAt(new Date());
+        route.setUpdatedAt(new Date());
+        this.routeRepository.save(route);
     }
 
 
     @Transactional
     public void update(long id, Route route, String frontCoordinates, String backCoordinates){
         route.setId(id);
+        route.setUpdatedAt(new Date());
 
         LineString frontLine = !frontCoordinates.isEmpty() ? getLineString(frontCoordinates) :
                 Objects.requireNonNull(this.routeRepository.findById(id).orElse(null)).getFrontLine();
