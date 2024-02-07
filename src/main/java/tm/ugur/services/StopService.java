@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.expression.Numbers;
 import tm.ugur.dto.StopDTO;
+import tm.ugur.models.Client;
 import tm.ugur.models.Route;
 import tm.ugur.models.Stop;
 import tm.ugur.repo.CityRepository;

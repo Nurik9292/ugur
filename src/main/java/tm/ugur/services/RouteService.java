@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.thymeleaf.expression.Numbers;
 import tm.ugur.dto.RouteDTO;
+import tm.ugur.models.Client;
 import tm.ugur.models.Route;
 import tm.ugur.repo.RouteRepository;
 import tm.ugur.util.errors.route.RouteErrorResponse;
@@ -66,8 +67,8 @@ public class RouteService {
         return this.findPaginated(PageRequest.of(pageNumber, itemsPerPage), this.routeRepository.findAll());
     }
 
-    public Route findOne(long id){
-        return this.routeRepository.findById(id).orElse(null);
+    public  Optional<Route> findOne(long id){
+        return this.routeRepository.findById(id);
     }
 
     @Transactional
@@ -107,6 +108,11 @@ public class RouteService {
     @Transactional
     public void delete(long id){
         this.routeRepository.deleteById(id);
+    }
+
+
+    public Optional<Route> findRoutesByClient(Client client, Long id){
+        return this.routeRepository.findRouteByClientsAndId(client, id);
     }
 
 

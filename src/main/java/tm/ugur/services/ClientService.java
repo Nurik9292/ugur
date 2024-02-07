@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tm.ugur.dto.auth.AuthenticationClientDTO;
 import tm.ugur.models.Client;
+import tm.ugur.models.Route;
 import tm.ugur.repo.ClientRepository;
 
 import java.util.Date;
@@ -59,5 +60,10 @@ public class ClientService {
     @Transactional
     public void delete(long id){
         this.clientRepository.deleteById(id);
+    }
+
+
+    public Optional<Client> findClientByRouteAndId(Route route, Long id){
+        return this.clientRepository.findClientByRoutesAndId(route, id);
     }
 }

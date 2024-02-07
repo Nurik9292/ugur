@@ -106,7 +106,7 @@ public class RouteController {
     @GetMapping("/{id}/edit")
     public String edit(@PathVariable("id") Long id, Model model){
         sortByStatic = "";
-        Route route = this.routeService.findOne(id);
+        Route route = this.routeService.findOne(id).orElse(null);
         model.addAttribute("route", route);
         this.modalAtribitesForEdit(model);
         return "layouts/routes/edit";
