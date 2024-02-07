@@ -1,4 +1,4 @@
-package tm.ugur.services;
+package tm.ugur.services.details;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

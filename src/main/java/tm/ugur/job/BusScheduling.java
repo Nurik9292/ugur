@@ -75,7 +75,6 @@ public class BusScheduling {
             }
         } catch (Exception e) {
             logger.error("API unavailable: " + e.getMessage());
-            e.printStackTrace();
             this.busSservice.deleteAll();
         }finally {
             this.lock.unlock();

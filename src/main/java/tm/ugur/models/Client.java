@@ -17,7 +17,6 @@ public class Client {
     private long id;
 
     @Column(name = "name")
-    @NotEmpty(message = "Заполните поле.")
     private String name;
 
     @Column(name = "email")
@@ -41,7 +40,7 @@ public class Client {
     @ManyToMany(mappedBy = "clients")
     private List<Route> routes;
 
-    @Column(name = "create_at")
+    @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
