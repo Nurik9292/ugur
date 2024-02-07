@@ -10,7 +10,6 @@ public class ClientDetails implements UserDetails {
 
     private Client client;
 
-
     public ClientDetails(Client client){
         this.client = client;
     }
@@ -27,7 +26,7 @@ public class ClientDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return null;
+        return this.client.getPhone();
     }
 
     @Override

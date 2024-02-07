@@ -27,11 +27,11 @@ public class Client {
     @NotEmpty(message = "Заполните поле.")
     private String phone;
 
-    @Column(name = "opt")
-    private String opt;
+    @Column(name = "otp")
+    private String otp;
 
-    @Column(name = "opt_verify")
-    private boolean optVerify;
+    @Column(name = "otp_verify")
+    private boolean otpVerify;
 
     @Column(name = "platform")
     private String platform;
@@ -83,20 +83,20 @@ public class Client {
         this.phone = phone;
     }
 
-    public String getOpt() {
-        return opt;
+    public String getOtp() {
+        return otp;
     }
 
-    public void setOpt(String opt) {
-        this.opt = opt;
+    public void setOtp(String otp) {
+        this.otp = otp;
     }
 
-    public boolean isOptVerify() {
-        return optVerify;
+    public boolean isOtpVerify() {
+        return otpVerify;
     }
 
-    public void setOptVerify(boolean optVerify) {
-        this.optVerify = optVerify;
+    public void setOtpVerify(boolean otpVerify) {
+        this.otpVerify = otpVerify;
     }
 
     public String getPlatform() {

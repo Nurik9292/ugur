@@ -24,7 +24,6 @@ public class StopApiController {
 
     @GetMapping
     public ResponseEntity<List<StopDTO>>  getStops(){
-        System.out.println("stops");
         return ResponseEntity.ok(this.stopService.getStops());
     }
 

@@ -3,11 +3,13 @@ package tm.ugur.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tm.ugur.dto.auth.AuthenticationClientDTO;
 import tm.ugur.models.Client;
 import tm.ugur.repo.ClientRepository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -24,14 +26,26 @@ public class ClientService {
         return this.clientRepository.findAll();
     }
 
-    public Client getOne(long id){
+    public Client FindOne(Long id){
         return this.clientRepository.findById(id).orElse(null);
+    }
+
+    public Optional<Client> findClientByPhone(String phoneNumber){
+        return this.clientRepository.findClientByPhone(phoneNumber);
     }
 
     @Transactional
     public void store(Client client){
         client.setCreatedAt(new Date());
         client.setUpdatedAt(new Date());
+        this.clientRepository.save(client);
+    }
+
+    @Transactional
+    public void update(Client client, AuthenticationClientDTO authenticationClientDTO){
+        client.setUpdatedAt(new Date());
+        client.setOtpVerify(true);
+        client.setPlatform(authenticationClientDTO.getPlatform());
         this.clientRepository.save(client);
     }
 

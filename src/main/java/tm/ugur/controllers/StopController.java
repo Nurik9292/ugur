@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.expression.Numbers;
 import tm.ugur.dto.StopDTO;
 import tm.ugur.models.Stop;
+import tm.ugur.security.ClientDetails;
 import tm.ugur.security.PersonDetails;
 import tm.ugur.services.CityService;
 import tm.ugur.services.StopService;
