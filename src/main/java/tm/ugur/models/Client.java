@@ -40,6 +40,10 @@ public class Client {
     @ManyToMany(mappedBy = "clients")
     private List<Route> routes;
 
+    @ManyToMany(mappedBy = "clients")
+    private List<Stop> stops;
+
+
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
@@ -131,6 +135,14 @@ public class Client {
         this.updatedAt = updatedAt;
     }
 
+    public List<Stop> getStops() {
+        return stops;
+    }
+
+    public void setStops(List<Stop> stops) {
+        this.stops = stops;
+    }
+
     @Override
     public String toString() {
         return "Client{" +
@@ -138,4 +150,6 @@ public class Client {
                 ", phone='" + phone + '\'' +
                 '}';
     }
+
+
 }

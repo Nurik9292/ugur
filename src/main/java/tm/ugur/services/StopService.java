@@ -117,6 +117,10 @@ public class StopService {
         this.stopRepository.deleteById(id);
     }
 
+    public Optional<Stop> findByClientsAndId(Client client, Long id){
+        return this.stopRepository.findAllByClientsAndId(client, id);
+    }
+
 
     private void setLatLng(Stop stop){
         Point point = stop.getLocation();

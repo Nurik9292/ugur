@@ -62,6 +62,12 @@ public class Stop extends AbstractEntity{
     @OneToMany(mappedBy = "stop")
     private List<EndRouteStop> endRouteStops;
 
+    @ManyToMany
+    @JoinTable(name = "stop_favorites",
+            joinColumns = @JoinColumn(name = "stop_id"),
+            inverseJoinColumns = @JoinColumn(name = "client_id"))
+    private List<Client> clients;
+
     public Stop(){
 
     }
@@ -151,6 +157,14 @@ public class Stop extends AbstractEntity{
         this.endRouteStops = endRouteStops;
     }
 
+    public List<Client> getClients() {
+        return clients;
+    }
+
+    public void setClients(List<Client> clients) {
+        this.clients = clients;
+    }
+
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -187,4 +201,6 @@ public class Stop extends AbstractEntity{
                 ", name='" + name + '\'' +
                 '}';
     }
+
+
 }
