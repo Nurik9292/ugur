@@ -124,10 +124,7 @@ public class RouteController {
             this.modalAtribitesForCreate(model);
             return "layouts/routes/edit";
         }
-        System.out.println(id);
-        System.out.println(route);
-        System.out.println(frontCoordinates);
-        System.out.println(backCoordinates);
+
         this.routeService.update(id, route, frontCoordinates, backCoordinates);
         this.startRouteStopService.updateIndexs(selectedStart, route);
         this.endRouteStopService.updateIndexs(selectedEnd, route);
