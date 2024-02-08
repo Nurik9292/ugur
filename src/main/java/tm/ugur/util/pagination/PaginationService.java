@@ -1,13 +1,13 @@
-package tm.ugur.services.pagination;
+package tm.ugur.util.pagination;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Service
+@Component
 public class PaginationService {
 
     public <T> Page<T> createPage(List<T> content, int pageNumber, int itemsPerPage) {

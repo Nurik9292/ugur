@@ -18,7 +18,7 @@ public class JWTUtil {
     private String secret;
 
     public String generateToken(String userPhone) throws JWTVerificationException {
-        Date expirationDate = Date.from(ZonedDateTime.now().plusMinutes(60).toInstant());
+        Date expirationDate = Date.from(ZonedDateTime.now().plusDays(1).toInstant());
 
         return JWT.create()
                 .withSubject("Client details")

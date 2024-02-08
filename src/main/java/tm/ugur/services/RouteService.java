@@ -15,7 +15,7 @@ import tm.ugur.dto.RouteDTO;
 import tm.ugur.models.Client;
 import tm.ugur.models.Route;
 import tm.ugur.repo.RouteRepository;
-import tm.ugur.services.pagination.PaginationService;
+import tm.ugur.util.pagination.PaginationService;
 import tm.ugur.util.errors.route.RouteErrorResponse;
 import tm.ugur.util.errors.route.RouteNotFoundException;
 import tm.ugur.util.mappers.RouteMapper;
@@ -113,8 +113,6 @@ public class RouteService {
     public Optional<Route> findRoutesByClient(Client client, Long id){
         return this.routeRepository.findRouteByClientsAndId(client, id);
     }
-
-
 
 
     private LineString getLineString(String coordinates) {
