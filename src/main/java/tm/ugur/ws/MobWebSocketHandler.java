@@ -8,19 +8,15 @@ import org.springframework.stereotype.Component;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
-import tm.ugur.job.BusScheduling;
 import tm.ugur.models.Bus;
-import tm.ugur.services.BusSservice;
 import tm.ugur.services.data_bus.AtLogisticService;
 import tm.ugur.services.data_bus.ImdataService;
 
 import java.util.Map;
-import java.util.Optional;
 
 @Component
 public class MobWebSocketHandler extends TextWebSocketHandler {
