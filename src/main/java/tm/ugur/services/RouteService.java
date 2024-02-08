@@ -40,6 +40,10 @@ public class RouteService {
         this.factory = factory;
     }
 
+    public Optional<Route> getRouteByName(String name){
+        return this.routeRepository.findRouteByName(name);
+    }
+
     public Page<Route> getRoutePages(String page, String items, String sortBy){
         int pageNumber = page == null ? 1 : Integer.parseInt(page);
         int itemsPerPage = items == null ? 10 : Integer.parseInt(items);

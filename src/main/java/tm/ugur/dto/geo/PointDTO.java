@@ -11,6 +11,7 @@ public class PointDTO {
     public PointDTO(){}
 
 
+
     public PointDTO(Double lat, Double lng) {
         this.lat = lat;
         this.lng = lng;

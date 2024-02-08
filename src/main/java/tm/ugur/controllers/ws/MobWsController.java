@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+import tm.ugur.dto.BusDTO;
 import tm.ugur.models.Bus;
 import tm.ugur.services.data_bus.AtLogisticService;
 import tm.ugur.services.data_bus.ImdataService;
@@ -84,7 +85,7 @@ public class MobWsController {
 
                 if (this.map.containsKey(this.carNumber.toString())) {
                     if(this.map.containsValue(numberRoute)){
-                        Bus bus = new Bus(
+                        BusDTO bus = new BusDTO(
                                 this.carNumber.toString(),
                                 Integer.parseInt(number),
                                 node.get("status").get("speed").asText(),
