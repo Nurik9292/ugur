@@ -3,8 +3,6 @@ package tm.ugur.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import org.locationtech.jts.geom.Point;
 
 import java.util.Date;

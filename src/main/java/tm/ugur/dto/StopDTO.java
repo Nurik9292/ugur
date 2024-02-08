@@ -6,10 +6,10 @@ import tm.ugur.dto.geo.PointDTO;
 public class StopDTO extends AbstractDTO{
 
     private String name;
-
     private CityDTO city;
-
     private PointDTO location;
+
+
 
 
     public StopDTO(){}

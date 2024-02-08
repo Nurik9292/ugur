@@ -15,6 +15,7 @@ import tm.ugur.dto.RouteDTO;
 import tm.ugur.models.Client;
 import tm.ugur.models.Route;
 import tm.ugur.repo.RouteRepository;
+import tm.ugur.services.pagination.PaginationService;
 import tm.ugur.util.errors.route.RouteErrorResponse;
 import tm.ugur.util.errors.route.RouteNotFoundException;
 import tm.ugur.util.mappers.RouteMapper;
@@ -27,12 +28,14 @@ public class RouteService {
 
 
     private final RouteRepository routeRepository;
+    private final PaginationService paginationService;
     private final RouteMapper routeMapper;
     private final GeometryFactory factory;
 
     @Autowired
-    public RouteService(RouteRepository routeRepository, RouteMapper routeMapper, GeometryFactory factory) {
+    public RouteService(RouteRepository routeRepository, PaginationService paginationService, RouteMapper routeMapper, GeometryFactory factory) {
         this.routeRepository = routeRepository;
+        this.paginationService = paginationService;
         this.routeMapper = routeMapper;
         this.factory = factory;
     }
@@ -41,15 +44,11 @@ public class RouteService {
         int pageNumber = page == null ? 1 : Integer.parseInt(page);
         int itemsPerPage = items == null ? 10 : Integer.parseInt(items);
 
-        Page<Route> routes = null;
+        List<Route> routes = !sortBy.isBlank()
+                ? this.routeRepository.findAll(Sort.by(sortBy)) : this.routeRepository.findAll();;
 
-        if(sortBy != null && sortBy.equals("name") || sortBy != null && sortBy.equals("number")){
-            routes = this.findAll(pageNumber - 1, itemsPerPage, sortBy);
-        }else{
-                routes = this.findAll(pageNumber - 1, itemsPerPage);
-        }
 
-        return routes;
+        return this.paginationService.createPage(routes, pageNumber, itemsPerPage);
     }
 
 
@@ -59,12 +58,12 @@ public class RouteService {
 
     public Page<Route> findAll(int pageNumber, int itemsPerPage, String sortBy)
     {
-        return this.findPaginated(PageRequest.of(pageNumber, itemsPerPage), this.routeRepository.findAll(Sort.by(sortBy)));
+        return this.paginationService.createPage(this.routeRepository.findAll(Sort.by(sortBy)), pageNumber, itemsPerPage);
     }
 
     public Page<Route> findAll(int pageNumber, int itemsPerPage)
     {
-        return this.findPaginated(PageRequest.of(pageNumber, itemsPerPage), this.routeRepository.findAll());
+        return this.paginationService.createPage(this.routeRepository.findAll(), pageNumber, itemsPerPage);
     }
 
     public  Optional<Route> findOne(long id){
@@ -116,22 +115,7 @@ public class RouteService {
     }
 
 
-    private Page<Route> findPaginated(Pageable pageable, List<Route> routes){
-        int pageSize = pageable.getPageSize();
-        int currentPage = pageable.getPageNumber();
-        int startItem = currentPage * pageSize;
 
-        List<Route> list;
-
-        if(routes.size() < startItem){
-            list = Collections.emptyList();
-        }else{
-            int toIndex = Math.min(startItem + pageSize, routes.size());
-            list = routes.subList(startItem, toIndex);
-        }
-
-            return new PageImpl<Route>(list, PageRequest.of(currentPage, pageSize), routes.size());
-    }
 
     private LineString getLineString(String coordinates) {
         String[] points = coordinates.split(",");
