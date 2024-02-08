@@ -14,6 +14,7 @@ import tm.ugur.models.Route;
 import tm.ugur.models.Stop;
 import tm.ugur.repo.CityRepository;
 import tm.ugur.repo.StopRepository;
+import tm.ugur.services.pagination.PaginationService;
 import tm.ugur.util.errors.stop.StopNotFoundException;
 import tm.ugur.util.mappers.StopMapper;
 
@@ -23,13 +24,19 @@ import java.util.*;
 @Transactional(readOnly = true)
 public class StopService {
 
+    private final PaginationService paginationService;
     private final StopRepository stopRepository;
     private final CityRepository cityRepository;
     private final GeometryFactory factory;
     private final StopMapper stopMapper;
 
     @Autowired
-    public StopService(StopRepository stopRepository, CityRepository cityRepository, GeometryFactory factory, StopMapper stopMapper) {
+    public StopService(PaginationService paginationService,
+                       StopRepository stopRepository,
+                       CityRepository cityRepository,
+                       GeometryFactory factory,
+                       StopMapper stopMapper) {
+        this.paginationService = paginationService;
         this.stopRepository = stopRepository;
         this.cityRepository = cityRepository;
         this.factory = factory;
@@ -49,6 +56,7 @@ public class StopService {
         }
 
         return stops;
+
     }
 
     public List<Stop> findAll(){
@@ -58,20 +66,15 @@ public class StopService {
     public Page<Stop> findAll(int pageNumber,  int itemsPerPage){
         List<Stop> stops = this.stopRepository.findAll();
         stops.forEach(this::setLatLng);
-        return this.findPaginated(PageRequest.of(pageNumber, itemsPerPage), stops, "");
+        return paginationService.createPage(stopRepository.findAll(), pageNumber, itemsPerPage);
     }
 
     public Page<Stop> findAll(int pageNumber,  int itemsPerPage, String sortBy){
         List<Stop> stops = this.stopRepository.findAll();
         stops.forEach(this::setLatLng);
-        return this.findPaginated(PageRequest.of(pageNumber, itemsPerPage, Sort.by(sortBy)), stops, sortBy);
+        return paginationService.createPage(stopRepository.findAll(Sort.by(sortBy)), pageNumber, itemsPerPage);
     }
 
-    public Page<Stop> search(String name){
-        List<Stop> stops = this.stopRepository.findByNameStartingWith(name);
-        stops.forEach(this::setLatLng);
-        return this.findPaginated(PageRequest.of(0, 10), stops, "");
-    }
 
     public Stop findOne(Long id){
         Stop stop = this.stopRepository.findById(id).orElseThrow(StopNotFoundException::new);

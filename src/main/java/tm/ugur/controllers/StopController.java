@@ -135,16 +135,6 @@ public class StopController {
         return "redirect:/stops";
     }
 
-    @GetMapping("/search")
-    public String search(@RequestParam("search") String search, Model model){
-        Page<Stop> stops = this.stopService.search(search);
-        model.addAttribute("title", "Остановки");
-        model.addAttribute("stops", stops);
-        model.addAttribute("page", "stop-index");
-        return "layouts/stops/index";
-    }
-
-
     private void errors(Model model, BindingResult result){
         if(Objects.requireNonNull(result.getFieldError()).getField().equals("name"))
             model.addAttribute("nameError", true);
