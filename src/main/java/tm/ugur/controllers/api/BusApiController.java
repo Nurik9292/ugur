@@ -32,12 +32,6 @@ public class BusApiController {
         return ResponseEntity.ok(this.busSservice.getBus(id));
     }
 
-    @GetMapping("/number/{number}")
-    public ResponseEntity<List<BusDTO>> getBusesForNumber(@PathVariable("number") Integer number){
-        return ResponseEntity.ok(this.busSservice.getBusForNumber(number));
-    }
-
-
     @ExceptionHandler
     private ResponseEntity<BusErrorResponse> handleException(BusNotFoundException e){
         BusErrorResponse errorResponse =

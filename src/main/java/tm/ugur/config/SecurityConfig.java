@@ -3,6 +3,7 @@ package tm.ugur.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -43,11 +44,11 @@ public class SecurityConfig {
     @Bean
     @Order(1)
     public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
-        return http.securityMatcher("/api/**").csrf(csrf -> csrf.disable())
+        return http.securityMatcher("/websocket-ugur","/api/**").csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth ->
                     auth
                         .requestMatchers("/api/auth/register", "/api/auth/verify_otp").permitAll()
-                        .anyRequest().authenticated())
+                            .anyRequest().authenticated())
                 .sessionManagement(sm ->
                         sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(this.jwtFilter, UsernamePasswordAuthenticationFilter.class)
@@ -64,6 +65,7 @@ public class SecurityConfig {
                         .requestMatchers("/test").permitAll()
                         .requestMatchers("/websocket-ugur", "/websocket-ugur/**").permitAll()
                         .requestMatchers("/topic", "/topic/mobile", "/topic/**").permitAll()
+                        .requestMatchers("/app/**", "/app/", "/app/number-route").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
                 .build();

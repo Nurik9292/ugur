@@ -6,10 +6,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import tm.ugur.models.Bus;
@@ -21,7 +25,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-@Controller
+@RestController
 public class MobWsController {
 
     private final SimpMessageSendingOperations sendToMobileApp;
@@ -46,9 +50,15 @@ public class MobWsController {
         this.mapper = new ObjectMapper();
     }
 
-    @MessageMapping("/number-route")
-    public void acceptNumberRoute(@Payload String numberRoute){
-        this.numberRoute = numberRoute;
+//    @MessageMapping("/number-route")
+//    public void acceptNumberRoute(@Payload String numberRoute){
+//        this.numberRoute = numberRoute;
+//    }
+
+    @GetMapping("/api/buses/number/{number}")
+    public ResponseEntity<HttpStatus> getBusesForNumber(@PathVariable("number") String number){
+        this.numberRoute = number;
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @EventListener
