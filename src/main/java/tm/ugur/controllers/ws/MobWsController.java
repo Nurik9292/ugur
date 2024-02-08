@@ -65,7 +65,7 @@ public class MobWsController {
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event){
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleAtFixedRate(this::sendBusData, 0, 1, TimeUnit.SECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(this::sendBusData, 0, 3, TimeUnit.SECONDS);
     }
 
     @EventListener

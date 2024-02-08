@@ -32,6 +32,10 @@ public class PersonService {
         return this.personRepository.findById(id).orElse(null);
     }
 
+    public Optional<Person> findByName(String name){
+        return this.personRepository.findByUserName(name);
+    }
+
     @Transactional
     public void store(Person user){
         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
