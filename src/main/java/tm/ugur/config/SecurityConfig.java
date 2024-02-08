@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -63,8 +62,8 @@ public class SecurityConfig {
                     auth
                         .requestMatchers("/users/create", "/users", "/users/store").hasRole("SUPER")
                         .requestMatchers("/test").permitAll()
-                        .requestMatchers("/websocket-ugur", "/websocket-ugur/**").permitAll()
-                        .requestMatchers("/topic", "/topic/mobile", "/topic/**").permitAll()
+//                        .requestMatchers("/websocket-ugur", "/websocket-ugur/**").permitAll()
+//                        .requestMatchers("/topic", "/topic/mobile", "/topic/**").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
                 .build();

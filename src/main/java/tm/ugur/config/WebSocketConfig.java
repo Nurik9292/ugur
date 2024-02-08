@@ -16,7 +16,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry){
-        registry.addEndpoint("/websocket-ugur");
         registry.addEndpoint("/websocket-ugur").setAllowedOrigins("*").withSockJS();
     }
 
@@ -30,7 +29,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
 
-        registration.setSendBufferSizeLimit(1048576);
+//        registration.setSendBufferSizeLimit(1048576);
     }
 
 }

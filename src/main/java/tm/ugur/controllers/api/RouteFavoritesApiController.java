@@ -1,4 +1,4 @@
-package tm.ugur.controllers.API;
+package tm.ugur.controllers.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,40 +9,38 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tm.ugur.models.Client;
-import tm.ugur.models.Stop;
+import tm.ugur.models.Route;
 import tm.ugur.security.ClientDetails;
-import tm.ugur.services.StopService;
+import tm.ugur.services.RouteService;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("favorites/stops")
-public class StopFavoritesApiController {
+@RequestMapping("favorites/routes")
+public class RouteFavoritesApiController {
 
-    private final StopService stopService;
+    private final RouteService routeService;
 
     @Autowired
-    public StopFavoritesApiController(StopService stopService) {
-        this.stopService = stopService;
+    public RouteFavoritesApiController(RouteService routeService) {
+        this.routeService = routeService;
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<Map<String, String>> addOrRemoveStop(@PathVariable("id") Long id) {
+    public ResponseEntity<Map<String, String>> addOrRemoveRoute(@PathVariable("id") Long id) {
 
         Client client = getAuthClient();
-        Optional<Stop> stopFavorites = stopService.findByClientsAndId(client, id);
-        List<Stop> stops = client.getStops();
+        Optional<Route> routeFavorite = routeService.findRoutesByClient(client, id);
+        List<Route> routes = client.getRoutes();
 
-        if (stopFavorites.isEmpty()) {
-            stops.add(stopService.findOne(id));
+        if (routeFavorite.isEmpty()) {
+            routes.add(routeService.findOne(id).get());
         } else {
-            stops.remove(stopService.findOne(id));
+            routes.remove(routeService.findOne(id).get());
         }
-
-        client.setStops(stops);
-
+        client.setRoutes(routes);
 
         return ResponseEntity.ok(Map.of("message", "Successfully removed from favorites"));
     }
@@ -52,4 +50,5 @@ public class StopFavoritesApiController {
         ClientDetails clientDetails = (ClientDetails) authentication.getPrincipal();
         return clientDetails.getClient();
     }
+
 }

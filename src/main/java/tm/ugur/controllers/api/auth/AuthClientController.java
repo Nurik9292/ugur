@@ -1,4 +1,4 @@
-package tm.ugur.controllers.API.auth;
+package tm.ugur.controllers.api.auth;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

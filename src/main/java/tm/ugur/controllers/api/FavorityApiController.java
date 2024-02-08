@@ -1,4 +1,4 @@
-package tm.ugur.controllers.API;
+package tm.ugur.controllers.api;
 
 import org.springframework.stereotype.Controller;
 
