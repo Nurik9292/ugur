@@ -46,6 +46,7 @@ public class AuthClientController {
 
         try {
             this.clientRegistrationService.register(clientDTO);
+
             return ResponseEntity.ok(Map.of("message", "Sms send"));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", e.getMessage()));
@@ -62,14 +63,13 @@ public class AuthClientController {
         Optional<Client> optionalClient = clientService.findClientByPhone(authenticationDTO.getPhone());
 
         if(optionalClient.isPresent()) {
-
             if (!optionalClient.get().getOtp().equals(authenticationDTO.getOtp())) {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
 
             this.clientService.update(optionalClient.get(), authenticationDTO);
 
-            return ResponseEntity.ok(Map.of("oken", jwtUtil.generateToken(authenticationDTO.getPhone())));
+            return ResponseEntity.ok(Map.of("token", jwtUtil.generateToken(authenticationDTO.getPhone())));
         }
 
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
