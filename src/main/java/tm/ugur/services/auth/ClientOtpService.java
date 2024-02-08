@@ -26,4 +26,13 @@ public class ClientOtpService {
         clientService.store(client);
         return otp;
     }
+
+    public String generateAndSaveOtp(Client client, Client existingClient) {
+        Random random = new Random();
+        String otp = IntStream.range(1000, 10000).boxed().skip(random.nextInt(9000)).findFirst().get().toString();
+        client.setOtp(otp);
+        client.setId(existingClient.getId());
+        clientService.store(client);
+        return otp;
+    }
 }

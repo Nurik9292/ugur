@@ -11,11 +11,10 @@ import tm.ugur.models.Client;
 import tm.ugur.services.ClientService;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalTime;
-import java.util.Map;
 import java.util.Optional;
 
-import static java.lang.Thread.sleep;
 
 @Service
 public class ClientRegistrationService {
@@ -42,13 +41,16 @@ public class ClientRegistrationService {
         Optional<Client> existingClient = clientService.findClientByPhone(clientDTO.getPhone());
 
         if (existingClient.isPresent()) {
-            long timeOut = Duration.between(existingClient.get().getUpdatedAt().toInstant(), LocalTime.now()).getSeconds();
+            long timeOut = Duration.between(existingClient.get().getUpdatedAt().toInstant(), Instant.now()).getSeconds();
             if (timeOut <= endTime) {
                 throw new Exception("To many request");
             }
         }
+
         Client client = mapper.map(clientDTO, Client.class);
-        String otp = clientOtpService.generateAndSaveOtp(client);
+        String otp = existingClient.isPresent() ?
+                clientOtpService.generateAndSaveOtp(client, existingClient.get()) :
+                clientOtpService.generateAndSaveOtp(client);
 
         try {
             smsService.sendSms(client.getPhone(), otp);

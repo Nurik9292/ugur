@@ -57,14 +57,14 @@ public class AuthClientController {
     public ResponseEntity<Map<String, String>> verifyOpt(@RequestBody AuthenticationClientDTO authenticationDTO,
                                                          BindingResult result) {
         if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Ошибка"));
+            return ResponseEntity.badRequest().body(Map.of("message", "Errors"));
         }
 
         Optional<Client> optionalClient = clientService.findClientByPhone(authenticationDTO.getPhone());
 
         if(optionalClient.isPresent()) {
             if (!optionalClient.get().getOtp().equals(authenticationDTO.getOtp())) {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Unauthorized connection attempt"));
             }
 
             this.clientService.update(optionalClient.get(), authenticationDTO);
@@ -72,7 +72,7 @@ public class AuthClientController {
             return ResponseEntity.ok(Map.of("token", jwtUtil.generateToken(authenticationDTO.getPhone())));
         }
 
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "Not found client"));
     }
 
 
