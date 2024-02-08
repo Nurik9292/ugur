@@ -47,15 +47,11 @@ public class StopService {
         int pageNumber = page == null ? 1 : Integer.parseInt(page);
         int itemsPerPage = items == null ? 10 : Integer.parseInt(items);
 
-        Page<Stop> stops = null;
+        List<Stop> stops =  sortBy.equals("name")
+                ? this.stopRepository.findAll(Sort.by(sortBy)) : this.stopRepository.findAll();
 
-        if(sortBy != null && sortBy.equals("name")){
-            stops = this.findAll(pageNumber - 1, itemsPerPage, sortBy);
-        }else{
-            stops = this.findAll(pageNumber - 1, itemsPerPage);
-        }
 
-        return stops;
+        return paginationService.createPage(stops, pageNumber, itemsPerPage);
 
     }
 
@@ -129,24 +125,6 @@ public class StopService {
         Point point = stop.getLocation();
         stop.setLat(point.getX());
         stop.setLng(point.getY());
-    }
-
-
-    private Page<Stop> findPaginated(Pageable pageable, List<Stop> stops, String sortBy){
-       int pageSize = pageable.getPageSize();
-       int currentPage = pageable.getPageNumber();
-       int startItem = currentPage * pageSize;
-
-       List<Stop> list;
-
-       if(stops.size() < startItem){
-           list = Collections.emptyList();
-       }else{
-           int toIndex = Math.min(startItem + pageSize, stops.size());
-           list = stops.subList(startItem, toIndex);
-       }
-
-           return new PageImpl<Stop>(list, PageRequest.of(currentPage, pageSize), stops.size());
     }
 
 
