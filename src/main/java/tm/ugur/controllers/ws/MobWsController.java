@@ -80,19 +80,17 @@ public class MobWsController {
                 }
                 String number = this.map.get(this.carNumber.toString());
 
-                if (this.map.containsKey(this.carNumber.toString())) {
-                    if(this.map.get(carNumber.toString()) == number){
-                        BusDTO bus = new BusDTO(
-                                this.carNumber.toString(),
-                                Integer.parseInt(number),
-                                node.get("status").get("speed").asText(),
-                                node.get("imei").asText(),
-                                node.get("status").get("dir").asText(),
-                                node.get("status").get("lat").asText(),
-                                node.get("status").get("lon").asText()
-                        );
-                        this.sendToMobileApp.convertAndSend("/topic/mobile", this.mapper.writeValueAsString(bus));
-                    }
+                if (numberRoute != null && numberRoute.equals(this.map.get(this.carNumber.toString()))) {
+                    BusDTO bus = new BusDTO(
+                            this.carNumber.toString(),
+                            Integer.parseInt(number),
+                            node.get("status").get("speed").asText(),
+                            node.get("imei").asText(),
+                            node.get("status").get("dir").asText(),
+                            node.get("status").get("lat").asText(),
+                            node.get("status").get("lon").asText()
+                    );
+                    this.sendToMobileApp.convertAndSend("/topic/mobile", this.mapper.writeValueAsString(bus));
                 }
             }
         } catch (Exception e) {
