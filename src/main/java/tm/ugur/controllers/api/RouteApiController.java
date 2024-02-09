@@ -69,7 +69,6 @@ public class RouteApiController {
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event){
-        System.out.println(2);
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         scheduledExecutorService.scheduleAtFixedRate(this::sendBusData, 0, 3, TimeUnit.SECONDS);
     }
@@ -84,11 +83,15 @@ public class RouteApiController {
             Map<String, BusDTO> imdateBuses = imdataService.getBusData();
             Map<String, BusDTO> atLogistikaBuses = atLogisticService.getBusData();
             List<BusDTO> buses = new ArrayList<>();
-            System.out.println(imdateBuses);
+
             for (Map.Entry<String, BusDTO> entry : imdateBuses.entrySet()) {
                 BusDTO imdataBus = entry.getValue();
+                System.out.println("Imdat");
+                System.out.println(imdataBus);
                 if (imdataBus.getNumber().equals(numberRoute) && atLogistikaBuses.containsKey(entry.getKey())) {
                     BusDTO atLogistikaBus = atLogistikaBuses.get(entry.getKey());
+                    System.out.println("Atlogisika");
+                    System.out.println(atLogistikaBus);
                     buses.add(new BusDTO(
                             1L,
                             imdataBus.getCarNumber(),

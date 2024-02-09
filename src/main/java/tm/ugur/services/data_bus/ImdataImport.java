@@ -37,7 +37,6 @@ public class ImdataImport extends BusDataImplImport {
                           carNumber,
                           Integer.parseInt(object.get("number").asText())));
             });
-            System.out.println(buses);
             return buses;
         }catch (JsonProcessingException e){
             logger.error("Api imdata unavailable: " + e.getMessage());
