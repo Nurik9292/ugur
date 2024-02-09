@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import tm.ugur.dto.RouteDTO;
@@ -25,6 +26,7 @@ public class RouteSeed implements CommandLineRunner {
     }
 
     @Override
+    @DependsOn("CitySeed")
     public void run(String... args) throws Exception {
         if(this.routeService.findAll().isEmpty()) {
             ClassPathResource resource = new ClassPathResource("routes.json");
