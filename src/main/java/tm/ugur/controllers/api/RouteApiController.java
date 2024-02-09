@@ -20,7 +20,9 @@ import tm.ugur.services.data_bus.ImdataImport;
 import tm.ugur.util.errors.route.RouteErrorResponse;
 import tm.ugur.util.errors.route.RouteNotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -78,21 +80,26 @@ public class RouteApiController {
 
     private void sendBusData(){
         try {
-            ObjectMapper mapper = new ObjectMapper();
+            Map<String, BusDTO> imdateBuses = imdataService.getBusData();
+            Map<String, BusDTO> atLogistikaBuses = atLogisticService.getBusData();
+            List<BusDTO> buses = new ArrayList<>();
 
-            List<BusDTO> buses = Stream.concat(
-                    imdataService.getBusData().values().stream(),
-                    atLogisticService.getBusData().values().stream())
-                    .filter(bus -> bus.getNumber().equals(numberRoute))
-                    .map(bus -> new BusDTO(
+            for (Map.Entry<String, BusDTO> entry : imdateBuses.entrySet()) {
+                BusDTO imdataBus = entry.getValue();
+                if (imdataBus.getNumber().equals(numberRoute) && atLogistikaBuses.containsKey(entry.getKey())) {
+                    BusDTO atLogistikaBus = atLogistikaBuses.get(entry.getKey());
+                    buses.add(new BusDTO(
                             1L,
-                            bus.getCarNumber(),
-                            bus.getNumber(),
-                            bus.getSpeed(),
-                            bus.getDir(),
-                            bus.getLocation()))
-                    .collect(Collectors.toList());
+                            imdataBus.getCarNumber(),
+                            imdataBus.getNumber(),
+                            atLogistikaBus.getSpeed(),
+                            atLogistikaBus.getDir(),
+                            atLogistikaBus.getLocation()
+                    ));
+                }
+            }
 
+            ObjectMapper mapper = new ObjectMapper();
             sendToMobileApp.convertAndSend("/topic/mobile", mapper.writeValueAsString(buses));
         } catch (Exception e) {
             logger.error("API unavailable: " + e.getMessage());
