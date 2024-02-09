@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("favorites/stops")
+@RequestMapping("/api/favorites/stops")
 public class StopFavoritesApiController {
 
     private final StopService stopService;

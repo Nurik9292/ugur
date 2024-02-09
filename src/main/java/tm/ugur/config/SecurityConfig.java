@@ -48,9 +48,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth ->
                     auth
                         .requestMatchers("/api/auth/register", "/api/auth/verify_otp").permitAll()
-                            .requestMatchers("/websocket-ugur", "/websocket-ugur/**").permitAll()
-                            .requestMatchers("/topic", "/topic/mobile", "/topic/**").permitAll()
-                            .requestMatchers("/app/**", "/app/", "/app/number-route").permitAll()
                             .anyRequest().permitAll())
                 .sessionManagement(sm ->
                         sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -21,7 +21,6 @@ public class BusDTO extends AbstractDTO{
     }
 
     public BusDTO(String speed, String dir, String lat, String lng){
-        this.carNumber = carNumber;
         this.speed = speed;
         this.dir = dir;
         this.location = new PointDTO(Double.parseDouble(lat), Double.parseDouble(lng));
