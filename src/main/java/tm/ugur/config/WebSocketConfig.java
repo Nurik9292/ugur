@@ -16,6 +16,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry){
+        registry.addEndpoint("/websocket-ugur").setAllowedOrigins("*");
         registry.addEndpoint("/websocket-ugur").setAllowedOrigins("*").withSockJS();
     }
 

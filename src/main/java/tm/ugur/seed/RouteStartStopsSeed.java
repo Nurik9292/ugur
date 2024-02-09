@@ -2,6 +2,7 @@ package tm.ugur.seed;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.geolatte.geom.M;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
@@ -14,6 +15,7 @@ import tm.ugur.services.StopService;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Component
 public class RouteStartStopsSeed implements CommandLineRunner {
@@ -34,10 +36,13 @@ public class RouteStartStopsSeed implements CommandLineRunner {
 //        ClassPathResource resource = new ClassPathResource("route_stops.json");
 //        ObjectMapper mapper = new ObjectMapper();
 //        Map<String, Map<String, Integer>> startRouteStops = mapper.readValue(resource.getFile(), Map.class);
-//        System.out.println(startRouteStops);
 //        List<Route> routes = routeService.findAll();
 //
+//        Set<Map.Entry<String, Map<String, Integer>>> entries = startRouteStops.entrySet();
+//
 //        for (Route route : routes){
+
+
 //            Map<String, Integer> stops = startRouteStops.get(route.getName());
 //            for (Map.Entry<String, Integer> entry : stops.entrySet()){
 //                    this.startRouteStopService.store(

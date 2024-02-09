@@ -69,6 +69,7 @@ public class RouteApiController {
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event){
+        System.out.println(2);
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         scheduledExecutorService.scheduleAtFixedRate(this::sendBusData, 0, 3, TimeUnit.SECONDS);
     }
@@ -83,7 +84,7 @@ public class RouteApiController {
             Map<String, BusDTO> imdateBuses = imdataService.getBusData();
             Map<String, BusDTO> atLogistikaBuses = atLogisticService.getBusData();
             List<BusDTO> buses = new ArrayList<>();
-
+            System.out.println(imdateBuses);
             for (Map.Entry<String, BusDTO> entry : imdateBuses.entrySet()) {
                 BusDTO imdataBus = entry.getValue();
                 if (imdataBus.getNumber().equals(numberRoute) && atLogistikaBuses.containsKey(entry.getKey())) {
@@ -98,7 +99,6 @@ public class RouteApiController {
                     ));
                 }
             }
-
             ObjectMapper mapper = new ObjectMapper();
             sendToMobileApp.convertAndSend("/topic/mobile", mapper.writeValueAsString(buses));
         } catch (Exception e) {
