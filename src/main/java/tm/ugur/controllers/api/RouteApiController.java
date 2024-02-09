@@ -1,6 +1,5 @@
 package tm.ugur.controllers.api;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,19 +14,18 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import tm.ugur.controllers.ws.MobWsController;
 import tm.ugur.dto.BusDTO;
 import tm.ugur.dto.RouteDTO;
-import tm.ugur.models.Route;
 import tm.ugur.services.api.RouteApiService;
-import tm.ugur.services.data_bus.AtLogisticService;
-import tm.ugur.services.data_bus.ImdataService;
+import tm.ugur.services.data_bus.AtLogisticImport;
+import tm.ugur.services.data_bus.ImdataImport;
 import tm.ugur.util.errors.route.RouteErrorResponse;
 import tm.ugur.util.errors.route.RouteNotFoundException;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/routes")
@@ -35,19 +33,18 @@ public class RouteApiController {
 
     private final RouteApiService routeService;
     private final SimpMessageSendingOperations sendToMobileApp;
-    private final ImdataService imdataService;
-    private final AtLogisticService atLogisticService;
-
+    private final ImdataImport imdataService;
+    private final AtLogisticImport atLogisticService;
     private ScheduledExecutorService scheduledExecutorService;
-    private ObjectMapper mapper;
-    private StringBuilder carNumber;
-
     private String numberRoute;
 
     private final static Logger logger = LoggerFactory.getLogger(MobWsController.class);
 
     @Autowired
-    public RouteApiController(RouteApiService routeService, SimpMessageSendingOperations sendToMobileApp, ImdataService imdataService, AtLogisticService atLogisticService) {
+    public RouteApiController(RouteApiService routeService,
+                              SimpMessageSendingOperations sendToMobileApp,
+                              ImdataImport imdataService,
+                              AtLogisticImport atLogisticService) {
         this.routeService = routeService;
         this.sendToMobileApp = sendToMobileApp;
         this.imdataService = imdataService;
@@ -81,29 +78,22 @@ public class RouteApiController {
 
     private void sendBusData(){
         try {
-            Map<String, String> map = imdataService.getDataBus();
-            List<BusDTO> busDTOList = new ArrayList<>();
-            for (JsonNode node : atLogisticService.getDataBus().get("list")) {
-                if (!node.get("vehiclenumber").asText().isEmpty()) {
-                    carNumber.setLength(0);
-                    carNumber.append(node.get("vehiclenumber").asText().trim());
-                }
-                String number = map.get(this.carNumber.toString());
-                if (this.numberRoute != null && numberRoute.equals(map.get(carNumber.toString()))
-                        && numberRoute.equals(number)) {
-                    BusDTO bus = new BusDTO(
-                            carNumber.toString(),
-                            Integer.parseInt(number),
-                            node.get("status").get("speed").asText(),
-                            node.get("imei").asText(),
-                            node.get("status").get("dir").asText(),
-                            node.get("status").get("lat").asText(),
-                            node.get("status").get("lon").asText()
-                    );
-                    busDTOList.add(bus);
-                }
-            }
-            sendToMobileApp.convertAndSend("/topic/mobile", mapper.writeValueAsString(busDTOList));
+            ObjectMapper mapper = new ObjectMapper();
+
+            List<BusDTO> buses = Stream.concat(
+                    imdataService.getBusData().values().stream(),
+                    atLogisticService.getBusData().values().stream())
+                    .filter(bus -> bus.getNumber().equals(numberRoute))
+                    .map(bus -> new BusDTO(
+                            1L,
+                            bus.getCarNumber(),
+                            bus.getNumber(),
+                            bus.getSpeed(),
+                            bus.getDir(),
+                            bus.getLocation()))
+                    .collect(Collectors.toList());
+
+            sendToMobileApp.convertAndSend("/topic/mobile", mapper.writeValueAsString(buses));
         } catch (Exception e) {
             logger.error("API unavailable: " + e.getMessage());
         }

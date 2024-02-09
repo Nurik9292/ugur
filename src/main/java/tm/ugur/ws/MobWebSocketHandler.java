@@ -13,8 +13,8 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 import tm.ugur.models.Bus;
-import tm.ugur.services.data_bus.AtLogisticService;
-import tm.ugur.services.data_bus.ImdataService;
+import tm.ugur.services.data_bus.AtLogisticImport;
+import tm.ugur.services.data_bus.ImdataImport;
 
 import java.util.Map;
 
@@ -22,8 +22,8 @@ import java.util.Map;
 public class MobWebSocketHandler extends TextWebSocketHandler {
 
     private final SimpMessagingTemplate messagingTemplate;
-    private final ImdataService imdataService;
-    private final AtLogisticService atLogisticService;
+    private final ImdataImport imdataService;
+    private final AtLogisticImport atLogisticService;
     private Map<String, String> map;
     private StringBuilder carNumbmer;
     private  ObjectMapper mapper;
@@ -32,7 +32,7 @@ public class MobWebSocketHandler extends TextWebSocketHandler {
     private final static Logger logger = LoggerFactory.getLogger(MobWebSocketHandler.class);
 
     @Autowired
-    public MobWebSocketHandler(SimpMessagingTemplate messagingTemplate, ImdataService imdataService, AtLogisticService atLogisticService) {
+    public MobWebSocketHandler(SimpMessagingTemplate messagingTemplate, ImdataImport imdataService, AtLogisticImport atLogisticService) {
         this.messagingTemplate = messagingTemplate;
         this.imdataService = imdataService;
         this.atLogisticService = atLogisticService;

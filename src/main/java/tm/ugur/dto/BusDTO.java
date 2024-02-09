@@ -9,18 +9,45 @@ public class BusDTO extends AbstractDTO{
     private String carNumber;
     private Integer number;
     private String speed;
-    private String imei;
     private String dir;
     private PointDTO location;
 
 
     public BusDTO(){}
 
-    public BusDTO(String carNumber, Integer number, String speed, String imei, String dir, String lat, String lng){
+    public BusDTO(String carNumber, Integer number){
+        this.carNumber = carNumber;
+        this.number = number;
+    }
+
+    public BusDTO(String speed, String dir, String lat, String lng){
+        this.carNumber = carNumber;
+        this.speed = speed;
+        this.dir = dir;
+        this.location = new PointDTO(Double.parseDouble(lat), Double.parseDouble(lng));
+    }
+
+
+    public BusDTO(String carNumber, String speed, String dir, String lat, String lng){
+        this.carNumber = carNumber;
+        this.speed = speed;
+        this.dir = dir;
+        this.location = new PointDTO(Double.parseDouble(lat), Double.parseDouble(lng));
+    }
+
+    public BusDTO(Long id, String carNumber, Integer number, String speed, String dir, PointDTO location){
+        this.id = id;
         this.carNumber = carNumber;
         this.number = number;
         this.speed = speed;
-        this.imei = imei;
+        this.dir = dir;
+        this.location = location;
+    }
+
+    public BusDTO(String carNumber, Integer number, String speed, String dir, String lat, String lng){
+        this.carNumber = carNumber;
+        this.number = number;
+        this.speed = speed;
         this.dir = dir;
         this.location = new PointDTO(Double.parseDouble(lat), Double.parseDouble(lng));
     }
@@ -50,14 +77,6 @@ public class BusDTO extends AbstractDTO{
         this.speed = speed;
     }
 
-    public String getImei() {
-        return imei;
-    }
-
-    public void setImei(String imei) {
-        this.imei = imei;
-    }
-
     public String getDir() {
         return dir;
     }
@@ -80,7 +99,6 @@ public class BusDTO extends AbstractDTO{
                 "carNumber='" + carNumber + '\'' +
                 ", number='" + number + '\'' +
                 ", speed='" + speed + '\'' +
-                ", imei='" + imei + '\'' +
                 ", dir='" + dir + '\'' +
                 '}';
     }
