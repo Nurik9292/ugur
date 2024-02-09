@@ -25,6 +25,11 @@ public class StartRouteStopService {
     }
 
     @Transactional
+    public void store(StartRouteStop  startRouteStop){
+        this.startRouteStopRepository.save(startRouteStop);
+    }
+
+    @Transactional
     public void updateIndexs(String ids, Route route) {
         Map<Long, Stop> stopMap = new HashMap<>();
         route.getStartStops().forEach(stop -> stopMap.put(stop.getId(), stop));

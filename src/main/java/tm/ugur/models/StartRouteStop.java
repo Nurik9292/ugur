@@ -30,6 +30,12 @@ public class StartRouteStop {
         this.index = index;
     }
 
+    public StartRouteStop(Route route, Stop stop, Integer index){
+        this.route = route;
+        this.stop = stop;
+        this.index = index;
+    }
+
     public long getId() {
         return id;
     }

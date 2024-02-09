@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import tm.ugur.dto.BusDTO;
-import tm.ugur.models.Bus;
 import tm.ugur.services.data_bus.AtLogisticService;
 import tm.ugur.services.data_bus.ImdataService;
 
@@ -84,7 +81,7 @@ public class MobWsController {
                 String number = this.map.get(this.carNumber.toString());
 
                 if (this.map.containsKey(this.carNumber.toString())) {
-                    if(this.map.containsValue(numberRoute)){
+                    if(this.map.get(carNumber.toString()) == number){
                         BusDTO bus = new BusDTO(
                                 this.carNumber.toString(),
                                 Integer.parseInt(number),
