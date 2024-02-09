@@ -41,9 +41,6 @@ public class MobWsController {
 //        this.numberRoute = number;
 //        return ResponseEntity.ok(HttpStatus.OK);
 //    }
-//
-//
-//
 
 
 }
