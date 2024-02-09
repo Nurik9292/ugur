@@ -18,6 +18,9 @@ import tm.ugur.dto.BusDTO;
 import tm.ugur.services.data_bus.AtLogisticService;
 import tm.ugur.services.data_bus.ImdataService;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -31,7 +34,6 @@ public class MobWsController {
     private final AtLogisticService atLogisticService;
 
     private ScheduledExecutorService scheduledExecutorService;
-    private Map<String, String> map;
     private ObjectMapper mapper;
     private StringBuilder carNumber;
 
@@ -48,10 +50,6 @@ public class MobWsController {
         this.mapper = new ObjectMapper();
     }
 
-//    @MessageMapping("/number-route")
-//    public void acceptNumberRoute(@Payload String numberRoute){
-//        this.numberRoute = numberRoute;
-//    }
 
     @GetMapping("/api/buses/number/{number}")
     public ResponseEntity<HttpStatus> getBusesForNumber(@PathVariable("number") String number){
@@ -72,15 +70,17 @@ public class MobWsController {
 
     private void sendBusData(){
         try {
-            map = this.imdataService.getDataBus();
+            Map<String, String> map = this.imdataService.getDataBus();
+            List<BusDTO> busDTOList = new ArrayList<>();
             for (JsonNode node : this.atLogisticService.getDataBus().get("list")) {
                 if (!node.get("vehiclenumber").asText().isEmpty()) {
                     this.carNumber.setLength(0);
                     this.carNumber.append(node.get("vehiclenumber").asText().trim());
                 }
-                String number = this.map.get(this.carNumber.toString());
+                String number = map.get(this.carNumber.toString());
 
-                if (numberRoute != null && numberRoute.equals(this.map.get(this.carNumber.toString()))) {
+                if (this.numberRoute != null && this.numberRoute.equals(map.get(this.carNumber.toString()))
+                    && this.numberRoute.equals(number)) {
                     BusDTO bus = new BusDTO(
                             this.carNumber.toString(),
                             Integer.parseInt(number),
@@ -90,11 +90,14 @@ public class MobWsController {
                             node.get("status").get("lat").asText(),
                             node.get("status").get("lon").asText()
                     );
-                    this.sendToMobileApp.convertAndSend("/topic/mobile", this.mapper.writeValueAsString(bus));
+                    busDTOList.add(bus);
                 }
             }
+            this.sendToMobileApp.convertAndSend("/topic/mobile", this.mapper.writeValueAsString(busDTOList));
         } catch (Exception e) {
             logger.error("API unavailable: " + e.getMessage());
         }
     }
+
+
 }
