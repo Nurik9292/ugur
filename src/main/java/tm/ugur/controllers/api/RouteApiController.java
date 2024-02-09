@@ -38,7 +38,7 @@ public class RouteApiController {
     private final ImdataImport imdataService;
     private final AtLogisticImport atLogisticService;
     private ScheduledExecutorService scheduledExecutorService;
-    private String numberRoute;
+    private Integer numberRoute;
 
     private final static Logger logger = LoggerFactory.getLogger(MobWsController.class);
 
@@ -63,7 +63,7 @@ public class RouteApiController {
     @GetMapping("/{id}")
     public RouteDTO getRoute(@PathVariable("id") int id){
         RouteDTO route = this.routeService.findOne(id);
-        numberRoute = String.valueOf(route.getNumber());
+        numberRoute = route.getNumber();
         return route;
     }
 
@@ -86,12 +86,8 @@ public class RouteApiController {
 
             for (Map.Entry<String, BusDTO> entry : imdateBuses.entrySet()) {
                 BusDTO imdataBus = entry.getValue();
-                System.out.println("Imdat");
-                System.out.println(imdataBus);
-                if (imdataBus.getNumber().equals(numberRoute) && atLogistikaBuses.containsKey(entry.getKey())) {
+                if (imdataBus.getNumber() == numberRoute && atLogistikaBuses.containsKey(entry.getKey())) {
                     BusDTO atLogistikaBus = atLogistikaBuses.get(entry.getKey());
-                    System.out.println("Atlogisika");
-                    System.out.println(atLogistikaBus);
                     buses.add(new BusDTO(
                             1L,
                             imdataBus.getCarNumber(),
