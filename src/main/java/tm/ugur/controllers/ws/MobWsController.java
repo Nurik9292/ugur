@@ -18,13 +18,11 @@ import tm.ugur.dto.BusDTO;
 import tm.ugur.services.data_bus.AtLogisticService;
 import tm.ugur.services.data_bus.ImdataService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 @RestController
 public class MobWsController {
@@ -51,53 +49,14 @@ public class MobWsController {
     }
 
 
-    @GetMapping("/api/buses/number/{number}")
-    public ResponseEntity<HttpStatus> getBusesForNumber(@PathVariable("number") String number){
-        this.numberRoute = number;
-        return ResponseEntity.ok(HttpStatus.OK);
-    }
-
-    @EventListener
-    public void handleWebSocketConnectListener(SessionConnectedEvent event){
-        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleAtFixedRate(this::sendBusData, 0, 3, TimeUnit.SECONDS);
-    }
-
-    @EventListener
-    public void handleWebSocketDesconectListener(SessionDisconnectEvent event){
-        scheduledExecutorService.shutdown();
-    }
-
-    private void sendBusData(){
-        try {
-            Map<String, String> map = this.imdataService.getDataBus();
-            List<BusDTO> busDTOList = new ArrayList<>();
-            for (JsonNode node : this.atLogisticService.getDataBus().get("list")) {
-                if (!node.get("vehiclenumber").asText().isEmpty()) {
-                    this.carNumber.setLength(0);
-                    this.carNumber.append(node.get("vehiclenumber").asText().trim());
-                }
-                String number = map.get(this.carNumber.toString());
-
-                if (this.numberRoute != null && this.numberRoute.equals(map.get(this.carNumber.toString()))
-                    && this.numberRoute.equals(number)) {
-                    BusDTO bus = new BusDTO(
-                            this.carNumber.toString(),
-                            Integer.parseInt(number),
-                            node.get("status").get("speed").asText(),
-                            node.get("imei").asText(),
-                            node.get("status").get("dir").asText(),
-                            node.get("status").get("lat").asText(),
-                            node.get("status").get("lon").asText()
-                    );
-                    busDTOList.add(bus);
-                }
-            }
-            this.sendToMobileApp.convertAndSend("/topic/mobile", this.mapper.writeValueAsString(busDTOList));
-        } catch (Exception e) {
-            logger.error("API unavailable: " + e.getMessage());
-        }
-    }
+//    @GetMapping("/api/buses/number/{number}")
+//    public ResponseEntity<HttpStatus> getBusesForNumber(@PathVariable("number") String number){
+//        this.numberRoute = number;
+//        return ResponseEntity.ok(HttpStatus.OK);
+//    }
+//
+//
+//
 
 
 }
