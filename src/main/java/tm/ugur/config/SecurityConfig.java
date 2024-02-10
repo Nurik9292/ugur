@@ -55,8 +55,8 @@ public class SecurityConfig {
                 .formLogin(AbstractAuthenticationFilterConfigurer::disable)
                 .sessionManagement(sm ->
                         sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(exc -> exc.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .addFilterBefore(this.jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(exc -> exc.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .build();
     }
 
@@ -73,7 +73,6 @@ public class SecurityConfig {
                         .requestMatchers("/app/**", "/app/", "/app/number-route").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
-//                .formLogin(AbstractAuthenticationFilterConfigurer::disable)
                 .build();
     }
 

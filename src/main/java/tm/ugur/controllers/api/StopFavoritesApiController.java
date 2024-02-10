@@ -34,7 +34,6 @@ public class StopFavoritesApiController {
         Client client = getAuthClient();
         Optional<Stop> stopFavorites = stopService.findByClientsAndId(client, id);
         List<Stop> stops = client.getStops();
-
         if (stopFavorites.isEmpty()) {
             stops.add(stopService.findOne(id));
         } else {
@@ -42,7 +41,6 @@ public class StopFavoritesApiController {
         }
 
         client.setStops(stops);
-
 
         return ResponseEntity.ok(Map.of("message", "Successfully removed from favorites"));
     }

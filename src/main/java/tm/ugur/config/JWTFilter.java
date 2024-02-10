@@ -33,7 +33,6 @@ public class JWTFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
-
         if(authHeader != null && !authHeader.isBlank() && authHeader.startsWith("Bearer ")){
             String jwt = authHeader.substring(7);
             if (jwt.isBlank()){
@@ -52,6 +51,7 @@ public class JWTFilter extends OncePerRequestFilter {
                 }
             }
         }
+
         filterChain.doFilter(request, response);
     }
 }
