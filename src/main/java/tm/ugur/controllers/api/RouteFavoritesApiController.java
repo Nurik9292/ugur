@@ -32,11 +32,10 @@ public class RouteFavoritesApiController {
     public ResponseEntity<Map<String, String>> addOrRemoveRoute(@PathVariable("id") Long id) {
 
         Client client = getAuthClient();
-        System.out.println(client);
 
         Optional<Route> routeFavorite = routeService.findRoutesByClient(client, id);
         List<Route> routes = client.getRoutes();
-        System.out.println(2);
+
         if (routeFavorite.isEmpty()) {
             routes.add(routeService.findOne(id).get());
         } else {

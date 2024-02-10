@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface ClientRepository extends JpaRepository<Client, Long> {
 
     Optional<Client> findClientByPhone(String phone);
-
     Optional<Client> findClientByRoutesAndId(Route route, Long id);
+
+    Boolean existsByRoutes(Route route);
 }

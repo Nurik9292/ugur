@@ -28,7 +28,6 @@ public class StopApiController {
     }
 
 
-
     @GetMapping("/{id}")
     public StopDTO getStop(@PathVariable("id") Long id){
         return this.stopService.getStop(id);

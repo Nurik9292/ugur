@@ -27,7 +27,7 @@ public class RouteDTO extends AbstractDTO{
 
     private LineStringDTO backLine;
 
-    private int routingTime;
+    private Boolean isFavorite;
 
 
     public RouteDTO(){
@@ -107,13 +107,14 @@ public class RouteDTO extends AbstractDTO{
         this.backLine = backLine;
     }
 
-    public int getRoutingTime() {
-        return routingTime;
+    public Boolean getFavorite() {
+        return isFavorite;
     }
 
-    public void setRoutingTime(int routingTime) {
-        this.routingTime = routingTime;
+    public void setFavorite(Boolean favorite) {
+        isFavorite = favorite;
     }
+
 
 
     @Override
@@ -128,4 +129,6 @@ public class RouteDTO extends AbstractDTO{
                 ", id=" + id +
                 '}';
     }
+
+
 }

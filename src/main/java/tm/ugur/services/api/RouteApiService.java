@@ -1,11 +1,15 @@
 package tm.ugur.services.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tm.ugur.dto.RouteDTO;
+import tm.ugur.models.Client;
 import tm.ugur.models.Route;
 import tm.ugur.repo.RouteRepository;
+import tm.ugur.security.ClientDetails;
 import tm.ugur.util.errors.route.RouteNotFoundException;
 import tm.ugur.util.mappers.RouteMapper;
 
@@ -36,8 +40,10 @@ public class RouteApiService {
     }
 
     public RouteDTO findOne(long id){
-        return this.convertToRouteDTO(
+        RouteDTO routeDTO = this.convertToRouteDTO(
                 this.routeRepository.findById(Long.valueOf(id)).orElseThrow(RouteNotFoundException::new));
+        routeDTO.setFavorite(isFavorite(routeDTO));
+        return routeDTO;
     }
 
 
@@ -50,6 +56,16 @@ public class RouteApiService {
         return this.routeMapper.toDto(route);
     }
 
+    private boolean isFavorite(RouteDTO routeDTO){
+        Client client = getAuthClient();
+        return client.getRoutes().stream()
+                .anyMatch(route -> route.getId() == routeDTO.getId());
+    }
 
 
+    private Client getAuthClient(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        ClientDetails clientDetails = (ClientDetails) authentication.getPrincipal();
+        return clientDetails.getClient();
+    }
 }

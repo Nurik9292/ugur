@@ -12,6 +12,6 @@ import java.util.List;
 public interface StartRouteStopRepository extends JpaRepository<StartRouteStop, Long> {
     List<StartRouteStop> findByStop(Stop stop);
     List<StartRouteStop> findByStopAndRoute(Stop stop, Route route);
-
     Boolean existsByRoute(Route route);
+
 }

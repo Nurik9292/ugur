@@ -8,12 +8,17 @@ import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import tm.ugur.controllers.ws.MobWsController;
 import tm.ugur.dto.BusDTO;
 import tm.ugur.dto.RouteDTO;
+import tm.ugur.models.Client;
+import tm.ugur.security.ClientDetails;
+import tm.ugur.services.ClientService;
 import tm.ugur.services.api.RouteApiService;
 import tm.ugur.services.data_bus.AtLogisticImport;
 import tm.ugur.services.data_bus.ImdataImport;
@@ -38,6 +43,8 @@ public class RouteApiController {
     private final ImdataImport imdataService;
     private final AtLogisticImport atLogisticService;
     private ScheduledExecutorService scheduledExecutorService;
+    private final ClientService clientService;
+
     private Integer numberRoute;
 
     private final static Logger logger = LoggerFactory.getLogger(MobWsController.class);
@@ -46,11 +53,12 @@ public class RouteApiController {
     public RouteApiController(RouteApiService routeService,
                               SimpMessageSendingOperations sendToMobileApp,
                               ImdataImport imdataService,
-                              AtLogisticImport atLogisticService) {
+                              AtLogisticImport atLogisticService, ClientService clientService) {
         this.routeService = routeService;
         this.sendToMobileApp = sendToMobileApp;
         this.imdataService = imdataService;
         this.atLogisticService = atLogisticService;
+        this.clientService = clientService;
     }
 
 
@@ -112,5 +120,11 @@ public class RouteApiController {
                 "Route with this id wasn't found!", System.currentTimeMillis());
 
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    private Client getAuthClient(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        ClientDetails clientDetails = (ClientDetails) authentication.getPrincipal();
+        return clientDetails.getClient();
     }
 }
