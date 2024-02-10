@@ -24,6 +24,15 @@ public class EndRouteStopService {
         this.endRouteStopRepository = endRouteStopRepository;
     }
 
+    public boolean hasRoute(Route route){
+        return this.endRouteStopRepository.existsByRoute(route);
+    }
+
+    @Transactional
+    public void store(EndRouteStop endRouteStop){
+        this.endRouteStopRepository.save(endRouteStop);
+    }
+
 
     @Transactional
     public void updateIndexs(String ids, Route route) {

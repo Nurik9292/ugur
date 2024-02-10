@@ -24,6 +24,10 @@ public class StartRouteStopService {
         this.startRouteStopRepository = startRouteStopRepository;
     }
 
+    public Boolean hasRoute(Route route){
+        return  this.startRouteStopRepository.existsByRoute(route);
+    }
+
     @Transactional
     public void store(StartRouteStop  startRouteStop){
         this.startRouteStopRepository.save(startRouteStop);

@@ -7,41 +7,41 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
+import tm.ugur.models.EndRouteStop;
 import tm.ugur.models.Route;
-import tm.ugur.models.StartRouteStop;
+import tm.ugur.services.EndRouteStopService;
 import tm.ugur.services.RouteService;
-import tm.ugur.services.StartRouteStopService;
 import tm.ugur.services.StopService;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
-@Order(4)
-public class RouteStartStopsSeed implements CommandLineRunner {
+@Order(5)
+public class RouteEndStopsSeed implements CommandLineRunner {
 
     private final RouteService routeService;
     private final StopService stopService;
-    private final StartRouteStopService startRouteStopService;
+    private final EndRouteStopService endRouteStopService;
 
     @Autowired
-    public RouteStartStopsSeed(RouteService routeService,
-                               StopService stopService,
-                               StartRouteStopService startRouteStopService) {
+    public RouteEndStopsSeed(RouteService routeService, StopService stopService, EndRouteStopService endRouteStopService) {
         this.routeService = routeService;
         this.stopService = stopService;
-        this.startRouteStopService = startRouteStopService;
+        this.endRouteStopService = endRouteStopService;
     }
 
     @Override
     @DependsOn("StopSeed")
     public void run(String... args) throws Exception {
-        ClassPathResource resource = new ClassPathResource("route_stops.json");
+        ClassPathResource resource = new ClassPathResource("end_route_stops.json");
         ObjectMapper mapper = new ObjectMapper();
         Map<String, List<Map<String, Integer>>> parsedObject = mapper.readValue(resource.getFile(), LinkedHashMap.class);
 
         List<Route> routes = routeService.findAll();
 
-        if (!this.startRouteStopService.hasRoute(routes.getFirst())) {
+        if (!this.endRouteStopService.hasRoute(routes.getFirst())) {
             for (Route route : routes) {
                 List<Map<String, Integer>> list = parsedObject.get(route.getName());
                 if (list != null) {
@@ -50,10 +50,11 @@ public class RouteStartStopsSeed implements CommandLineRunner {
                             String key = entry.getKey();
                             Integer value = entry.getValue();
 
-
-                            this.startRouteStopService.store(new StartRouteStop(
-                                    route, this.stopService.findStopByName(key).get(), value)
-                            );
+                            if(!key.startsWith("Зарядная станция")){
+                                this.endRouteStopService.store(new EndRouteStop(
+                                        route, this.stopService.findStopByName(key).get(), value)
+                                );
+                            }
                         }
                     }
                 }

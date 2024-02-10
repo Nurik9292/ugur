@@ -5,19 +5,14 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.thymeleaf.expression.Numbers;
 import tm.ugur.dto.RouteDTO;
 import tm.ugur.models.Client;
 import tm.ugur.models.Route;
 import tm.ugur.repo.RouteRepository;
 import tm.ugur.util.pagination.PaginationService;
-import tm.ugur.util.errors.route.RouteErrorResponse;
-import tm.ugur.util.errors.route.RouteNotFoundException;
 import tm.ugur.util.mappers.RouteMapper;
 
 import java.util.*;
@@ -144,12 +139,4 @@ public class RouteService {
         return this.routeMapper.toDto(route);
     }
 
-
-    @ExceptionHandler
-    private ResponseEntity<RouteErrorResponse> handleException(RouteNotFoundException e){
-        RouteErrorResponse errorResponse = new RouteErrorResponse(
-                "Route with this id wasn't found!", System.currentTimeMillis());
-
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-    }
 }

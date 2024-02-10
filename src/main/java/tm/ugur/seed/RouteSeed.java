@@ -5,17 +5,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import tm.ugur.dto.RouteDTO;
 import tm.ugur.services.RouteService;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 
 @Component
+@Order(6)
 public class RouteSeed implements CommandLineRunner {
 
     private final RouteService routeService;

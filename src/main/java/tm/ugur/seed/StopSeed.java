@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import tm.ugur.dto.StopDTO;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Component
+@Order(3)
 public class StopSeed implements CommandLineRunner {
 
     private final StopService stopService;

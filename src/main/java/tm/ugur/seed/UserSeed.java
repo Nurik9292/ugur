@@ -2,6 +2,7 @@ package tm.ugur.seed;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import tm.ugur.models.Person;
 import tm.ugur.models.Role;
@@ -9,6 +10,7 @@ import tm.ugur.repo.PersonRepository;
 import tm.ugur.services.PersonService;
 
 @Component
+@Order(2)
 public class UserSeed implements CommandLineRunner {
 
     private final PersonService personService;

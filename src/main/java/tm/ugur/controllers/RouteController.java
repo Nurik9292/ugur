@@ -11,6 +11,8 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -21,6 +23,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import tm.ugur.models.Route;
 import tm.ugur.security.PersonDetails;
 import tm.ugur.services.*;
+import tm.ugur.util.errors.route.RouteErrorResponse;
+import tm.ugur.util.errors.route.RouteNotFoundException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -162,5 +166,13 @@ public class RouteController {
     public boolean isSuperAdmin(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return Objects.equals(((PersonDetails) auth.getPrincipal()).getUser().getRole().name(), "ROLE_SUPER");
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<RouteErrorResponse> handleException(RouteNotFoundException e){
+        RouteErrorResponse errorResponse = new RouteErrorResponse(
+                "Route with this id wasn't found!", System.currentTimeMillis());
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 }
