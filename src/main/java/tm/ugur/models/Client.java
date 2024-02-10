@@ -37,7 +37,7 @@ public class Client {
     private String platform;
 
 
-    @ManyToMany(mappedBy = "clients")
+    @ManyToMany(mappedBy = "clients", fetch = FetchType.EAGER)
     private List<Route> routes;
 
     @ManyToMany(mappedBy = "clients")

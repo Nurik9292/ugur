@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractAuthenticationFilterConfigurer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,12 +28,14 @@ public class SecurityConfig {
 
     private final PersonDetailService personDetailService;
     private final JWTFilter jwtFilter;
-
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Autowired
-    public SecurityConfig(PersonDetailService personDetailService, JWTFilter jwtFilter) {
+    public SecurityConfig(PersonDetailService personDetailService, JWTFilter jwtFilter,
+                          JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
         this.personDetailService = personDetailService;
         this.jwtFilter = jwtFilter;
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
     }
 
     @Bean
@@ -44,13 +47,15 @@ public class SecurityConfig {
     @Bean
     @Order(1)
     public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
-        return http.securityMatcher("/websocket-ugur","/api/**").csrf(csrf -> csrf.disable())
+        return http.securityMatcher("/websocket-ugur","/api/**").csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->
                     auth
                         .requestMatchers("/api/auth/register", "/api/auth/verify_otp").permitAll()
-                            .anyRequest().authenticated())
+                        .anyRequest().authenticated())
+                .formLogin(AbstractAuthenticationFilterConfigurer::disable)
                 .sessionManagement(sm ->
                         sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(exc -> exc.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .addFilterBefore(this.jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
@@ -68,6 +73,7 @@ public class SecurityConfig {
                         .requestMatchers("/app/**", "/app/", "/app/number-route").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
+//                .formLogin(AbstractAuthenticationFilterConfigurer::disable)
                 .build();
     }
 
