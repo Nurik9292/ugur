@@ -37,7 +37,7 @@ public class RouteStartStopsSeed implements CommandLineRunner {
     public void run(String... args) throws Exception {
         ClassPathResource resource = new ClassPathResource("route_stops.json");
         ObjectMapper mapper = new ObjectMapper();
-        Map<String, List<Map<String, Integer>>> parsedObject = mapper.readValue(resource.getFile(), LinkedHashMap.class);
+        Map<String, List<Map<String, Integer>>> parsedObject = mapper.readValue(resource.getInputStream(), LinkedHashMap.class);
 
         List<Route> routes = routeService.findAll();
 
