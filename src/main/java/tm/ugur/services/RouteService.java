@@ -79,6 +79,12 @@ public class RouteService {
     }
 
     @Transactional
+    public void store(Route route){
+        route.setCreatedAt(new Date());
+        route.setUpdatedAt(new Date());
+    }
+
+    @Transactional
     public void save(RouteDTO routeDTO){
         Route route = this.converToRoute(routeDTO);
         route.setCreatedAt(new Date());

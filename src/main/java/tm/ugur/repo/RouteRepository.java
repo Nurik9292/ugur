@@ -14,8 +14,7 @@ import java.util.Optional;
 public interface RouteRepository extends JpaRepository<Route, Long> {
     @Query(value = "SELECT new tm.ugur.models.Route(r.id, r.name, r.interval, r.number, r.city) FROM Route r")
     List<Route> findAllWithIdNameIntervalNumberCityRouteTime();
-
     Optional<Route> findRouteByClientsAndId(Client client, Long id);
-
     Optional<Route> findRouteByName(String name);
+
 }

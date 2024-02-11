@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import tm.ugur.models.Client;
 import tm.ugur.models.Stop;
 import tm.ugur.security.ClientDetails;
+import tm.ugur.services.ClientService;
 import tm.ugur.services.StopService;
 
 import java.util.List;
@@ -22,10 +23,12 @@ import java.util.Optional;
 public class StopFavoritesApiController {
 
     private final StopService stopService;
+    private final ClientService clientService;
 
     @Autowired
-    public StopFavoritesApiController(StopService stopService) {
+    public StopFavoritesApiController(StopService stopService, ClientService clientService) {
         this.stopService = stopService;
+        this.clientService = clientService;
     }
 
     @PostMapping("/{id}")
@@ -34,15 +37,29 @@ public class StopFavoritesApiController {
         String message = "Successfully removed from favorites";
 
         Optional<Stop> stopFavorites = stopService.findByClientsAndId(client, id);
+
         List<Stop> stops = client.getStops();
+        Stop stop = stopService.findOne(id);
+        List<Client> clients = stop.getClients();
+
         if (stopFavorites.isEmpty()) {
-            stops.add(stopService.findOne(id));
+            stops.add(stop);
+            clients.add(client);
             message = "Successfully added from favorites";
         } else {
-            stops.remove(stopService.findOne(id));
+            stops.remove(stop);
+            for (int i = 0; i < clients.size(); i++){
+                if(clients.get(i).getId() == client.getId()){
+                    clients.remove(i);
+                }
+            }
         }
-
+        System.out.println(clients);
+        System.out.println(stops);
+        stop.setClients(clients);
         client.setStops(stops);
+        this.stopService.store(stop);
+        this.clientService.store(client);
 
         return ResponseEntity.ok(Map.of("message", message));
     }
