@@ -43,7 +43,6 @@ public class RouteApiController {
     private final ImdataImport imdataService;
     private final AtLogisticImport atLogisticService;
     private ScheduledExecutorService scheduledExecutorService;
-    private final ClientService clientService;
 
     private Integer numberRoute;
 
@@ -58,7 +57,6 @@ public class RouteApiController {
         this.sendToMobileApp = sendToMobileApp;
         this.imdataService = imdataService;
         this.atLogisticService = atLogisticService;
-        this.clientService = clientService;
     }
 
 
@@ -69,7 +67,7 @@ public class RouteApiController {
     }
 
     @GetMapping("/{id}")
-    public RouteDTO getRoute(@PathVariable("id") int id){
+    public RouteDTO getRoute(@PathVariable("id")  Long id){
         RouteDTO route = this.routeService.findOne(id);
         numberRoute = route.getNumber();
         return route;

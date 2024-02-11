@@ -43,15 +43,21 @@ public class RouteApiService {
     }
 
 
+    public Optional<Route> getRoute(Long id){
+        return this.routeRepository.findById(id);
+    }
 
-    public RouteDTO findOne(long id){
+    public RouteDTO findOne(Long id){
         RouteDTO routeDTO = this.convertToRouteDTO(
                 this.routeRepository.findById(Long.valueOf(id)).orElseThrow(RouteNotFoundException::new));
         routeDTO.setFavorite(isFavorite(routeDTO));
         return routeDTO;
     }
 
-
+    @Transactional
+    public void store(Route route){
+        this.routeRepository.save(route);
+    }
 
     public Route converToRoute(RouteDTO routeDTO){
         return this.routeMapper.toEntity(routeDTO);

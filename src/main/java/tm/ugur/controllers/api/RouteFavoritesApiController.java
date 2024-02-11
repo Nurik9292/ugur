@@ -10,6 +10,7 @@ import tm.ugur.models.Client;
 import tm.ugur.models.Route;
 import tm.ugur.security.ClientDetails;
 import tm.ugur.services.RouteService;
+import tm.ugur.services.api.RouteApiService;
 import tm.ugur.util.errors.route.RouteErrorResponse;
 import tm.ugur.util.errors.route.RouteNotFoundException;
 
@@ -20,11 +21,11 @@ import java.util.Map;
 @RequestMapping("/api/favorites/routes")
 public class RouteFavoritesApiController {
 
-    private final RouteService routeService;
+    private final RouteApiService routeService;
 
 
     @Autowired
-    public RouteFavoritesApiController(RouteService routeService) {
+    public RouteFavoritesApiController(RouteApiService routeService) {
         this.routeService = routeService;
     }
 
@@ -33,7 +34,7 @@ public class RouteFavoritesApiController {
         Client client = getAuthClient();
         String message = "Successfully removed from favorites";
 
-        Route route = this.routeService.findOne(id).orElseThrow(RouteNotFoundException::new);
+        Route route = this.routeService.getRoute(id).orElseThrow(RouteNotFoundException::new);
         List<Client> clients = route.getClients();
 
         if (!clients.contains(client)) {

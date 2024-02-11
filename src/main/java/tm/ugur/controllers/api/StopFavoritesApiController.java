@@ -1,17 +1,16 @@
 package tm.ugur.controllers.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import tm.ugur.models.Client;
 import tm.ugur.models.Stop;
 import tm.ugur.security.ClientDetails;
 import tm.ugur.services.api.StopApiService;
+import tm.ugur.util.errors.stop.StopErrorResponse;
 import tm.ugur.util.errors.stop.StopNotFoundException;
 
 import java.util.List;
@@ -34,12 +33,10 @@ public class StopFavoritesApiController {
         Client client = getAuthClient();
         String message = "Successfully removed from favorites";
 
-        Optional<Stop> stopFavorites = stopService.findByClientsAndId(client, id);
-
         Stop stop = stopService.fetchStop(id).orElseThrow(StopNotFoundException::new);
         List<Client> clients = stop.getClients();
 
-        if (stopFavorites.isEmpty()) {
+        if (!clients.contains(client)) {
             clients.add(client);
             message = "Successfully added from favorites";
         } else {
@@ -55,5 +52,13 @@ public class StopFavoritesApiController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         ClientDetails clientDetails = (ClientDetails) authentication.getPrincipal();
         return clientDetails.getClient();
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<StopErrorResponse> handleException(StopNotFoundException e){
+        StopErrorResponse errorResponse = new StopErrorResponse(
+                "Stop with this id wasn't found!", System.currentTimeMillis());
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 }
