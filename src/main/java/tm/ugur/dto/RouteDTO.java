@@ -107,7 +107,7 @@ public class RouteDTO extends AbstractDTO{
         this.backLine = backLine;
     }
 
-    public Boolean getFavorite() {
+    public Boolean getIs_favorite() {
         return isFavorite;
     }
 

@@ -3,12 +3,19 @@ package tm.ugur.dto;
 
 import tm.ugur.dto.geo.PointDTO;
 
+import java.util.List;
+
 public class StopDTO extends AbstractDTO{
 
     private String name;
     private CityDTO city;
     private PointDTO location;
 
+    List<Long> startRouteIds;
+
+    List<Long> endRouteIds;
+
+    private Boolean isFavorite;
 
 
 
@@ -43,6 +50,31 @@ public class StopDTO extends AbstractDTO{
         this.location = location;
     }
 
+    public Boolean getIs_favorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(Boolean favorite) {
+        isFavorite = favorite;
+    }
+
+    public List<Long> getStartRouteIds() {
+        return startRouteIds;
+    }
+
+    public void setStartRouteIds(List<Long> startRouteIds) {
+        this.startRouteIds = startRouteIds;
+    }
+
+    public List<Long> getEndRouteIds() {
+        return endRouteIds;
+    }
+
+    public void setEndRouteIds(List<Long> endRouteIds) {
+        this.endRouteIds = endRouteIds;
+    }
+
+
     @Override
     public String toString() {
         return "StopDTO{" +
@@ -51,4 +83,6 @@ public class StopDTO extends AbstractDTO{
                 ", location=" + location +
                 '}';
     }
+
+
 }

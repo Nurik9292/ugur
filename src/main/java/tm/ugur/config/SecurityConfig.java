@@ -47,16 +47,16 @@ public class SecurityConfig {
     @Bean
     @Order(1)
     public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
-        return http.securityMatcher("/websocket-ugur","/api/**").csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth ->
-                    auth
+        return http
+                .securityMatcher("/websocket-ugur","/api/**").csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/register", "/api/auth/verify_otp").permitAll()
                         .anyRequest().authenticated())
-                .formLogin(AbstractAuthenticationFilterConfigurer::disable)
-                .sessionManagement(sm ->
-                        sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(sm -> sm
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(this.jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exc -> exc.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+                .formLogin(AbstractAuthenticationFilterConfigurer::disable)
                 .build();
     }
 
@@ -67,7 +67,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth ->
                     auth
                         .requestMatchers("/users/create", "/users", "/users/store").hasRole("SUPER")
-                        .requestMatchers("/test").permitAll()
                         .requestMatchers("/websocket-ugur", "/websocket-ugur/**").permitAll()
                         .requestMatchers("/topic", "/topic/mobile", "/topic/**").permitAll()
                         .requestMatchers("/app/**", "/app/", "/app/number-route").permitAll()
@@ -75,6 +74,7 @@ public class SecurityConfig {
                 .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
                 .build();
     }
+
 
     @Bean
     public AuthenticationProvider authenticationProvider(){

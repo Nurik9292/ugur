@@ -31,8 +31,10 @@ public class RouteApiService {
 
 
     public List<RouteDTO> findAll(){
-        return this.routeRepository.findAllWithIdNameIntervalNumberCityRouteTime()
-                .stream().map(this::convertToRouteDTO).toList();
+        List<RouteDTO> routeDTOS = this.routeRepository
+                .findAllWithIdNameIntervalNumberCityRouteTime().stream().map(this::convertToRouteDTO).toList();
+        routeDTOS.forEach(routeDTO -> routeDTO.setFavorite(this.isFavorite(routeDTO)));
+        return routeDTOS;
     }
 
     public List<RouteDTO> getRoutes(){
@@ -59,8 +61,7 @@ public class RouteApiService {
 
     private boolean isFavorite(RouteDTO routeDTO){
         Client client = getAuthClient();
-        return client.getRoutes().stream()
-                .anyMatch(route -> route.getId() == routeDTO.getId());
+        return client.getRoutes().stream().anyMatch(route -> route.getId() == routeDTO.getId());
     }
 
 

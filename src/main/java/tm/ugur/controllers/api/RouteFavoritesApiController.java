@@ -32,18 +32,20 @@ public class RouteFavoritesApiController {
     public ResponseEntity<Map<String, String>> addOrRemoveRoute(@PathVariable("id") Long id) {
 
         Client client = getAuthClient();
+        String message = "Successfully removed from favorites";
 
         Optional<Route> routeFavorite = routeService.findRoutesByClient(client, id);
         List<Route> routes = client.getRoutes();
 
         if (routeFavorite.isEmpty()) {
             routes.add(routeService.findOne(id).get());
+            message = "Successfully added from favorites";
         } else {
             routes.remove(routeService.findOne(id).get());
         }
         client.setRoutes(routes);
 
-        return ResponseEntity.ok(Map.of("message", "Successfully removed from favorites"));
+        return ResponseEntity.ok(Map.of("message", message));
     }
 
     private Client getAuthClient(){

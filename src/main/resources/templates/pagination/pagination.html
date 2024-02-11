@@ -2,11 +2,11 @@
 <nav class="dataTable-pagination">
     <ul class="dataTable-pagination-list">
         <li class="pager" th:classappend="${elemets.getNumber() == 0} ? 'disabled'">
-            <a th:href="'/'+${link}+'?page='+${elemets.getNumber()}+'&items='+${elemets.getSize()}"
+            <a th:href="'/admin/'+${link}+'?page='+${elemets.getNumber()}+'&items='+${elemets.getSize()}"
                data-page="1">‹</a>
         </li>
         <li th:if="${elemets.getNumber() - 3 > 1}">
-            <a th:href="'/'+${link}+'?page=1&items='+${elemets.getSize()}"
+            <a th:href="'/admin/'+${link}+'?page=1&items='+${elemets.getSize()}"
                data-page="1">1</a>
         </li>
         <li class="ellipsis" th:if="${elemets.getNumber() - 3 > 1}">
@@ -14,7 +14,7 @@
         </li>
         <li th:class="${pageNumber == elemets.getNumber() + 1} ? 'active' : ''"
             th:each="pageNumber : ${totalPage}">
-            <a th:href="'/'+${link}+'?page='+${pageNumber}+'&items='+${elemets.getSize()}"
+            <a th:href="'/admin/'+${link}+'?page='+${pageNumber}+'&items='+${elemets.getSize()}"
                th:data-page="${pageNumber}"
                th:text="${pageNumber}"></a>
         </li>
@@ -22,12 +22,12 @@
             <a href="#">…</a>
         </li>
         <li th:if="${elemets.getNumber() + 4 < elemets.getTotalPages()}">
-            <a th:href="'/'+${link}+'?page='+${elemets.getTotalPages()}+'&items='+${elemets.getSize()}"
+            <a th:href="'/admin/'+${link}+'?page='+${elemets.getTotalPages()}+'&items='+${elemets.getSize()}"
                th:data-page="${elemets.getTotalPages()}"
                th:text="${elemets.getTotalPages()}"></a>
         </li>
         <li class="pager" th:classappend="${elemets.getNumber() == elemets.getTotalPages() - 1} ? 'disabled'">
-            <a th:href="'/'+${link}+'?page='+${elemets.getNumber()+2}+'&items='+${elemets.getSize()}"
+            <a th:href="'/admin/'+${link}+'?page='+${elemets.getNumber()+2}+'&items='+${elemets.getSize()}"
                data-page="2">›</a>
         </li>
     </ul>

@@ -30,19 +30,21 @@ public class StopFavoritesApiController {
 
     @PostMapping("/{id}")
     public ResponseEntity<Map<String, String>> addOrRemoveStop(@PathVariable("id") Long id) {
-
         Client client = getAuthClient();
+        String message = "Successfully removed from favorites";
+
         Optional<Stop> stopFavorites = stopService.findByClientsAndId(client, id);
         List<Stop> stops = client.getStops();
         if (stopFavorites.isEmpty()) {
             stops.add(stopService.findOne(id));
+            message = "Successfully added from favorites";
         } else {
             stops.remove(stopService.findOne(id));
         }
 
         client.setStops(stops);
 
-        return ResponseEntity.ok(Map.of("message", "Successfully removed from favorites"));
+        return ResponseEntity.ok(Map.of("message", message));
     }
 
     private Client getAuthClient(){

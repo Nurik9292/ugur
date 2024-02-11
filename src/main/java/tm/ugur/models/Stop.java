@@ -74,6 +74,13 @@ public class Stop extends AbstractEntity{
         this.name = name;
     }
 
+    public Stop(Long id, String name, Point location, City city){
+        this.id = id;
+        this.name = name;
+        this.location = location;
+        this.city = city;
+    }
+
     public Long getId() {
         return id;
     }
