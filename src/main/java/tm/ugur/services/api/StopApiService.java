@@ -6,7 +6,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tm.ugur.dto.RouteDTO;
 import tm.ugur.dto.StopDTO;
 import tm.ugur.models.Client;
 import tm.ugur.models.Stop;
@@ -16,17 +15,18 @@ import tm.ugur.util.errors.stop.StopNotFoundException;
 import tm.ugur.util.mappers.StopMapper;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
-public class StopAPiService {
+public class StopApiService {
 
     private final StopRepository stopRepository;
 
     private final StopMapper stopMapper;
 
     @Autowired
-    public StopAPiService(StopRepository stopRepository, ModelMapper modelMapper, StopMapper stopMapper) {
+    public StopApiService(StopRepository stopRepository, ModelMapper modelMapper, StopMapper stopMapper) {
         this.stopRepository = stopRepository;
         this.stopMapper = stopMapper;
     }
@@ -37,11 +37,24 @@ public class StopAPiService {
         return stopDTOS;
     }
 
+    public Optional<Stop> fetchStop(Long id){
+        return this.stopRepository.findById(id);
+    }
 
     public StopDTO getStop(Long id){
         StopDTO stopDTO =  this.convertToStopDTO(this.stopRepository.findById(id).orElseThrow(StopNotFoundException::new));
         stopDTO.setFavorite(this.isFavorite(stopDTO));
         return stopDTO;
+    }
+
+    public Optional<Stop> findByClientsAndId(Client client, Long id){
+        return this.stopRepository.findAllByClientsAndId(client, id);
+    }
+
+
+    @Transactional
+    public void store(Stop stop){
+        this.stopRepository.save(stop);
     }
 
     public StopDTO convertToStopDTO(Stop stop){

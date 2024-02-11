@@ -14,6 +14,7 @@ import tm.ugur.util.errors.route.RouteNotFoundException;
 import tm.ugur.util.mappers.RouteMapper;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -40,6 +41,7 @@ public class RouteApiService {
     public List<RouteDTO> getRoutes(){
         return this.routeRepository.findAll().stream().map(this::convertToRouteDTO).toList();
     }
+
 
 
     public RouteDTO findOne(long id){

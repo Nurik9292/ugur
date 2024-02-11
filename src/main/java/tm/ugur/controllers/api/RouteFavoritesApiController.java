@@ -1,6 +1,7 @@
 package tm.ugur.controllers.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -8,25 +9,23 @@ import org.springframework.web.bind.annotation.*;
 import tm.ugur.models.Client;
 import tm.ugur.models.Route;
 import tm.ugur.security.ClientDetails;
-import tm.ugur.services.ClientService;
 import tm.ugur.services.RouteService;
+import tm.ugur.util.errors.route.RouteErrorResponse;
+import tm.ugur.util.errors.route.RouteNotFoundException;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/favorites/routes")
 public class RouteFavoritesApiController {
 
     private final RouteService routeService;
-    private final ClientService clientService;
 
 
     @Autowired
-    public RouteFavoritesApiController(RouteService routeService, ClientService clientService) {
+    public RouteFavoritesApiController(RouteService routeService) {
         this.routeService = routeService;
-        this.clientService = clientService;
     }
 
     @PostMapping("/{id}")
@@ -34,29 +33,17 @@ public class RouteFavoritesApiController {
         Client client = getAuthClient();
         String message = "Successfully removed from favorites";
 
-        Optional<Route> routeFavorite = routeService.findRoutesByClient(client, id);
-
-        List<Route> routes = client.getRoutes();
-        Route route = this.routeService.findOne(id).get();
+        Route route = this.routeService.findOne(id).orElseThrow(RouteNotFoundException::new);
         List<Client> clients = route.getClients();
 
-        if (routeFavorite.isEmpty()) {
+        if (!clients.contains(client)) {
             message = "Successfully added from favorites";
             clients.add(client);
-            routes.add(route);
         } else {
-            routes.remove(routeFavorite.get());
-            for (int i = 0; i < clients.size(); i++){
-                if (clients.get(i).getId() == client.getId()){
-                    clients.remove(i);
-                }
-            }
+            clients.removeIf(c -> c.getId() == client.getId());
         }
 
-        route.setClients(clients);
-        client.setRoutes(routes);
         this.routeService.store(route);
-        this.clientService.store(client);
 
         return ResponseEntity.ok(Map.of("message", message));
     }
@@ -67,5 +54,12 @@ public class RouteFavoritesApiController {
         return clientDetails.getClient();
     }
 
+    @ExceptionHandler
+    private ResponseEntity<RouteErrorResponse> handleException(RouteNotFoundException e){
+        RouteErrorResponse errorResponse = new RouteErrorResponse(
+                "Route with this id wasn't found!", System.currentTimeMillis());
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
 
 }

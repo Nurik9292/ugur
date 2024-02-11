@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "clients")
@@ -151,5 +152,16 @@ public class Client {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Client client = (Client) object;
+        return id == client.id && Objects.equals(phone, client.phone);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, phone);
+    }
 }

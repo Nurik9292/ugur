@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tm.ugur.dto.StopDTO;
-import tm.ugur.services.api.StopAPiService;
+import tm.ugur.services.api.StopApiService;
 import tm.ugur.util.errors.stop.StopErrorResponse;
 import tm.ugur.util.errors.stop.StopNotFoundException;
 
@@ -15,10 +15,10 @@ import java.util.List;
 @RequestMapping("/api/stops")
 public class StopApiController {
 
-    private final StopAPiService stopService;
+    private final StopApiService stopService;
 
     @Autowired
-    public StopApiController(StopAPiService stopService) {
+    public StopApiController(StopApiService stopService) {
         this.stopService = stopService;
     }
 
