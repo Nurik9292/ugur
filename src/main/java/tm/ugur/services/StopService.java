@@ -77,6 +77,10 @@ public class StopService {
         return stop;
     }
 
+    public Boolean hasRouteByName(String name){
+        return this.stopRepository.existsByName(name);
+    }
+
 
     @Transactional
     public void store(Stop stop){

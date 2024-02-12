@@ -9,6 +9,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import tm.ugur.models.Route;
 import tm.ugur.models.StartRouteStop;
+import tm.ugur.models.Stop;
 import tm.ugur.services.RouteService;
 import tm.ugur.services.StartRouteStopService;
 import tm.ugur.services.StopService;
@@ -37,23 +38,31 @@ public class RouteStartStopsSeed implements CommandLineRunner {
     public void run(String... args) throws Exception {
         ClassPathResource resource = new ClassPathResource("route_stops.json");
         ObjectMapper mapper = new ObjectMapper();
-        Map<String, List<Map<String, Integer>>> parsedObject = mapper.readValue(resource.getInputStream(), LinkedHashMap.class);
-
+        Map<String, List<Map<String, Map<String, Integer>>>> importData = mapper.readValue(resource.getInputStream(), LinkedHashMap.class);
+        List<Stop> stops = stopService.findAll();
         List<Route> routes = routeService.findAll();
 
         if (!this.startRouteStopService.hasRoute(routes.getFirst())) {
-            for (Route route : routes) {
-                List<Map<String, Integer>> list = parsedObject.get(route.getName());
-                if (list != null) {
-                    for (Map<String, Integer> map : list) {
-                        for (Map.Entry<String, Integer> entry : map.entrySet()) {
-                            String key = entry.getKey();
-                            Integer value = entry.getValue();
-
-
-                            this.startRouteStopService.store(new StartRouteStop(
-                                    route, this.stopService.findStopByName(key).get(), value)
-                            );
+            for (Map.Entry<String, List<Map<String, Map<String, Integer>>>> entry : importData.entrySet()) {
+                String stopName = entry.getKey();
+                List<Map<String, Map<String, Integer>>> routesData = entry.getValue();
+                Stop stop = stops.stream()
+                        .filter(s -> s.getName().equals(stopName))
+                        .findFirst()
+                        .orElse(null);
+                if (stop != null) {
+                    for (Map<String, Map<String, Integer>> routeData : routesData) {
+                        for (Map.Entry<String, Map<String, Integer>> routeEntry : routeData.entrySet()) {
+                            String routeName = routeEntry.getKey();
+                            Route route = routes.stream()
+                                    .filter(r -> r.getName().equals(routeName) && (int)r.getNumber() == routeEntry.getValue().get("number"))
+                                    .findFirst()
+                                    .orElse(null);
+                            if (route != null) {
+                                startRouteStopService.store(new StartRouteStop(
+                                        route, stop, routeEntry.getValue().get("index")
+                                ));
+                            }
                         }
                     }
                 }

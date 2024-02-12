@@ -29,8 +29,8 @@ public class StopSeed implements CommandLineRunner {
     @Override
     @DependsOn("CitySeed")
     public void run(String... args) throws Exception {
-        if (this.stopService.findStopByName("Telekeçiler merkezi (Gündogar tarap)").isEmpty()) {
-            ClassPathResource resource = new ClassPathResource("stop.json");
+        if (!this.stopService.hasRouteByName("105-nji ýangyç bekedi (G.Kulyýew köçesi, ugur Günbatara tarap)")) {
+            ClassPathResource resource = new ClassPathResource("stops.json");
             try (FileInputStream fis = new FileInputStream(resource.getFile())) {
                 ObjectMapper mapper = new ObjectMapper();
                 List<StopDTO> stops = mapper.readValue(fis, new TypeReference<List<StopDTO>>() {});

@@ -105,7 +105,7 @@ public class RouteApiController {
                 }
             }
             ObjectMapper mapper = new ObjectMapper();
-            sendToMobileApp.convertAndSend("/topic/mobile", mapper.writeValueAsString(buses));
+            sendToMobileApp.convertAndSend("/topic/mobile." + getAuthClient().getPhone(), mapper.writeValueAsString(buses));
         } catch (Exception e) {
             logger.error("API unavailable: " + e.getMessage());
         }

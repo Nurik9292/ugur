@@ -69,6 +69,10 @@ public class RouteService {
         return this.routeRepository.findById(id);
     }
 
+    public Optional<Route> findByName(String name){
+        return this.routeRepository.findRouteByName(name);
+    }
+
     @Transactional
     public void store(Route route, String frontCoordinates, String backCoordinates){
         route.setFrontLine(this.getLineString(frontCoordinates));
