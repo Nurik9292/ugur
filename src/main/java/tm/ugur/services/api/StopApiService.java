@@ -63,8 +63,7 @@ public class StopApiService {
 
     private boolean isFavorite(StopDTO stopDto){
         Client client = getAuthClient();
-        return client.getStops().stream()
-                .anyMatch(stop -> stop.getId() == stopDto.getId());
+        return client.getStops().stream().anyMatch(stop ->  stop.getId().equals(stopDto.getId()));
     }
 
 

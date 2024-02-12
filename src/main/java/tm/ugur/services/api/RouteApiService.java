@@ -69,7 +69,7 @@ public class RouteApiService {
 
     private boolean isFavorite(RouteDTO routeDTO){
         Client client = getAuthClient();
-        return client.getRoutes().stream().anyMatch(route -> route.getId() == routeDTO.getId());
+        return client.getRoutes().stream().anyMatch(route -> route.getId().equals(routeDTO.getId()));
     }
 
 
