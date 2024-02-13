@@ -36,7 +36,7 @@ public class RouteService {
     }
 
     public Optional<Route> getRouteByName(String name){
-        return this.routeRepository.findRouteByName(name);
+        return routeRepository.findRouteByName(name);
     }
 
     public Page<Route> getRoutePages(String page, String items, String sortBy){
@@ -44,7 +44,7 @@ public class RouteService {
         int itemsPerPage = items == null ? 10 : Integer.parseInt(items);
 
         List<Route> routes = !sortBy.isBlank()
-                ? this.routeRepository.findAll(Sort.by(sortBy)) : this.routeRepository.findAll();;
+                ? routeRepository.findAll(Sort.by(sortBy)) : routeRepository.findAll();;
 
 
         return this.paginationService.createPage(routes, pageNumber, itemsPerPage);
@@ -52,34 +52,31 @@ public class RouteService {
 
 
     public List<Route> findAll(){
-        return this.routeRepository.findAll();
+        return routeRepository.findAll();
     }
 
     public Page<Route> findAll(int pageNumber, int itemsPerPage, String sortBy)
     {
-        return this.paginationService.createPage(this.routeRepository.findAll(Sort.by(sortBy)), pageNumber, itemsPerPage);
+        return this.paginationService.createPage(routeRepository.findAll(Sort.by(sortBy)), pageNumber, itemsPerPage);
     }
 
     public Page<Route> findAll(int pageNumber, int itemsPerPage)
     {
-        return this.paginationService.createPage(this.routeRepository.findAll(), pageNumber, itemsPerPage);
+        return paginationService.createPage(routeRepository.findAll(), pageNumber, itemsPerPage);
     }
 
     public  Optional<Route> findOne(long id){
-        return this.routeRepository.findById(id);
+        return routeRepository.findById(id);
     }
 
     public Optional<Route> findByName(String name){
-        return this.routeRepository.findRouteByName(name);
+        return routeRepository.findRouteByName(name);
     }
 
     @Transactional
     public void store(Route route, String frontCoordinates, String backCoordinates){
-        route.setFrontLine(this.getLineString(frontCoordinates));
-        route.setBackLine(this.getLineString(backCoordinates));
-        route.setUpdatedAt(new Date());
-        route.setCreatedAt(new Date());
-        this.routeRepository.save(route);
+        initializeRoute(route, frontCoordinates, backCoordinates);
+        routeRepository.save(route);
     }
 
     @Transactional
@@ -101,16 +98,8 @@ public class RouteService {
     public void update(long id, Route route, String frontCoordinates, String backCoordinates){
         route.setId(id);
         route.setUpdatedAt(new Date());
-
-        LineString frontLine = !frontCoordinates.isEmpty() ? getLineString(frontCoordinates) :
-                Objects.requireNonNull(this.routeRepository.findById(id).orElse(null)).getFrontLine();
-        route.setFrontLine(frontLine);
-
-        LineString backLine = !backCoordinates.isEmpty() ? getLineString(backCoordinates) :
-                Objects.requireNonNull(this.routeRepository.findById(id).orElse(null)).getBackLine();
-        route.setBackLine(backLine);
-
-        this.routeRepository.save(route);
+        initializeRoute(route, frontCoordinates, backCoordinates);
+        routeRepository.save(route);
     }
 
     @Transactional
@@ -120,7 +109,17 @@ public class RouteService {
 
 
     public Optional<Route> findRoutesByClient(Client client, Long id){
-        return this.routeRepository.findRouteByClientsAndId(client, id);
+        return routeRepository.findRouteByClientsAndId(client, id);
+    }
+
+    private void initializeRoute(Route route, String frontCoordinates, String backCoordinates) {
+        route.setFrontLine(getLineString(frontCoordinates));
+        route.setBackLine(getLineString(backCoordinates));
+        route.setUpdatedAt(new Date());
+        if (route.getCreatedAt() == null) {
+            route.setCreatedAt(new Date());
+        }
+        route.setUpdatedAt(new Date());
     }
 
 
@@ -142,11 +141,11 @@ public class RouteService {
     }
 
     private Route converToRoute(RouteDTO routeDTO){
-        return this.routeMapper.toEntity(routeDTO);
+        return routeMapper.toEntity(routeDTO);
     }
 
     private RouteDTO convertToRouteDTO(Route route){
-        return this.routeMapper.toDto(route);
+        return routeMapper.toDto(route);
     }
 
 }
