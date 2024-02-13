@@ -13,7 +13,6 @@ import tm.ugur.models.Stop;
 import tm.ugur.services.EndRouteStopService;
 import tm.ugur.services.RouteService;
 import tm.ugur.services.StopService;
-import tm.ugur.util.pojo.ImportData;
 
 import java.util.LinkedHashMap;
 import java.util.List;
