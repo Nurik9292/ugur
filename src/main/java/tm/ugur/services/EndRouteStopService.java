@@ -10,6 +10,8 @@ import tm.ugur.repo.EndRouteStopRepository;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -24,6 +26,10 @@ public class EndRouteStopService {
         this.endRouteStopRepository = endRouteStopRepository;
     }
 
+    public List<EndRouteStop> findByRoute(Route route){
+        return endRouteStopRepository.findByRouteOrderByIndex(route);
+    }
+
     public boolean hasRoute(Route route){
         return this.endRouteStopRepository.existsByRoute(route);
     }
@@ -35,21 +41,19 @@ public class EndRouteStopService {
 
 
     @Transactional
-    public void updateIndexs(String ids, Route route) {
-        Map<Long, Stop> stopMap = new HashMap<>();  // Map for efficient stop lookup
-        route.getStartStops().forEach(stop -> stopMap.put(stop.getId(), stop));
+    public void updateIndexes(String ids, Route route) {
+        Map<Long, Stop> stopMap = route.getStartStops().stream()
+                .collect(Collectors.toMap(Stop::getId, Function.identity()));
 
         AtomicInteger count = new AtomicInteger(1);
-        for (String idString : ids.split(",")) {
-            int id = Integer.parseInt(idString);
-            Stop stop = stopMap.get(id);
-            if (stop != null) {
-                List<EndRouteStop> endRouteStops = this.endRouteStopRepository.findByStopAndRoute(stop, route);
-                endRouteStops.forEach(endRouteStop -> {
-                    endRouteStop.setIndex(count.getAndIncrement());
-                    this.endRouteStopRepository.save(endRouteStop);
+        Arrays.stream(ids.split(","))
+                .map(Long::parseLong)
+                .map(stopMap::get)
+                .filter(Objects::nonNull)
+                .flatMap(stop -> this.endRouteStopRepository.findByStopAndRoute(stop, route).stream())
+                .forEach(startRouteStop -> {
+                    startRouteStop.setIndex(count.getAndAdd(2));
+                    this.endRouteStopRepository.save(startRouteStop);
                 });
-            }
-        }
     }
 }

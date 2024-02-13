@@ -1,15 +1,7 @@
 package tm.ugur.controllers;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.geolatte.geom.M;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import tm.ugur.models.Route;
 import tm.ugur.security.PersonDetails;
 import tm.ugur.services.*;
@@ -27,9 +18,7 @@ import tm.ugur.util.errors.route.RouteErrorResponse;
 import tm.ugur.util.errors.route.RouteNotFoundException;
 
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 @Controller
 @RequestMapping("/routes")
@@ -100,8 +89,8 @@ public class RouteController {
         }
 
         this.routeService.store(route, frontCoordinates, backCoordinates);
-        this.startRouteStopService.updateIndexs(selectedStart, route);
-        this.endRouteStopService.updateIndexs(selectedEnd, route);
+        this.startRouteStopService.updateIndexes(selectedStart, route);
+        this.endRouteStopService.updateIndexes(selectedEnd, route);
 
         return  "redirect:/routes";
     }
@@ -130,8 +119,8 @@ public class RouteController {
         }
 
         this.routeService.update(id, route, frontCoordinates, backCoordinates);
-        this.startRouteStopService.updateIndexs(selectedStart, route);
-        this.endRouteStopService.updateIndexs(selectedEnd, route);
+        this.startRouteStopService.updateIndexes(selectedStart, route);
+        this.endRouteStopService.updateIndexes(selectedEnd, route);
 
         return  "redirect:/routes";
     }
