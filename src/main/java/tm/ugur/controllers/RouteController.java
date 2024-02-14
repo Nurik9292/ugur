@@ -1,15 +1,7 @@
 package tm.ugur.controllers;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.geolatte.geom.M;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,17 +11,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import tm.ugur.models.Route;
 import tm.ugur.security.PersonDetails;
-import tm.ugur.services.*;
+import tm.ugur.services.admin.StartRouteStopService;
+import tm.ugur.services.admin.CityService;
+import tm.ugur.services.admin.EndRouteStopService;
+import tm.ugur.services.admin.RouteService;
+import tm.ugur.services.admin.StopService;
 import tm.ugur.util.errors.route.RouteErrorResponse;
 import tm.ugur.util.errors.route.RouteNotFoundException;
 
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 @Controller
 @RequestMapping("/routes")
@@ -38,9 +31,8 @@ public class RouteController {
     private final RouteService routeService;
     private final CityService cityService;
     private final StopService stopService;
-    private final StartRouteStopService startRouteStopService;
     private final EndRouteStopService endRouteStopService;
-
+    private final StartRouteStopService startRouteStopService;
     private static String sortByStatic = "";
 
 

@@ -13,8 +13,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import tm.ugur.models.Stop;
 import tm.ugur.security.PersonDetails;
-import tm.ugur.services.CityService;
-import tm.ugur.services.StopService;
+import tm.ugur.services.admin.CityService;
+import tm.ugur.services.admin.StopService;
 import tm.ugur.util.errors.stop.StopErrorResponse;
 import tm.ugur.util.errors.stop.StopNotFoundException;
 

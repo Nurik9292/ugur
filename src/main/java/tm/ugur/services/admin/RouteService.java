@@ -1,4 +1,4 @@
-package tm.ugur.services;
+package tm.ugur.services.admin;
 
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;

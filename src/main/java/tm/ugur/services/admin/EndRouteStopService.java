@@ -1,4 +1,4 @@
-package tm.ugur.services;
+package tm.ugur.services.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,7 +46,7 @@ public class EndRouteStopService {
             if (stop != null) {
                 List<EndRouteStop> endRouteStops = this.endRouteStopRepository.findByStopAndRoute(stop, route);
                 endRouteStops.forEach(endRouteStop -> {
-                    endRouteStop.setIndex(count.getAndIncrement());
+                    endRouteStop.setIndex(count.getAndAdd(2));
                     this.endRouteStopRepository.save(endRouteStop);
                 });
             }

@@ -1,6 +1,5 @@
 package tm.ugur.controllers.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,49 +13,34 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import tm.ugur.controllers.ws.MobWsController;
-import tm.ugur.dto.BusDTO;
 import tm.ugur.dto.RouteDTO;
 import tm.ugur.models.Client;
 import tm.ugur.security.ClientDetails;
-import tm.ugur.services.ClientService;
+import tm.ugur.services.admin.ClientService;
 import tm.ugur.services.api.RouteApiService;
-import tm.ugur.services.data_bus.AtLogisticImport;
-import tm.ugur.services.data_bus.ImdataImport;
+import tm.ugur.services.data_bus.import_data.AtLogisticImport;
+import tm.ugur.services.data_bus.import_data.ImdataImport;
+import tm.ugur.services.redis.RedisClientRouteNumberService;
+import tm.ugur.util.StaticParams;
 import tm.ugur.util.errors.route.RouteErrorResponse;
 import tm.ugur.util.errors.route.RouteNotFoundException;
+import tm.ugur.ws.SendClientBuses;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/routes")
 public class RouteApiController {
 
     private final RouteApiService routeService;
-    private final SimpMessageSendingOperations sendToMobileApp;
-    private final ImdataImport imdataService;
-    private final AtLogisticImport atLogisticService;
-    private ScheduledExecutorService scheduledExecutorService;
-
-    private Integer numberRoute;
-
-    private final static Logger logger = LoggerFactory.getLogger(MobWsController.class);
+    private final SendClientBuses sendClientBuses;
 
     @Autowired
-    public RouteApiController(RouteApiService routeService,
-                              SimpMessageSendingOperations sendToMobileApp,
-                              ImdataImport imdataService,
-                              AtLogisticImport atLogisticService, ClientService clientService) {
+    public RouteApiController(RouteApiService routeService, SendClientBuses sendClientBuses) {
         this.routeService = routeService;
-        this.sendToMobileApp = sendToMobileApp;
-        this.imdataService = imdataService;
-        this.atLogisticService = atLogisticService;
+        this.sendClientBuses = sendClientBuses;
     }
 
 
@@ -69,47 +53,10 @@ public class RouteApiController {
     @GetMapping("/{id}")
     public RouteDTO getRoute(@PathVariable("id")  Long id){
         RouteDTO route = this.routeService.findOne(id);
-        numberRoute = route.getNumber();
+        sendClientBuses.setNumber(route.getNumber());
         return route;
     }
 
-    @EventListener
-    public void handleWebSocketConnectListener(SessionConnectedEvent event){
-        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleAtFixedRate(this::sendBusData, 0, 3, TimeUnit.SECONDS);
-    }
-
-    @EventListener
-    public void handleWebSocketDesconectListener(SessionDisconnectEvent event){
-        scheduledExecutorService.shutdown();
-    }
-
-    private void sendBusData(){
-        try {
-            Map<String, BusDTO> imdateBuses = imdataService.getBusData();
-            Map<String, BusDTO> atLogistikaBuses = atLogisticService.getBusData();
-            List<BusDTO> buses = new ArrayList<>();
-
-            for (Map.Entry<String, BusDTO> entry : imdateBuses.entrySet()) {
-                BusDTO imdataBus = entry.getValue();
-                if (imdataBus.getNumber() == numberRoute && atLogistikaBuses.containsKey(entry.getKey())) {
-                    BusDTO atLogistikaBus = atLogistikaBuses.get(entry.getKey());
-                    buses.add(new BusDTO(
-                            1L,
-                            imdataBus.getCarNumber(),
-                            imdataBus.getNumber(),
-                            atLogistikaBus.getSpeed(),
-                            atLogistikaBus.getDir(),
-                            atLogistikaBus.getLocation()
-                    ));
-                }
-            }
-            ObjectMapper mapper = new ObjectMapper();
-            sendToMobileApp.convertAndSend("/topic/mobile." + getAuthClient().getPhone(), mapper.writeValueAsString(buses));
-        } catch (Exception e) {
-            logger.error("API unavailable: " + e.getMessage());
-        }
-    }
 
 
     @ExceptionHandler

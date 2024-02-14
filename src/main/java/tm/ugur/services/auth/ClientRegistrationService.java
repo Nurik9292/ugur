@@ -8,11 +8,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import tm.ugur.dto.ClientDTO;
 import tm.ugur.models.Client;
-import tm.ugur.services.ClientService;
+import tm.ugur.services.admin.ClientService;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalTime;
 import java.util.Optional;
 
 

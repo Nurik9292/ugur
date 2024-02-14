@@ -1,4 +1,4 @@
-package tm.ugur.services.data_bus;
+package tm.ugur.services.data_bus.import_data;
 
 
 import org.springframework.stereotype.Service;

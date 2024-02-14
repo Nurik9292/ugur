@@ -3,7 +3,7 @@ package tm.ugur.services.auth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tm.ugur.models.Client;
-import tm.ugur.services.ClientService;
+import tm.ugur.services.admin.ClientService;
 
 import java.util.Random;
 import java.util.stream.IntStream;

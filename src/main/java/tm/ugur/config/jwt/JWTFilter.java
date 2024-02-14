@@ -1,4 +1,4 @@
-package tm.ugur.config;
+package tm.ugur.config.jwt;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import jakarta.servlet.FilterChain;

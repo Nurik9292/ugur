@@ -32,6 +32,8 @@ public class BusApiController {
         return ResponseEntity.ok(this.busSservice.getBus(id));
     }
 
+
+
     @ExceptionHandler
     private ResponseEntity<BusErrorResponse> handleException(BusNotFoundException e){
         BusErrorResponse errorResponse =

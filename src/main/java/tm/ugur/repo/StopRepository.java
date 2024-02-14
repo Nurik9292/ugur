@@ -15,9 +15,10 @@ public interface StopRepository extends JpaRepository<Stop, Long> {
     Optional<Stop> findByName(String name);
     Optional<Stop> findAllByClientsAndId(Client client, Long id);
 
+    Boolean existsByName(String name);
+
     @Query(value = "SELECT new tm.ugur.models.Stop(s.id, s.name, s.location, s.city) FROM Stop s")
     List<Stop> findAllWithIdNameLocationCity();
 
-    Boolean existsByName(String name);
 
 }

@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 import tm.ugur.models.Route;
 import tm.ugur.models.StartRouteStop;
 import tm.ugur.models.Stop;
-import tm.ugur.services.RouteService;
-import tm.ugur.services.StartRouteStopService;
-import tm.ugur.services.StopService;
+import tm.ugur.services.admin.RouteService;
+import tm.ugur.services.admin.StartRouteStopService;
+import tm.ugur.services.admin.StopService;
 
 import java.util.*;
 

@@ -9,7 +9,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import tm.ugur.dto.StopDTO;
-import tm.ugur.services.StopService;
+import tm.ugur.services.admin.StopService;
 
 import java.io.FileInputStream;
 import java.io.IOException;

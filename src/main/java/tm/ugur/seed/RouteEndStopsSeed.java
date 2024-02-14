@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 import tm.ugur.models.EndRouteStop;
 import tm.ugur.models.Route;
 import tm.ugur.models.Stop;
-import tm.ugur.services.EndRouteStopService;
-import tm.ugur.services.RouteService;
-import tm.ugur.services.StopService;
+import tm.ugur.services.admin.EndRouteStopService;
+import tm.ugur.services.admin.RouteService;
+import tm.ugur.services.admin.StopService;
 
 import java.util.LinkedHashMap;
 import java.util.List;
