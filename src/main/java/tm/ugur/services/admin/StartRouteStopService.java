@@ -25,6 +25,10 @@ public class StartRouteStopService{
         this.startRouteStopRepository = startRouteStopRepository;
     }
 
+    public List<StartRouteStop> findByRoute(Route route){
+        return startRouteStopRepository.findByRouteOrderByIndex(route);
+    }
+
     public Boolean hasRoute(Route route){
         return  this.startRouteStopRepository.existsByRoute(route);
     }

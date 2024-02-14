@@ -7,27 +7,38 @@ import org.springframework.stereotype.Component;
 import tm.ugur.models.Route;
 import tm.ugur.models.StartRouteStop;
 import tm.ugur.services.admin.RouteService;
+import tm.ugur.services.admin.StartRouteStopService;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 @Order(8)
 public class RouteStartIndexingSeed implements CommandLineRunner {
 
     private final RouteService routeService;
+    private final StartRouteStopService startRouteStopService;
 
     @Autowired
-    public RouteStartIndexingSeed(RouteService routeService) {
+    public RouteStartIndexingSeed(RouteService routeService, StartRouteStopService startRouteStopService) {
         this.routeService = routeService;
+        this.startRouteStopService = startRouteStopService;
     }
 
     @Override
     public void run(String... args) throws Exception {
-        List<Route> routes = routeService.findAll();
+        Set<Route> routes = new HashSet<>(routeService.findAll());
 
-        for(Route route : routes){
-            List<StartRouteStop> startRouteStops = route.getStartRouteStops();
-
-        }
+        routes.forEach(route -> {
+            AtomicInteger count = new AtomicInteger(2);
+            List<StartRouteStop> startRouteStops = startRouteStopService.findByRoute(route);
+            startRouteStops.forEach(startRouteStop -> {
+                startRouteStop.setIndex(count.get());
+                startRouteStopService.store(startRouteStop);
+                count.addAndGet(2);
+            });
+        });
     }
 }
