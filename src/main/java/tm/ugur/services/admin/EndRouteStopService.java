@@ -15,13 +15,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Transactional(readOnly = true)
 public class EndRouteStopService {
 
-    private static int count = 1;
 
     private final EndRouteStopRepository endRouteStopRepository;
 
     @Autowired
     public EndRouteStopService(EndRouteStopRepository endRouteStopRepository) {
         this.endRouteStopRepository = endRouteStopRepository;
+    }
+
+    public List<EndRouteStop> findByRoute(Route route){
+        return endRouteStopRepository.findByRouteOrderByIndex(route);
     }
 
     public boolean hasRoute(Route route){
@@ -36,7 +39,7 @@ public class EndRouteStopService {
 
     @Transactional
     public void updateIndexs(String ids, Route route) {
-        Map<Long, Stop> stopMap = new HashMap<>();  // Map for efficient stop lookup
+        Map<Long, Stop> stopMap = new HashMap<>();
         route.getStartStops().forEach(stop -> stopMap.put(stop.getId(), stop));
 
         AtomicInteger count = new AtomicInteger(1);
