@@ -4,16 +4,13 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.ErrorResponse;
-import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.annotation.*;
 import tm.ugur.dto.ClientDTO;
 import tm.ugur.dto.auth.AuthenticationClientDTO;
 import tm.ugur.models.Client;
 import tm.ugur.security.JWTUtil;
-import tm.ugur.services.ClientService;
+import tm.ugur.services.admin.ClientService;
 import tm.ugur.services.auth.ClientRegistrationService;
 
 import java.util.Map;

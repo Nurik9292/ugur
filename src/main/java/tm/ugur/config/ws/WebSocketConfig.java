@@ -1,4 +1,4 @@
-package tm.ugur.config;
+package tm.ugur.config.ws;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -29,8 +29,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
-
-//        registration.setSendBufferSizeLimit(1048576);
     }
 
 }

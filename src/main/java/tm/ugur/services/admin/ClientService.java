@@ -1,4 +1,4 @@
-package tm.ugur.services;
+package tm.ugur.services.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

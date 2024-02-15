@@ -1,4 +1,4 @@
-package tm.ugur.config;
+package tm.ugur.config.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;

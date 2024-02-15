@@ -2,16 +2,18 @@ package tm.ugur.dto;
 
 import tm.ugur.dto.geo.PointDTO;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class BusDTO extends AbstractDTO{
+public class BusDTO extends AbstractDTO implements Serializable {
 
     private String carNumber;
     private Integer number;
     private String speed;
     private String dir;
     private PointDTO location;
-
+    private Integer index;
+    private String side;
 
     public BusDTO(){}
 
@@ -92,6 +94,22 @@ public class BusDTO extends AbstractDTO{
         this.location = location;
     }
 
+    public Integer getIndex() {
+        return index;
+    }
+
+    public void setIndex(Integer index) {
+        this.index = index;
+    }
+
+    public String getSide() {
+        return side;
+    }
+
+    public void setSide(String side) {
+        this.side = side;
+    }
+
     @Override
     public String toString() {
         return "BusDAO{" +
@@ -99,7 +117,9 @@ public class BusDTO extends AbstractDTO{
                 ", number='" + number + '\'' +
                 ", speed='" + speed + '\'' +
                 ", dir='" + dir + '\'' +
+                ", side='" + side + '\'' +
                 '}';
     }
+
 
 }

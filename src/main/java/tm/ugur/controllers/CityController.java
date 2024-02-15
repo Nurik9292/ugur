@@ -10,7 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import tm.ugur.models.City;
 import tm.ugur.security.PersonDetails;
-import tm.ugur.services.CityService;
+import tm.ugur.services.admin.CityService;
 
 import java.util.Objects;
 

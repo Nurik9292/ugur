@@ -8,8 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import tm.ugur.security.PersonDetails;
-import tm.ugur.services.BusSservice;
-import tm.ugur.services.ClientService;
+import tm.ugur.services.admin.BusSservice;
+import tm.ugur.services.admin.ClientService;
 
 import java.util.Objects;
 

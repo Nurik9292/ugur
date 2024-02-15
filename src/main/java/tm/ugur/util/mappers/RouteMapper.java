@@ -1,17 +1,26 @@
 package tm.ugur.util.mappers;
 
 import jakarta.annotation.PostConstruct;
+import org.hibernate.Hibernate;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import tm.ugur.dto.RouteDTO;
+import tm.ugur.dto.StopDTO;
 import tm.ugur.dto.geo.LineStringDTO;
 import tm.ugur.dto.geo.PointDTO;
 import tm.ugur.models.Route;
 import tm.ugur.models.Stop;
+import tm.ugur.services.admin.StopService;
+
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,12 +31,16 @@ public class RouteMapper extends AbstractMapper<Route, RouteDTO> {
 
     private final ModelMapper modelMapper;
     private final GeometryFactory factory;
+    private final StopService stopService;
+
+
 
     @Autowired
-    public RouteMapper(ModelMapper modelMapper, GeometryFactory factory){
+    public RouteMapper(ModelMapper modelMapper, GeometryFactory factory, StopService stopService){
         super(Route.class, RouteDTO.class);
         this.modelMapper = modelMapper;
         this.factory = factory;
+        this.stopService = stopService;
     }
 
 
@@ -48,14 +61,14 @@ public class RouteMapper extends AbstractMapper<Route, RouteDTO> {
     }
 
 
-    private List<Long> getStopIds(Route source, String line) {
+    protected List<Long> getStopIds(Route source, String line) {
+
         if (Objects.isNull(source) || Objects.isNull(source.getId()) || Objects.isNull(source.getStartStops())) {
             return null;
         }
-
         List<Stop> stops = line.equals("start") ? source.getStartStops() : source.getEndStops();
-        if (isNull(stops)) {
-            return null;
+            if (isNull(stops)) {
+                return null;
         }
 
         return stops.stream().map(Stop::getId).collect(Collectors.toList());
@@ -63,14 +76,14 @@ public class RouteMapper extends AbstractMapper<Route, RouteDTO> {
 
 
     private LineStringDTO getLineDto(Route source, String line){
-        if(this.isNullLine(source, line))
-            return null;
+        if (this.isNullLine(source, line))
+           return null;
 
         LineString lineString = line.equals("front") ? source.getFrontLine() : source.getBackLine();
         Coordinate[] coordinates = lineString.getCoordinates();
         List<PointDTO> points = new ArrayList<>();
 
-        for(Coordinate coordinate : coordinates){
+        for (Coordinate coordinate : coordinates) {
             points.add(new PointDTO(coordinate.getX(), coordinate.getY()));
         }
 
@@ -81,9 +94,23 @@ public class RouteMapper extends AbstractMapper<Route, RouteDTO> {
 
     @Override
     public void mapSpecificFields(RouteDTO source, Route destination) {
+        destination.setStartStops(getStops(source, "start"));
+        destination.setEndStops(getStops(source, "back"));
         destination.setFrontLine(getLine(source, "front"));
         destination.setBackLine(getLine(source, "back"));
     }
+
+
+    private List<Stop> getStops(RouteDTO source, String line){
+        if (Objects.isNull(source) || Objects.isNull(source.getId()) || Objects.isNull(source.getStartStopIds())) {
+            return null;
+        }
+
+        List<Long> ids = line.equals("start") ? source.getStartStopIds() : source.getEndStopIds();
+
+        return ids.stream().map(stopService::findOne).collect(Collectors.toList());
+    }
+
 
     private LineString getLine(RouteDTO source, String line){
         if(this.isNullLine(source, line))

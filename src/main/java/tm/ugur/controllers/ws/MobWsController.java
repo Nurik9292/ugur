@@ -6,8 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.RestController;
-import tm.ugur.services.data_bus.AtLogisticImport;
-import tm.ugur.services.data_bus.ImdataImport;
+import tm.ugur.services.data_bus.import_data.AtLogisticImport;
+import tm.ugur.services.data_bus.import_data.ImdataImport;
 
 import java.util.concurrent.ScheduledExecutorService;
 

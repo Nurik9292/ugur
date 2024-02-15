@@ -1,5 +1,6 @@
-package tm.ugur.services;
+package tm.ugur.services.admin;
 
+import org.hibernate.Hibernate;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
@@ -16,6 +17,7 @@ import tm.ugur.util.pagination.PaginationService;
 import tm.ugur.util.mappers.RouteMapper;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -50,6 +52,17 @@ public class RouteService {
         return this.paginationService.createPage(routes, pageNumber, itemsPerPage);
     }
 
+    @Transactional
+    public List<Route> findAllHibernateInit(){
+        List<Route> routes = routeRepository.findAll();
+
+        routes.forEach(route -> {
+            Hibernate.initialize(route.getStartStops());
+            Hibernate.initialize(route.getEndStops());
+        });
+
+        return routes;
+    }
 
     public List<Route> findAll(){
         return routeRepository.findAll();

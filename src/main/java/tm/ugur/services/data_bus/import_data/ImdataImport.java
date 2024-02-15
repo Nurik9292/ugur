@@ -1,4 +1,4 @@
-package tm.ugur.services.data_bus;
+package tm.ugur.services.data_bus.import_data;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tm.ugur.dto.BusDTO;
+import tm.ugur.services.data_bus.BusResponseService;
 
 import java.util.*;
 
@@ -40,7 +41,7 @@ public class ImdataImport extends BusDataImplImport {
             return buses;
         }catch (JsonProcessingException e){
             logger.error("Api imdata unavailable: " + e.getMessage());
-            return Collections.EMPTY_MAP;
+            return Collections.emptyMap();
         }
     }
 

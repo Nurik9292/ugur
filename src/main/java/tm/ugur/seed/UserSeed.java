@@ -6,8 +6,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import tm.ugur.models.Person;
 import tm.ugur.models.Role;
-import tm.ugur.repo.PersonRepository;
-import tm.ugur.services.PersonService;
+import tm.ugur.services.admin.PersonService;
 
 @Component
 @Order(2)
