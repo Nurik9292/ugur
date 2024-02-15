@@ -16,7 +16,7 @@ import tm.ugur.dto.BusDTO;
 import tm.ugur.models.Client;
 import tm.ugur.security.ClientDetails;
 import tm.ugur.services.redis.RedisBusService;
-import tm.ugur.util.StaticParams;
+import tm.ugur.util.Constant;
 
 import java.util.List;
 import java.util.Objects;
@@ -56,7 +56,7 @@ public class SendClientBuses {
     private void sendBusData(){
         try {
             if(Objects.nonNull(number)){
-                List<BusDTO> buses = redisBusService.getBuses(StaticParams.BUSES_DIVIDED_INTO_ROUTES + number);
+                List<BusDTO> buses = redisBusService.getBuses(Constant.BUSES_DIVIDED_INTO_ROUTES + number);
 
                 ObjectMapper mapper = new ObjectMapper();
                 messagingTemplate.convertAndSend("/topic/mobile." + getAuthClient().getPhone(),

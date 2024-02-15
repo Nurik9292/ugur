@@ -11,6 +11,7 @@ import tm.ugur.repo.StartRouteStopRepository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -27,6 +28,10 @@ public class StartRouteStopService{
 
     public List<StartRouteStop> findByRoute(Route route){
         return startRouteStopRepository.findByRouteOrderByIndex(route);
+    }
+
+    public Optional<StartRouteStop> findByStopAndRoute(Stop stop, Route route){
+        return startRouteStopRepository.findByStopAndRoute(stop, route).stream().findAny();
     }
 
     public Boolean hasRoute(Route route){

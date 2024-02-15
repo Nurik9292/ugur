@@ -13,7 +13,6 @@ public class BusDTO extends AbstractDTO implements Serializable {
     private String dir;
     private PointDTO location;
     private Integer index;
-
     private String side;
 
     public BusDTO(){}
@@ -118,6 +117,7 @@ public class BusDTO extends AbstractDTO implements Serializable {
                 ", number='" + number + '\'' +
                 ", speed='" + speed + '\'' +
                 ", dir='" + dir + '\'' +
+                ", side='" + side + '\'' +
                 '}';
     }
 

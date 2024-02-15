@@ -34,7 +34,7 @@ public class RouteApiService {
     public List<RouteDTO> findAll(){
         List<RouteDTO> routeDTOS = this.routeRepository
                 .findAllWithIdNameIntervalNumberCityRouteTime().stream().map(this::convertToRouteDTO).toList();
-        routeDTOS.forEach(routeDTO -> routeDTO.setFavorite(this.isFavorite(routeDTO)));
+        routeDTOS.forEach(routeDTO -> routeDTO.setIs_favorite(this.isFavorite(routeDTO)));
         return routeDTOS;
     }
 
@@ -50,7 +50,7 @@ public class RouteApiService {
     public RouteDTO findOne(Long id){
         RouteDTO routeDTO = this.convertToRouteDTO(
                 this.routeRepository.findById(Long.valueOf(id)).orElseThrow(RouteNotFoundException::new));
-        routeDTO.setFavorite(isFavorite(routeDTO));
+        routeDTO.setIs_favorite(isFavorite(routeDTO));
         return routeDTO;
     }
 

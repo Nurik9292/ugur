@@ -41,7 +41,7 @@ public class ImdataImport extends BusDataImplImport {
             return buses;
         }catch (JsonProcessingException e){
             logger.error("Api imdata unavailable: " + e.getMessage());
-            return Collections.EMPTY_MAP;
+            return Collections.emptyMap();
         }
     }
 

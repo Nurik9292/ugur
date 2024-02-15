@@ -6,13 +6,14 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import org.locationtech.jts.geom.LineString;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "routes")
-public class Route extends AbstractEntity{
+public class Route extends AbstractEntity implements Serializable {
 
     @Id
     @Column(name = "id")

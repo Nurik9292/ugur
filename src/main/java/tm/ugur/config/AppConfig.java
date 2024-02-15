@@ -5,7 +5,11 @@ import org.locationtech.jts.geom.PrecisionModel;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import tm.ugur.models.Route;
+import tm.ugur.models.Stop;
 
+import java.util.Properties;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -26,4 +30,5 @@ public class AppConfig {
     public Lock getLock(){
         return new ReentrantLock();
     }
+
 }

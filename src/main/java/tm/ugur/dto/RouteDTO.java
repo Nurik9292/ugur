@@ -1,11 +1,13 @@
 package tm.ugur.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import tm.ugur.dto.geo.LineStringDTO;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class RouteDTO extends AbstractDTO{
+public class RouteDTO extends AbstractDTO implements Serializable {
 
     @Column(name = "name")
     private String name;
@@ -27,7 +29,8 @@ public class RouteDTO extends AbstractDTO{
 
     private LineStringDTO backLine;
 
-    private Boolean isFavorite;
+
+    private Boolean is_favorite;
 
 
     public RouteDTO(){
@@ -108,11 +111,11 @@ public class RouteDTO extends AbstractDTO{
     }
 
     public Boolean getIs_favorite() {
-        return isFavorite;
+        return is_favorite;
     }
 
-    public void setFavorite(Boolean favorite) {
-        isFavorite = favorite;
+    public void setIs_favorite(Boolean favorite) {
+        is_favorite = favorite;
     }
 
 
