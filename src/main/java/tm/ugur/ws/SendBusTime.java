@@ -11,60 +11,57 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
-import tm.ugur.dto.BusDTO;
 import tm.ugur.models.Client;
 import tm.ugur.security.ClientDetails;
-import tm.ugur.services.redis.RedisBusService;
-import tm.ugur.util.Constant;
+import tm.ugur.services.api.BusTimeService;
 
-import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @Component
-public class SendClientBuses {
+public class SendBusTime {
 
     private ScheduledExecutorService scheduledExecutorService;
     private final SimpMessagingTemplate messagingTemplate;
-    private final RedisBusService redisBusService;
+    private final BusTimeService busTimeService;
 
-    private Integer number;
+    private Long stopId;
 
-    private final static Logger logger = LoggerFactory.getLogger(SendClientBuses.class);
+    private final static Logger logger = LoggerFactory.getLogger(SendBusTime.class);
 
     @Autowired
-    public SendClientBuses(SimpMessagingTemplate messagingTemplate,
-                           RedisBusService redisBusService) {
+    public SendBusTime(SimpMessagingTemplate messagingTemplate, BusTimeService busTimeService) {
         this.messagingTemplate = messagingTemplate;
-        this.redisBusService = redisBusService;
+        this.busTimeService = busTimeService;
     }
 
     @EventListener
-    public void handleWebSocketConnectListener(SessionConnectedEvent event){
+    public void handleWebSocketConnectListenerTime(SessionConnectedEvent event){
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleAtFixedRate(this::sendBusData, 0, 3, TimeUnit.SECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(this::sendBusTime, 0, 3, TimeUnit.SECONDS);
     }
 
     @EventListener
-    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event){
+    public void handleWebSocketDisconnectListenerTime(SessionDisconnectEvent event){
         scheduledExecutorService.shutdown();
     }
 
-    private void sendBusData(){
+    private void sendBusTime(){
         try {
-            if(Objects.nonNull(number)){
-                List<BusDTO> buses = redisBusService.getBuses(Constant.BUSES_DIVIDED_INTO_ROUTES + number);
-
+            if(Objects.nonNull(stopId)){
+                Map<Integer, Double> times = busTimeService.getBusTime(stopId);
                 ObjectMapper mapper = new ObjectMapper();
-                messagingTemplate.convertAndSend("/topic/mobile." + getAuthClient().getPhone(),
-                        mapper.writeValueAsString(buses));
+                messagingTemplate.convertAndSend("/topic/time." + getAuthClient().getPhone(),
+                        mapper.writeValueAsString(times));
             }
         } catch (Exception e) {
-            logger.error("Send bus data: " + e.getMessage());
+            logger.error("Send bus time: " + e.getMessage());
         }
     }
+
 
     private Client getAuthClient(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -72,7 +69,7 @@ public class SendClientBuses {
         return clientDetails.getClient();
     }
 
-    public void setNumber(Integer number) {
-        this.number = number;
+    public void setStopId(Long stopId) {
+        this.   stopId = stopId;
     }
 }

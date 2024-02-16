@@ -5,21 +5,27 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tm.ugur.dto.BusDTO;
+import tm.ugur.models.Stop;
+import tm.ugur.services.admin.StopService;
 import tm.ugur.services.api.BusApiService;
 import tm.ugur.util.errors.buses.BusErrorResponse;
 import tm.ugur.util.errors.buses.BusNotFoundException;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/buses")
 public class BusApiController {
 
     private final BusApiService busSservice;
+    private final StopService stopService;
 
     @Autowired
-    public BusApiController(BusApiService busSservice) {
+    public BusApiController(BusApiService busSservice, StopService stopService) {
         this.busSservice = busSservice;
+        this.stopService = stopService;
     }
 
     @GetMapping
