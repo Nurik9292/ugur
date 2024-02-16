@@ -1,4 +1,4 @@
-package tm.ugur.services;
+package tm.ugur.services.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class EndRouteStopService {
 
-    private static int count = 1;
 
     private final EndRouteStopRepository endRouteStopRepository;
 
@@ -28,6 +27,10 @@ public class EndRouteStopService {
 
     public List<EndRouteStop> findByRoute(Route route){
         return endRouteStopRepository.findByRouteOrderByIndex(route);
+    }
+
+    public Optional<EndRouteStop> findByStopAdnRoute(Stop stop, Route route){
+        return endRouteStopRepository.findByStopAndRoute(stop, route);
     }
 
     public boolean hasRoute(Route route){

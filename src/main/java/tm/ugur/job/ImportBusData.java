@@ -3,12 +3,14 @@ package tm.ugur.job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import tm.ugur.dto.BusDTO;
 import tm.ugur.services.data_bus.BusDataAggregator;
 import tm.ugur.services.data_bus.BusDataFetcher;
-import tm.ugur.services.data_bus.import_data.BusDestinationDirectionSide;
+import tm.ugur.services.data_bus.BusDestinationDirectionSide;
+import tm.ugur.services.data_bus.BusIndexing;
 import tm.ugur.services.data_bus.import_data.ImdataImport;
 import tm.ugur.services.redis.RedisBusService;
 
@@ -22,6 +24,7 @@ public class ImportBusData {
     private final BusDataAggregator busDataAggregator;
     private final RedisBusService redisService;
     private final BusDestinationDirectionSide busSide;
+    private final BusIndexing busIndexing;
 
     private final Lock lock;
 
@@ -31,31 +34,33 @@ public class ImportBusData {
     public ImportBusData(BusDataFetcher busDataFetcher,
                          BusDataAggregator busDataAggregator,
                          RedisBusService redisService,
-                         BusDestinationDirectionSide busSide, Lock lock) {
+                         BusDestinationDirectionSide busSide, BusIndexing busIndexing, Lock lock) {
         this.busDataFetcher = busDataFetcher;
         this.busDataAggregator = busDataAggregator;
         this.redisService = redisService;
         this.busSide = busSide;
+        this.busIndexing = busIndexing;
         this.lock = lock;
     }
 
-    @Scheduled(cron = "*/3 * * * * *")
+    @Async
+    @Scheduled(cron = "*/4 * * * * *")
     public void  importData(){
+
         try {
-            lock.lock();
+
             System.out.println("start");
             Map<Integer, List<BusDTO>> aggregatedBuses = busDataAggregator.aggregateBusData(
-                    busSide.define(busDataFetcher.fetchBusDataFromAllSources())
+                    busIndexing.indexing(busSide.define(busDataFetcher.fetchBusDataFromAllSources()))
             );
+
             for(Map.Entry<Integer, List<BusDTO>> entry : aggregatedBuses.entrySet()){
-                System.out.println(entry.getValue());
+                System.out.println(entry);
                 redisService.addBuses(String.valueOf(entry.getKey()), entry.getValue());
             }
-
+            System.out.println("end");
         } catch (Exception e) {
             logger.error("API unavailable job: " + e.getMessage());
-        }finally {
-            lock.unlock();
         }
     }
 }

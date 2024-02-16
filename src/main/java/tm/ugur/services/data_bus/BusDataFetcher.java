@@ -8,6 +8,7 @@ import tm.ugur.services.data_bus.import_data.AtLogisticImport;
 import tm.ugur.services.data_bus.import_data.ImdataImport;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class BusDataFetcher {
@@ -21,30 +22,26 @@ public class BusDataFetcher {
         this.atLogisticImport = atLogisticImport;
     }
 
-    public List<BusDTO> fetchBusDataFromAllSources(){
+    public List<BusDTO> fetchBusDataFromAllSources() {
         Map<String, BusDTO> imdateBuses = imdataImport.getBusData();
         Map<String, BusDTO> atLogistikaBuses = atLogisticImport.getBusData();
-        List<BusDTO> buses = new ArrayList<>();
 
-        for (Map.Entry<String, BusDTO> entry : imdateBuses.entrySet()) {
-            BusDTO imdataBus = entry.getValue();
-            if (atLogistikaBuses.containsKey(entry.getKey())){
-                BusDTO atLogistikaBus = atLogistikaBuses.get(entry.getKey());
-                buses.add(new BusDTO(
-                        1L,
-                        imdataBus.getCarNumber(),
-                        imdataBus.getNumber(),
-                        atLogistikaBus.getSpeed(),
-                        atLogistikaBus.getDir(),
-                        atLogistikaBus.getLocation()
-                ));
-            }
-        }
-
-        Collections.sort(buses, Comparator.comparing(BusDTO::getNumber));
-
-        return buses;
+        return imdateBuses.entrySet().stream()
+                .filter(entry -> atLogistikaBuses.containsKey(entry.getKey()))
+                .map(entry -> {
+                    BusDTO imdataBus = entry.getValue();
+                    BusDTO atLogistikaBus = atLogistikaBuses.get(entry.getKey());
+                    return new BusDTO(
+                            1L,
+                            imdataBus.getCarNumber(),
+                            imdataBus.getNumber(),
+                            atLogistikaBus.getSpeed(),
+                            atLogistikaBus.getDir(),
+                            atLogistikaBus.getLocation()
+                    );
+                })
+                .sorted(Comparator.comparing(BusDTO::getNumber))
+                .collect(Collectors.toList());
     }
-
 
 }

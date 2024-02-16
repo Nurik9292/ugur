@@ -30,7 +30,7 @@ public class RouteDTO extends AbstractDTO implements Serializable {
     private LineStringDTO backLine;
 
 
-    private Boolean is_favorite;
+    private transient Boolean is_favorite;
 
 
     public RouteDTO(){

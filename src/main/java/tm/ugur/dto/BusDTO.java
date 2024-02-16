@@ -118,6 +118,7 @@ public class BusDTO extends AbstractDTO implements Serializable {
                 ", speed='" + speed + '\'' +
                 ", dir='" + dir + '\'' +
                 ", side='" + side + '\'' +
+                ", index='" + index + '\'' +
                 '}';
     }
 

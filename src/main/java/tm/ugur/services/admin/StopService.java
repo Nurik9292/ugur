@@ -77,6 +77,10 @@ public class StopService {
         return stop;
     }
 
+    public List<Stop> findNearestStops(double lat, double lng){
+        return stopRepository.findNearestStops(lat, lng);
+    }
+
     public Boolean hasRouteByName(String name){
         return this.stopRepository.existsByName(name);
     }

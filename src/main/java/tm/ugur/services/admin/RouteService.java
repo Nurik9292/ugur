@@ -86,6 +86,10 @@ public class RouteService {
         return routeRepository.findRouteByName(name);
     }
 
+    public Optional<Route> findByNumber(Integer number){
+        return routeRepository.findByNumber(number);
+    }
+
     @Transactional
     public void store(Route route, String frontCoordinates, String backCoordinates){
         initializeRoute(route, frontCoordinates, backCoordinates);

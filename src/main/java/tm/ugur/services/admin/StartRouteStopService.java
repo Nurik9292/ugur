@@ -1,4 +1,4 @@
-package tm.ugur.services;
+package tm.ugur.services.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +28,14 @@ public class StartRouteStopService {
 
     public List<StartRouteStop> findByRoute(Route route){
         return startRouteStopRepository.findByRouteOrderByIndex(route);
+    }
+
+    public List<StartRouteStop> findByStop(Stop stop){
+        return startRouteStopRepository.findByStop(stop);
+    }
+
+    public Optional<StartRouteStop> findByStopAndRoute(Stop stop, Route route){
+        return startRouteStopRepository.findByStopAndRoute(stop, route);
     }
 
     public Boolean hasRoute(Route route){

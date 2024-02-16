@@ -6,8 +6,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import tm.ugur.models.EndRouteStop;
 import tm.ugur.models.Route;
-import tm.ugur.services.EndRouteStopService;
-import tm.ugur.services.RouteService;
+import tm.ugur.services.admin.EndRouteStopService;
+import tm.ugur.services.admin.RouteService;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;

@@ -6,9 +6,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import tm.ugur.models.EndRouteStop;
 import tm.ugur.models.Route;
 import tm.ugur.models.StartRouteStop;
-import tm.ugur.services.EndRouteStopService;
-import tm.ugur.services.RouteService;
-import tm.ugur.services.StartRouteStopService;
+import tm.ugur.services.admin.EndRouteStopService;
+import tm.ugur.services.admin.RouteService;
+import tm.ugur.services.admin.StartRouteStopService;
+import tm.ugur.services.admin.StopService;
 
 import java.io.*;
 import java.util.*;
@@ -20,12 +21,14 @@ public class TestController {
     private final StartRouteStopService startRouteStopService;
     private final EndRouteStopService endRouteStopService;
     private final RouteService routeService;
+    private final StopService stopService;
 
     @Autowired
-    public TestController(StartRouteStopService startRouteStopService, EndRouteStopService endRouteStopService, RouteService routeService) {
+    public TestController(StartRouteStopService startRouteStopService, EndRouteStopService endRouteStopService, RouteService routeService, StopService stopService) {
         this.startRouteStopService = startRouteStopService;
         this.endRouteStopService = endRouteStopService;
         this.routeService = routeService;
+        this.stopService = stopService;
     }
 
     @GetMapping("/test")
@@ -80,4 +83,10 @@ public class TestController {
             });
         });
     }
+
+    @GetMapping("/test-location")
+    public void testLocation(){
+        System.out.println(stopService.findNearestStops(37.95102886133695, 58.371306048883476));
+    }
+
 }
