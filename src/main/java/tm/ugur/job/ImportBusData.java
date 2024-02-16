@@ -48,17 +48,13 @@ public class ImportBusData {
     public void  importData(){
 
         try {
-
-            System.out.println("start");
             Map<Integer, List<BusDTO>> aggregatedBuses = busDataAggregator.aggregateBusData(
                     busIndexing.indexing(busSide.define(busDataFetcher.fetchBusDataFromAllSources()))
             );
 
             for(Map.Entry<Integer, List<BusDTO>> entry : aggregatedBuses.entrySet()){
-                System.out.println(entry);
                 redisService.addBuses(String.valueOf(entry.getKey()), entry.getValue());
             }
-            System.out.println("end");
         } catch (Exception e) {
             logger.error("API unavailable job: " + e.getMessage());
         }
