@@ -93,6 +93,16 @@ public class RouteService {
         return routeRepository.findByNumber(number);
     }
 
+    public Optional<Route> findByNumberInitStops(int number){
+        Optional<Route> route = routeRepository.findByNumber(number);
+        route.ifPresent(r -> {
+            Hibernate.initialize(r.getStartStops());
+            Hibernate.initialize(r.getEndStops());
+        });
+
+        return route;
+    }
+
     @Transactional
     public void store(Route route, String frontCoordinates, String backCoordinates){
         initializeRoute(route, frontCoordinates, backCoordinates);

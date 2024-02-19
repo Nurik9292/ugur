@@ -48,8 +48,6 @@ public class BusDestinationDirectionSide {
     @Transactional
     public List<BusDTO> define(List<BusDTO> buses){
 
-        long start = System.currentTimeMillis();
-        logger.info("Start: side");
         buses.parallelStream().forEach(bus -> {
 
             Optional<Route> route = routeService.findByNumber(bus.getNumber());
@@ -70,9 +68,6 @@ public class BusDestinationDirectionSide {
                     }
             }
         });
-        long end = System.currentTimeMillis();
-        logger.info("end side");
-        logger.info(String.valueOf(end - start));
 
         return buses;
     }

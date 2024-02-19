@@ -1,5 +1,8 @@
 package tm.ugur.services.data_bus;
 
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,19 +19,17 @@ import tm.ugur.services.admin.RouteService;
 import tm.ugur.services.admin.StartRouteStopService;
 import tm.ugur.services.admin.StopService;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 
 @Component
 public class BusIndexing {
 
-    private final StopService stopService;
+    private final GeometryFactory factory;
     private final RouteService routeService;
     private final StartRouteStopService startRouteStopService;
     private final EndRouteStopService endRouteStopService;
@@ -37,11 +38,11 @@ public class BusIndexing {
     private final static Logger logger = LoggerFactory.getLogger(BusIndexing.class);
 
     @Autowired
-    public BusIndexing(StopService stopService,
+    public BusIndexing(GeometryFactory factory,
                        RouteService routeService,
                        StartRouteStopService startRouteStopService,
                        EndRouteStopService endRouteStopService, Lock lock) {
-        this.stopService = stopService;
+        this.factory = factory;
         this.routeService = routeService;
         this.startRouteStopService = startRouteStopService;
         this.endRouteStopService = endRouteStopService;
@@ -55,14 +56,18 @@ public class BusIndexing {
         buses.parallelStream().forEach(bus -> {
             PointDTO point = bus.getLocation();
 
-            List<Stop> stops = stopService.findNearestStops(point.getLat(), point.getLng());
-            Optional<Route> route = routeService.findByNumber(bus.getNumber());
+            Optional<Route> route = routeService.findByNumberInitStops(bus.getNumber());
+
+
+            List<Stop> stops = Objects.nonNull(bus.getSide()) && bus.getSide().equals("front") ?
+                    findNearestStops(route.get().getStartStops(), point) : findNearestStops(route.get().getEndStops(), point) ;
+
 
             if (Objects.isNull(bus.getSide())) {
                 return;
             }
 
-            if (bus.getSide().equals("front")) {
+            if (Objects.nonNull(bus.getSide()) && bus.getSide().equals("front")) {
                 processStopsForSide(stops, route, bus, this::processStartRouteStop);
             } else if (bus.getSide().equals("back")) {
                 processStopsForSide(stops, route, bus, this::processEndRouteStop);
@@ -71,6 +76,16 @@ public class BusIndexing {
 
 
         return buses;
+    }
+
+    private List<Stop> findNearestStops(List<Stop> stops, PointDTO point){
+        Point pointTarget = factory.createPoint(new Coordinate(point.getLat(), point.getLng()));
+        return stops.parallelStream()
+                .map(stop -> new AbstractMap.SimpleEntry<>(stop, stop.getLocation().distance(pointTarget)))
+                .sorted(Comparator.comparingDouble(AbstractMap.SimpleEntry::getValue))
+                .limit(1)
+                .map(AbstractMap.SimpleEntry::getKey)
+                .collect(Collectors.toList());
     }
 
     private void processStopsForSide(List<Stop> stops, Optional<Route> route, BusDTO bus,

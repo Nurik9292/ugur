@@ -47,17 +47,17 @@ public class ImportBusData {
         importData();
     }
 
-    @Scheduled(fixedDelay = 6000)
+    @Scheduled(fixedDelay = 4000)
     public void taskTwo(){
         importData();
     }
 
-    @Scheduled(fixedDelay = 9000)
+    @Scheduled(fixedDelay = 5000)
     public void taskThree(){
         importData();
     }
 
-    @Scheduled(fixedDelay = 12000)
+    @Scheduled(fixedDelay = 6000)
     public void taskFor(){
         importData();
     }
@@ -70,7 +70,6 @@ public class ImportBusData {
             );
 
             for(Map.Entry<Integer, List<BusDTO>> entry : aggregatedBuses.entrySet()){
-                logger.info(entry.toString());
                 redisService.addBuses(String.valueOf(entry.getKey()), entry.getValue());
             }
         } catch (Exception e) {
