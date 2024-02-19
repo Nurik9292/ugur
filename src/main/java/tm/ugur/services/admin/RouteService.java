@@ -52,18 +52,6 @@ public class RouteService {
         return this.paginationService.createPage(routes, pageNumber, itemsPerPage);
     }
 
-    @Transactional
-    public List<Route> findAllHibernateInit(){
-        List<Route> routes = routeRepository.findAll();
-
-        routes.forEach(route -> {
-            Hibernate.initialize(route.getStartStops());
-            Hibernate.initialize(route.getEndStops());
-        });
-
-        return routes;
-    }
-
     public List<Route> findAll(){
         return routeRepository.findAll();
     }
@@ -76,6 +64,21 @@ public class RouteService {
     public Page<Route> findAll(int pageNumber, int itemsPerPage)
     {
         return paginationService.createPage(routeRepository.findAll(), pageNumber, itemsPerPage);
+    }
+
+    @Transactional
+    public List<Route> findAllHibernateInit(){
+        List<Route> routes = routeRepository.findAll();
+
+        routes.forEach(route -> {
+            Hibernate.initialize(route.getStartStops());
+            Hibernate.initialize(route.getEndStops());
+            Hibernate.initialize(route.getStartRouteStops());
+            Hibernate.initialize(route.getEndRouteStops());
+            Hibernate.initialize(route.getCity().getStops());
+        });
+
+        return routes;
     }
 
     public  Optional<Route> findOne(long id){
@@ -124,10 +127,6 @@ public class RouteService {
         this.routeRepository.deleteById(id);
     }
 
-
-    public Optional<Route> findRoutesByClient(Client client, Long id){
-        return routeRepository.findRouteByClientsAndId(client, id);
-    }
 
     private void initializeRoute(Route route, String frontCoordinates, String backCoordinates) {
         route.setFrontLine(getLineString(frontCoordinates));

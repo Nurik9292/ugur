@@ -10,6 +10,7 @@ import tm.ugur.util.mappers.RouteMapper;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class RedisRouteService {
@@ -24,8 +25,7 @@ public class RedisRouteService {
     }
 
     public void addRoute(Route route){
-        redisTemplate.opsForValue().set(
-                Constant.ROUTE_NUMBER + route.getNumber(), convertEntityToDto(route));
+        redisTemplate.opsForValue().set(Constant.ROUTE_NUMBER + route.getNumber(), convertToDto(route));
     }
 
     public Route getRoute(String key){
@@ -33,8 +33,10 @@ public class RedisRouteService {
     }
 
     public List<Route> getRoutes() {
-        return redisTemplate.opsForValue().multiGet(Objects.requireNonNull(redisTemplate.keys("*")))
-                .stream().map(this::convertToEntity).toList();
+        return redisTemplate.opsForValue()
+                .multiGet(Objects.requireNonNull(redisTemplate.keys(Constant.ROUTE_NUMBER + "*")))
+                .stream().map(this::convertToEntity).collect(Collectors.toList());
+
     }
 
     public void deleteRoute(String key){
@@ -45,7 +47,7 @@ public class RedisRouteService {
         return routeMapper.toEntity(routeDTO);
     }
 
-    private RouteDTO convertEntityToDto(Route route) {
+    protected RouteDTO convertToDto(Route route) {
         return routeMapper.toDto(route);
     }
 }

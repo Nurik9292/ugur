@@ -1,5 +1,7 @@
 package tm.ugur.services.data_bus;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +19,8 @@ import tm.ugur.services.admin.StopService;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
@@ -28,23 +32,29 @@ public class BusIndexing {
     private final RouteService routeService;
     private final StartRouteStopService startRouteStopService;
     private final EndRouteStopService endRouteStopService;
+    private final Lock lock;
+
+    private final static Logger logger = LoggerFactory.getLogger(BusIndexing.class);
 
     @Autowired
     public BusIndexing(StopService stopService,
                        RouteService routeService,
                        StartRouteStopService startRouteStopService,
-                       EndRouteStopService endRouteStopService) {
+                       EndRouteStopService endRouteStopService, Lock lock) {
         this.stopService = stopService;
         this.routeService = routeService;
         this.startRouteStopService = startRouteStopService;
         this.endRouteStopService = endRouteStopService;
+        this.lock = lock;
     }
 
 
     @Transactional
     public List<BusDTO> indexing(List<BusDTO> buses) {
+
         buses.parallelStream().forEach(bus -> {
             PointDTO point = bus.getLocation();
+
             List<Stop> stops = stopService.findNearestStops(point.getLat(), point.getLng());
             Optional<Route> route = routeService.findByNumber(bus.getNumber());
 
@@ -59,13 +69,14 @@ public class BusIndexing {
             }
         });
 
+
         return buses;
     }
 
     private void processStopsForSide(List<Stop> stops, Optional<Route> route, BusDTO bus,
                                      BiConsumer<Optional<?>, BusDTO> routeStopProcessor) {
         if (route.isPresent()) {
-            stops.forEach(stop -> {
+            stops.parallelStream().forEach(stop -> {
                 Optional<?> routeStop = bus.getSide().equals("front")
                         ? startRouteStopService.findByStopAndRoute(stop, route.get())
                         : endRouteStopService.findByStopAdnRoute(stop, route.get());

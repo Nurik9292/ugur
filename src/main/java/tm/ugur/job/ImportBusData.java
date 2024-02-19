@@ -3,7 +3,6 @@ package tm.ugur.job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import tm.ugur.dto.BusDTO;
@@ -43,20 +42,43 @@ public class ImportBusData {
         this.lock = lock;
     }
 
-    @Async
-    @Scheduled(cron = "*/4 * * * * *")
-    public void  importData(){
+    @Scheduled(fixedDelay = 3000)
+    public void taskOne(){
+        importData();
+    }
 
+    @Scheduled(fixedDelay = 6000)
+    public void taskTwo(){
+        importData();
+    }
+
+    @Scheduled(fixedDelay = 9000)
+    public void taskThree(){
+        importData();
+    }
+
+    @Scheduled(fixedDelay = 12000)
+    public void taskFor(){
+        importData();
+    }
+
+    public void  importData(){
+        lock.lock();
         try {
             Map<Integer, List<BusDTO>> aggregatedBuses = busDataAggregator.aggregateBusData(
                     busIndexing.indexing(busSide.define(busDataFetcher.fetchBusDataFromAllSources()))
             );
 
             for(Map.Entry<Integer, List<BusDTO>> entry : aggregatedBuses.entrySet()){
+                logger.info(entry.toString());
                 redisService.addBuses(String.valueOf(entry.getKey()), entry.getValue());
             }
         } catch (Exception e) {
             logger.error("API unavailable job: " + e.getMessage());
+        }finally {
+            lock.unlock();
         }
     }
+
+
 }

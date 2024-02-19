@@ -29,16 +29,18 @@ public class RouteStartIndexingSeed implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Set<Route> routes = new HashSet<>(routeService.findAll());
+        if (!routeService.findByNumber(13).isPresent()) {
+            Set<Route> routes = new HashSet<>(routeService.findAll());
 
-        routes.forEach(route -> {
-            AtomicInteger count = new AtomicInteger(2);
-            List<StartRouteStop> startRouteStops = startRouteStopService.findByRoute(route);
-            startRouteStops.forEach(startRouteStop -> {
-                startRouteStop.setIndex(count.get());
-                startRouteStopService.store(startRouteStop);
-                count.addAndGet(2);
+            routes.forEach(route -> {
+                AtomicInteger count = new AtomicInteger(2);
+                List<StartRouteStop> startRouteStops = startRouteStopService.findByRoute(route);
+                startRouteStops.forEach(startRouteStop -> {
+                    startRouteStop.setIndex(count.get());
+                    startRouteStopService.store(startRouteStop);
+                    count.addAndGet(2);
+                });
             });
-        });
+        }
     }
 }

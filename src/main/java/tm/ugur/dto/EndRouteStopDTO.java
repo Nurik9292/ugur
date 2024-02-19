@@ -2,7 +2,7 @@ package tm.ugur.dto;
 
 import java.io.Serializable;
 
-public class StartRouteStopDTO extends AbstractDTO implements Serializable {
+public class EndRouteStopDTO extends AbstractDTO implements Serializable {
 
     private RouteDTO route;
 
@@ -10,11 +10,11 @@ public class StartRouteStopDTO extends AbstractDTO implements Serializable {
 
     private int index;
 
-    public StartRouteStopDTO(){
+    public EndRouteStopDTO(){
 
     }
 
-    public StartRouteStopDTO(RouteDTO route, StopDTO stop, int index){
+    public EndRouteStopDTO(RouteDTO route, StopDTO stop, int index){
         this.route = route;
         this.stop = stop;
         this.index = index;

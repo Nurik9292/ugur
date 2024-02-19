@@ -1,6 +1,5 @@
 package tm.ugur.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import tm.ugur.dto.geo.LineStringDTO;
 
@@ -11,25 +10,16 @@ public class RouteDTO extends AbstractDTO implements Serializable {
 
     @Column(name = "name")
     private String name;
-
     @Column(name = "interval")
     private String interval;
-
     @Column(name = "number")
     private int number;
-
     @Column(name = "city_id")
     private CityDTO city;
-
     private List<Long> startStopIds;
-
     private List<Long> endStopIds;
-
     private LineStringDTO frontLine;
-
     private LineStringDTO backLine;
-
-
     private transient Boolean is_favorite;
 
 
@@ -119,7 +109,6 @@ public class RouteDTO extends AbstractDTO implements Serializable {
     }
 
 
-
     @Override
     public String toString() {
         return "RouteDTO{" +
@@ -132,6 +121,5 @@ public class RouteDTO extends AbstractDTO implements Serializable {
                 ", id=" + id +
                 '}';
     }
-
 
 }

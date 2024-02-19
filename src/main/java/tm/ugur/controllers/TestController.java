@@ -10,6 +10,7 @@ import tm.ugur.services.admin.EndRouteStopService;
 import tm.ugur.services.admin.RouteService;
 import tm.ugur.services.admin.StartRouteStopService;
 import tm.ugur.services.admin.StopService;
+import tm.ugur.services.redis.RedisRouteService;
 
 import java.io.*;
 import java.util.*;
@@ -22,13 +23,20 @@ public class TestController {
     private final EndRouteStopService endRouteStopService;
     private final RouteService routeService;
     private final StopService stopService;
+    private final RedisRouteService redisRouteService;
+
 
     @Autowired
-    public TestController(StartRouteStopService startRouteStopService, EndRouteStopService endRouteStopService, RouteService routeService, StopService stopService) {
+    public TestController(StartRouteStopService startRouteStopService,
+                          EndRouteStopService endRouteStopService,
+                          RouteService routeService,
+                          StopService stopService,
+                          RedisRouteService redisRouteService) {
         this.startRouteStopService = startRouteStopService;
         this.endRouteStopService = endRouteStopService;
         this.routeService = routeService;
         this.stopService = stopService;
+        this.redisRouteService = redisRouteService;
     }
 
     @GetMapping("/test")
@@ -89,4 +97,9 @@ public class TestController {
         System.out.println(stopService.findNearestStops(37.95102886133695, 58.371306048883476));
     }
 
+    @GetMapping("/redis-routes")
+    public void testRedisRoutes(){
+        System.out.println(routeService.findOne(2).get().getEndRouteStops());
+        System.out.println(redisRouteService.getRoutes().getFirst().getEndRouteStops());
+    }
 }

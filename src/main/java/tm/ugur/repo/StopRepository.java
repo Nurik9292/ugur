@@ -21,7 +21,7 @@ public interface StopRepository extends JpaRepository<Stop, Long> {
 
     @Query(value = "SELECT * FROM stops " +
             "ORDER BY location <-> ST_Transform(ST_SetSRID(ST_MakePoint(:latitude, :longitude), 4326), 4326) " +
-            "LIMIT 10", nativeQuery = true)
+            "LIMIT 4", nativeQuery = true)
     List<Stop> findNearestStops(@Param("latitude") double latitude, @Param("longitude") double longitude);
 
 

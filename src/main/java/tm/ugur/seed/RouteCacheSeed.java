@@ -26,10 +26,10 @@ public class RouteCacheSeed implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        List<Route> routes = routeService.findAll();
-//
-//        for (Route route :routes){
-//            redisRouteService.addRoute(route);
-//        }
+        List<Route> routes = routeService.findAllHibernateInit();
+
+        for (Route route :routes){
+            redisRouteService.addRoute(route);
+        }
     }
 }
