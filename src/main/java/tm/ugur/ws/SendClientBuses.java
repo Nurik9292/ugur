@@ -44,7 +44,9 @@ public class SendClientBuses {
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event){
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleAtFixedRate(this::sendBusData, 0, 3, TimeUnit.SECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(() -> {
+            sendBusData(getAuthClient());
+        }, 0, 3, TimeUnit.SECONDS);
     }
 
     @EventListener
@@ -52,13 +54,13 @@ public class SendClientBuses {
         scheduledExecutorService.shutdown();
     }
 
-    private void sendBusData(){
+    private void sendBusData(Client client){
         try {
             if(Objects.nonNull(number)){
                 List<BusDTO> buses = redisBusService.getBuses(Constant.BUSES_DIVIDED_INTO_ROUTES + number);
 
                 ObjectMapper mapper = new ObjectMapper();
-                messagingTemplate.convertAndSend("/topic/mobile." + getAuthClient().getPhone(),
+                messagingTemplate.convertAndSend("/topic/mobile." + client.getPhone(),
                         mapper.writeValueAsString(buses));
             }
         } catch (Exception e) {
