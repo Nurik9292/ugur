@@ -41,7 +41,7 @@ public class SendBusTime {
     @EventListener
     public void handleWebSocketConnectListenerTime(SessionConnectedEvent event){
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleAtFixedRate(this::sendBusTime, 0, 3, TimeUnit.SECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(() -> sendBusTime(getAuthClient()), 0, 3, TimeUnit.SECONDS);
     }
 
     @EventListener
@@ -49,12 +49,12 @@ public class SendBusTime {
         scheduledExecutorService.shutdown();
     }
 
-    private void sendBusTime(){
+    private void sendBusTime(Client client){
         try {
             if(Objects.nonNull(stopId)){
                 Map<Integer, Double> times = busTimeService.getBusTime(stopId);
                 ObjectMapper mapper = new ObjectMapper();
-                messagingTemplate.convertAndSend("/topic/time." + getAuthClient().getPhone(),
+                messagingTemplate.convertAndSend("/topic/time." + client.getPhone(),
                         mapper.writeValueAsString(times));
             }
         } catch (Exception e) {
