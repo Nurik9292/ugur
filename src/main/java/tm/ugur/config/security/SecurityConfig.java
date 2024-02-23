@@ -52,7 +52,7 @@ public class SecurityConfig {
                 .securityMatcher("/websocket-ugur","/api/**").csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/register", "/api/auth/verify_otp").permitAll()
-                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
                 .sessionManagement(sm -> sm
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(this.jwtFilter, UsernamePasswordAuthenticationFilter.class)

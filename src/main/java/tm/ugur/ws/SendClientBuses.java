@@ -6,16 +6,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import tm.ugur.dto.BusDTO;
 import tm.ugur.models.Client;
-import tm.ugur.security.ClientDetails;
 import tm.ugur.services.redis.RedisBusService;
-import tm.ugur.util.Constant;
 
 import java.util.List;
 import java.util.Objects;
@@ -31,6 +27,7 @@ public class SendClientBuses {
     private final RedisBusService redisBusService;
 
     private Integer number;
+    private Client client;
 
     private final static Logger logger = LoggerFactory.getLogger(SendClientBuses.class);
 
@@ -43,10 +40,9 @@ public class SendClientBuses {
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event){
+        System.out.println("connect");
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleAtFixedRate(() -> {
-            sendBusData(getAuthClient());
-        }, 0, 3, TimeUnit.SECONDS);
+        scheduledExecutorService.scheduleWithFixedDelay(this::sendBusData, 0, 3, TimeUnit.SECONDS);
     }
 
     @EventListener
@@ -54,10 +50,11 @@ public class SendClientBuses {
         scheduledExecutorService.shutdown();
     }
 
-    private void sendBusData(Client client){
+    public void sendBusData(){
         try {
             if(Objects.nonNull(number)){
-                List<BusDTO> buses = redisBusService.getBuses(Constant.BUSES_DIVIDED_INTO_ROUTES + number);
+                System.out.println(number);
+                List<BusDTO> buses = redisBusService.getBuses(String.valueOf(number));
 
                 ObjectMapper mapper = new ObjectMapper();
                 messagingTemplate.convertAndSend("/topic/mobile." + client.getPhone(),
@@ -67,14 +64,15 @@ public class SendClientBuses {
             logger.error("Send bus data: " + e.getMessage());
         }
     }
-
-    private Client getAuthClient(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        ClientDetails clientDetails = (ClientDetails) authentication.getPrincipal();
-        return clientDetails.getClient();
-    }
-
     public void setNumber(Integer number) {
         this.number = number;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 }
