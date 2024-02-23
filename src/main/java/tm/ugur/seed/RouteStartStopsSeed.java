@@ -3,6 +3,7 @@ package tm.ugur.seed;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
@@ -18,6 +19,7 @@ import java.util.*;
 
 @Component
 @Order(4)
+@ConditionalOnProperty(name = "db.init.enabled", havingValue = "true", matchIfMissing = false)
 public class RouteStartStopsSeed implements CommandLineRunner {
 
     private final RouteService routeService;

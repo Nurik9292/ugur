@@ -2,6 +2,7 @@ package tm.ugur.seed;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import tm.ugur.models.EndRouteStop;
@@ -14,6 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 @Order(8)
+@ConditionalOnProperty(name = "db.init.enabled", havingValue = "true", matchIfMissing = false)
 public class IndexingBackStops implements CommandLineRunner {
 
     private final RouteService routeService;
