@@ -39,14 +39,17 @@ public class PlaceController {
             sortByStatic = sortBy;
         }
 
-        Page<Place> places = this.placeService.getRoutePages(page, items, sortByStatic);
+        Page<Place> places = this.placeService.getPlacePages(page, items, sortByStatic);
         int totalPages = places.getTotalPages();
+
         Integer[] totalPage = this.paginationService.getTotalPage(totalPages, places.getNumber());
 
         if(places.getTotalPages() > 0){
             List<Integer> pageNumbers = IntStream.rangeClosed(1, places.getTotalPages()).boxed().toList();
             model.addAttribute("pageNumbers", pageNumbers);
         }
+
+        System.out.println(places.getSize());
 
         model.addAttribute("title", "Заведение");
         model.addAttribute("page", "place-index");

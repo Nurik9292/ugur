@@ -39,8 +39,11 @@ public class Place {
     @OneToMany(mappedBy = "place")
     private List<PlacePhone> phones;
 
+    @OneToMany(mappedBy = "place")
+    private List<SocialNetwork> socialNetworks;
+
     @ManyToOne
-    @JoinColumn(name = "place_cateory_id", referencedColumnName = "id")
+    @JoinColumn(name = "place_category_id", referencedColumnName = "id")
     private PlaceCategory category;
 
     public Place(){
@@ -127,6 +130,14 @@ public class Place {
         this.category = category;
     }
 
+    public List<SocialNetwork> getSocialNetworks() {
+        return socialNetworks;
+    }
+
+    public void setSocialNetworks(List<SocialNetwork> socialNetworks) {
+        this.socialNetworks = socialNetworks;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
@@ -159,4 +170,5 @@ public class Place {
                 ", location=" + location +
                 '}';
     }
+
 }

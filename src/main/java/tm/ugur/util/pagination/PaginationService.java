@@ -20,9 +20,10 @@ public class PaginationService {
     public <T> Page<T> createPage(List<T> content, int pageNumber, int itemsPerPage) {
         int totalPages = (int) Math.ceil((double) content.size() / itemsPerPage);
 
-            pageNumber = Math.min(Math.max(pageNumber, 1), totalPages);
+        pageNumber = Math.min(Math.max(pageNumber, 1), totalPages);
+        pageNumber = pageNumber == 0 ? pageNumber + 1 : pageNumber;
 
-        int startItem = (pageNumber - 1) * itemsPerPage;
+        int startItem = Math.abs((pageNumber - 1) * itemsPerPage);
         List<T> pageContent = content.subList(startItem, Math.min(startItem + itemsPerPage, content.size()));
 
         return new PageImpl<>(pageContent, PageRequest.of(pageNumber - 1, itemsPerPage), content.size());
