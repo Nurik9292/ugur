@@ -5,24 +5,23 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "place_phones")
-public class Phone extends AbstractEntity{
+@Table(name = "place_sub_categories")
+public class PlaceSubCategory {
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "number")
-    private String number;
+    @Column(name = "title")
+    private String title;
 
-    public Phone(){
-
+    public PlaceSubCategory() {
     }
 
-    public Phone(long id, String number) {
+    public PlaceSubCategory(long id, String title) {
         this.id = id;
-        this.number = number;
+        this.title = title;
     }
 
     public long getId() {
@@ -33,32 +32,32 @@ public class Phone extends AbstractEntity{
         this.id = id;
     }
 
-    public String getNumber() {
-        return number;
+    public String getTitle() {
+        return title;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
-        Phone phone = (Phone) object;
-        return id == phone.id && Objects.equals(number, phone.number);
+        PlaceSubCategory that = (PlaceSubCategory) object;
+        return id == that.id && Objects.equals(title, that.title);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, number);
+        return Objects.hash(id, title);
     }
 
     @Override
     public String toString() {
-        return "Phone{" +
+        return "PlaceSubCategory{" +
                 "id=" + id +
-                ", number='" + number + '\'' +
+                ", title='" + title + '\'' +
                 '}';
     }
 }
