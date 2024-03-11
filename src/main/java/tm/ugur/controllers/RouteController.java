@@ -16,6 +16,7 @@ import tm.ugur.security.PersonDetails;
 import tm.ugur.services.admin.*;
 import tm.ugur.util.errors.route.RouteErrorResponse;
 import tm.ugur.util.errors.route.RouteNotFoundException;
+import tm.ugur.util.pagination.PaginationService;
 
 import java.util.*;
 import java.util.stream.IntStream;
@@ -27,17 +28,21 @@ public class RouteController {
     private final RouteService routeService;
     private final CityService cityService;
     private final StopService stopService;
+    private final PaginationService paginationService;
     private final EndRouteStopService endRouteStopService;
     private final StartRouteStopService startRouteStopService;
     private static String sortByStatic = "";
 
 
     public RouteController(RouteService routeService, CityService cityService,
-                           StopService stopService, StartRouteStopService startRouteStopService,
+                           StopService stopService,
+                           PaginationService paginationService,
+                           StartRouteStopService startRouteStopService,
                            EndRouteStopService endRouteStopService) {
         this.routeService = routeService;
         this.cityService = cityService;
         this.stopService = stopService;
+        this.paginationService = paginationService;
         this.startRouteStopService = startRouteStopService;
         this.endRouteStopService = endRouteStopService;
     }
@@ -53,7 +58,7 @@ public class RouteController {
 
         Page<Route> routes = this.routeService.getRoutePages(page, items, sortByStatic);
         int totalPages = routes.getTotalPages();
-        Integer[] totalPage = this.routeService.getTotalPage(totalPages, routes.getNumber());
+        Integer[] totalPage = this.paginationService.getTotalPage(totalPages, routes.getNumber());
 
         if(routes.getTotalPages() > 0){
             List<Integer> pageNumbers = IntStream.rangeClosed(1, routes.getTotalPages()).boxed().toList();

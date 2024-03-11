@@ -161,11 +161,6 @@ public class RouteService {
         return this.factory.createLineString(coors.toArray(Coordinate[]::new));
     }
 
-    public Integer[] getTotalPage(int totalPages, int currentPage){
-        Numbers numbers = new Numbers(Locale.getDefault());
-        return numbers.sequence(currentPage > 4 ? currentPage - 1 : 1, currentPage + 4 < totalPages ? currentPage + 3 : totalPages);
-    }
-
     private Route converToRoute(RouteDTO routeDTO){
         return routeMapper.toEntity(routeDTO);
     }

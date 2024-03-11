@@ -37,4 +37,16 @@ public class PlaceService {
     {
         return paginationService.createPage(placeRepository.findAll(), pageNumber, itemsPerPage);
     }
+
+
+    public Page<Place> getRoutePages(String page, String items, String sortBy){
+        int pageNumber = page == null ? 1 : Integer.parseInt(page);
+        int itemsPerPage = items == null ? 10 : Integer.parseInt(items);
+
+        List<Place> routes = !sortBy.isBlank()
+                ? placeRepository.findAll(Sort.by(sortBy)) : placeRepository.findAll();;
+
+
+        return this.paginationService.createPage(routes, pageNumber, itemsPerPage);
+    }
 }
