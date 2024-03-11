@@ -16,6 +16,11 @@ public class PlacePhone extends AbstractEntity{
     @Column(name = "number")
     private String number;
 
+    @ManyToOne
+    @JoinColumn(name = "place_phone_id", referencedColumnName = "id")
+    private Place place;
+
+
     public PlacePhone(){
 
     }

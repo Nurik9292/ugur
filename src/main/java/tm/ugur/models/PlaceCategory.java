@@ -18,8 +18,11 @@ public class PlaceCategory {
     private String title;
 
 
-    @OneToMany(mappedBy = "route")
+    @OneToMany(mappedBy = "category")
     private List<PlaceSubCategory> subCategories;
+
+    @OneToMany(mappedBy = "category")
+    private List<Place> places;
 
     public PlaceCategory(){
 
