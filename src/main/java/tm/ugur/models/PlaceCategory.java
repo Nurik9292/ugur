@@ -2,11 +2,12 @@ package tm.ugur.models;
 
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "place_sub_categories")
-public class PlaceSubCategory {
+@Table(name = "place_categories")
+public class PlaceCategory {
 
     @Id
     @Column(name = "id")
@@ -16,16 +17,12 @@ public class PlaceSubCategory {
     @Column(name = "title")
     private String title;
 
-    @ManyToOne
-    @JoinColumn(name = "place_category_id", referencedColumnName = "id")
-    private PlaceCategory category;
 
-    public PlaceSubCategory() {
-    }
+    @OneToMany(mappedBy = "route")
+    private List<PlaceSubCategory> subCategories;
 
-    public PlaceSubCategory(long id, String title) {
-        this.id = id;
-        this.title = title;
+    public PlaceCategory(){
+
     }
 
     public long getId() {
@@ -44,11 +41,19 @@ public class PlaceSubCategory {
         this.title = title;
     }
 
+    public List<PlaceSubCategory> getSubCategories() {
+        return subCategories;
+    }
+
+    public void setSubCategories(List<PlaceSubCategory> subCategories) {
+        this.subCategories = subCategories;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
-        PlaceSubCategory that = (PlaceSubCategory) object;
+        PlaceCategory that = (PlaceCategory) object;
         return id == that.id && Objects.equals(title, that.title);
     }
 
@@ -59,7 +64,7 @@ public class PlaceSubCategory {
 
     @Override
     public String toString() {
-        return "PlaceSubCategory{" +
+        return "PlaceCategory{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 '}';
