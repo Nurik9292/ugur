@@ -18,9 +18,6 @@ public class Place {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "logo")
-    private String logo;
-
     @Column(name = "image")
     private String image;
 
@@ -46,6 +43,7 @@ public class Place {
     @JoinColumn(name = "place_category_id", referencedColumnName = "id")
     private PlaceCategory category;
 
+
     public Place(){
 
     }
@@ -66,13 +64,6 @@ public class Place {
         this.title = title;
     }
 
-    public String getLogo() {
-        return logo;
-    }
-
-    public void setLogo(String logo) {
-        this.logo = logo;
-    }
 
     public String getImage() {
         return image;
@@ -138,6 +129,19 @@ public class Place {
         this.socialNetworks = socialNetworks;
     }
 
+    public void addSocialNetworks(List<SocialNetwork> networks){
+        if(Objects.isNull(socialNetworks))
+            setSocialNetworks(networks);
+        socialNetworks.addAll(networks);
+    }
+
+    public void addPhones(List<PlacePhone> placePhones){
+        if(Objects.isNull(phones))
+            setPhones(placePhones);
+        phones.addAll(placePhones);
+    }
+
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
@@ -145,7 +149,6 @@ public class Place {
         Place place = (Place) object;
         return id == place.id
                 && Objects.equals(title, place.title)
-                && Objects.equals(logo, place.logo)
                 && Objects.equals(image, place.image)
                 && Objects.equals(address, place.address)
                 && Objects.equals(website, place.website)
@@ -154,7 +157,7 @@ public class Place {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, logo, image, address, website, email);
+        return Objects.hash(id, title, image, address, website, email);
     }
 
     @Override
@@ -162,7 +165,6 @@ public class Place {
         return "Place{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
-                ", logo='" + logo + '\'' +
                 ", image='" + image + '\'' +
                 ", address='" + address + '\'' +
                 ", website='" + website + '\'' +
@@ -170,5 +172,6 @@ public class Place {
                 ", location=" + location +
                 '}';
     }
+
 
 }

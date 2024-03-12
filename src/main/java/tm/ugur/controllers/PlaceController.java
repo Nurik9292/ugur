@@ -1,15 +1,17 @@
 package tm.ugur.controllers;
 
+import io.netty.handler.codec.http.multipart.FileUpload;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import tm.ugur.models.Place;
-import tm.ugur.models.Route;
 import tm.ugur.services.admin.PlaceService;
+import tm.ugur.storage.FileSystemStorageService;
 import tm.ugur.util.pagination.PaginationService;
 
 import java.util.List;
@@ -21,13 +23,17 @@ public class PlaceController {
 
     private final PlaceService placeService;
     private final PaginationService paginationService;
+    private final FileSystemStorageService storageService;
 
     private static String sortByStatic = "";
 
     @Autowired
-    public PlaceController(PlaceService placeService, PaginationService paginationService) {
+    public PlaceController(PlaceService placeService,
+                           PaginationService paginationService,
+                           FileSystemStorageService storageService) {
         this.placeService = placeService;
         this.paginationService = paginationService;
+        this.storageService = storageService;
     }
 
     @GetMapping
@@ -49,13 +55,38 @@ public class PlaceController {
             model.addAttribute("pageNumbers", pageNumbers);
         }
 
-        System.out.println(places.getSize());
 
         model.addAttribute("title", "Заведение");
         model.addAttribute("page", "place-index");
         model.addAttribute("places", places);
         model.addAttribute("totalPage", totalPage);
 
+
         return "layouts/places/index";
+    }
+
+    @GetMapping("/create")
+    public String create(@ModelAttribute("place") Place place, Model model){
+        sortByStatic = "";
+
+        model.addAttribute("title", "Заведение");
+        model.addAttribute("page", "place-create");
+        model.addAttribute("socialNetworks", place.getSocialNetworks());
+
+        return "layouts/places/create";
+    }
+
+    @PostMapping
+    public String store(@RequestParam(value = "social_networks", required = false) List<String> socialNetworks,
+                        @RequestParam(value = "phones", required = false) List<String> phones,
+                        @RequestParam("lat") double lat,
+                        @RequestParam("lng") double lng,
+                        @RequestParam(value = "image", required = false) MultipartFile image,
+                        @ModelAttribute("place") @Valid Place place, BindingResult result, Model model){
+
+        String pathImage = storageService.store(image);
+        placeService.store(place, socialNetworks, phones, pathImage, lat, lng);
+
+        return "redirect:/places";
     }
 }

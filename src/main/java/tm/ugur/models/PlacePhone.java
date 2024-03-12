@@ -17,7 +17,7 @@ public class PlacePhone extends AbstractEntity{
     private String number;
 
     @ManyToOne
-    @JoinColumn(name = "place_phone_id", referencedColumnName = "id")
+    @JoinColumn(name = "place_id", referencedColumnName = "id")
     private Place place;
 
 
@@ -25,7 +25,7 @@ public class PlacePhone extends AbstractEntity{
 
     }
 
-    public PlacePhone(long id, String number) {
+    public PlacePhone(String number) {
         this.id = id;
         this.number = number;
     }
@@ -44,6 +44,14 @@ public class PlacePhone extends AbstractEntity{
 
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    public Place getPlace() {
+        return place;
+    }
+
+    public void setPlace(Place place) {
+        this.place = place;
     }
 
     @Override
@@ -66,4 +74,6 @@ public class PlacePhone extends AbstractEntity{
                 ", number='" + number + '\'' +
                 '}';
     }
+
+
 }

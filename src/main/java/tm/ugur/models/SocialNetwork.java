@@ -24,6 +24,10 @@ public class SocialNetwork {
     private Place place;
 
     public SocialNetwork(){}
+    public SocialNetwork(String link, String name){
+        this.link = link;
+        this.name = name;
+    }
 
     public long getId() {
         return id;
