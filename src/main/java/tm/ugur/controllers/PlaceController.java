@@ -57,7 +57,7 @@ public class PlaceController {
 
 
         model.addAttribute("title", "Заведение");
-        model.addAttribute("page", "place-index");
+        model.addAttribute("page", "place-main-index");
         model.addAttribute("places", places);
         model.addAttribute("totalPage", totalPage);
 
@@ -70,7 +70,7 @@ public class PlaceController {
         sortByStatic = "";
 
         model.addAttribute("title", "Заведение");
-        model.addAttribute("page", "place-create");
+        model.addAttribute("page", "place-main-create");
         model.addAttribute("placeCategories", placeCategoryService.findAll());
 
         return "layouts/places/create";
@@ -112,7 +112,7 @@ public class PlaceController {
                 phone.getType().equalsIgnoreCase("mob")).map(PlacePhone::getNumber).toList());
 
         model.addAttribute("title", "Изменить заведение");
-        model.addAttribute("page", "place-edit");
+        model.addAttribute("page", "place-main-edit");
         model.addAttribute("placeCategories", placeCategoryService.findAll());
         model.addAttribute("place", place);
 
@@ -128,7 +128,7 @@ public class PlaceController {
                          Model model){
 
         if(result.hasErrors()){
-            model.addAttribute("page", "place-create");
+            model.addAttribute("page", "place-main-create");
             model.addAttribute("title", "Обновить заведение");
             return "layouts/stops/edit";
         }

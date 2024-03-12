@@ -58,7 +58,7 @@ public class PlaceSubCategoryController {
         model.addAttribute("totalPage", totalPage);
 
 
-        return "/layouts/place_sub_categories/index";
+        return "layouts/place_sub_categories/index";
     }
 
     @GetMapping("/create")

@@ -53,7 +53,7 @@ public class PlaceCategoryController {
         model.addAttribute("totalPage", totalPage);
 
 
-        return "/layouts/place_categories/index";
+        return "layouts/place_categories/index";
     }
 
 

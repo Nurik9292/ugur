@@ -163,7 +163,7 @@ public class PlaceService {
     public void delete(Long id){
          Optional<Place> place = findOne(id);
 
-         String imagePath = place.orElse(new Place()).getImage();
+         String imagePath = place.get().getImage();
 
          if(!imagePath.isBlank())
              storageService.delete(imagePath);
