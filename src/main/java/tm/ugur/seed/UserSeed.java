@@ -11,7 +11,7 @@ import tm.ugur.services.admin.PersonService;
 
 @Component
 @Order(2)
-@ConditionalOnProperty(name = "db.init.enabled", havingValue = "true", matchIfMissing = false)
+//@ConditionalOnProperty(name = "db.init.enabled", havingValue = "true", matchIfMissing = false)
 public class UserSeed implements CommandLineRunner {
 
     private final PersonService personService;
