@@ -19,7 +19,7 @@ public class PlaceSubCategory {
 
     @ManyToOne
     @JoinColumn(name = "place_category_id", referencedColumnName = "id")
-    private PlaceCategory category;
+    private PlaceCategory placeCategory;
 
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
@@ -69,6 +69,14 @@ public class PlaceSubCategory {
         this.updatedAt = updatedAt;
     }
 
+    public PlaceCategory getPlaceCategory() {
+        return placeCategory;
+    }
+
+    public void setPlaceCategory(PlaceCategory placeCategory) {
+        this.placeCategory = placeCategory;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
@@ -89,6 +97,5 @@ public class PlaceSubCategory {
                 ", title='" + title + '\'' +
                 '}';
     }
-
 
 }

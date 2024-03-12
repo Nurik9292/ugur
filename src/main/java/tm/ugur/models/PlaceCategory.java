@@ -19,7 +19,7 @@ public class PlaceCategory {
     private String title;
 
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "placeCategory")
     private List<PlaceSubCategory> subCategories;
 
     @OneToMany(mappedBy = "category")

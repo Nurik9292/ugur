@@ -1,0 +1,100 @@
+<th:blokc th:fragment="index" >
+
+    <div class="py-4">
+        <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
+            <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+                <li class="breadcrumb-item">
+                    <a href="/">
+                        <svg class="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Place Sub Categories</li>
+            </ol>
+        </nav>
+        <div class="d-flex justify-content-between w-100 flex-wrap">
+            <div class="mb-3 mb-lg-0">
+                <h1 class="h4">Под категории Заведений</h1>
+            </div>
+            <div>
+                <a href="/place-sub-categories/create" class="btn btn-outline-info d-inline-flex align-items-center">
+                    Добавить
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive py-4">
+                <div class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns">
+                    <div class="dataTable-top">
+                        <div class="dataTable-dropdown">
+                            <label>
+                                <form id="myForm">
+                                    <select id="selector"  class="dataTable-selector" onchange="onChagePageItems()">
+                                        <option value="5" th:selected=" 5 == ${placeSubCategories.getSize()}">5</option>
+                                        <option value="10" th:selected="10 == ${placeSubCategories.getSize()}">10</option>
+                                        <option value="15" th:selected="15 == ${placeSubCategories.getSize()}">15</option>
+                                        <option value="20" th:selected="20 == ${placeSubCategories.getSize()}">20</option>
+                                        <option value="25" th:selected="25 == ${placeSubCategories.getSize()}">25</option>
+                                    </select>
+                                </form>
+                            </label>
+                        </div>
+                        <div class="dataTable-search">
+                            <input class="dataTable-input" placeholder="Search..." type="text"  id="search">
+                        </div>
+                    </div>
+                    <div class="dataTable-container">
+                        <table class="table table-flush dataTable-table" id="datatable">
+                            <thead class="thead-light">
+                            <tr>
+                                <th data-sortable="" style="width: 50%;">
+                                    <a href="#" class="dataTable-sorter" onclick="onClickSortPlaceSubCategory('title')">
+                                        Название
+                                        <svg class="icon icon-xxs" data-slot="icon" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5 7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5"></path>
+                                        </svg>
+                                    </a>
+                                </th>
+                                <th data-sortable="" style="width: 50%;">
+                                    <a href="#" class="dataTable-sorter">Действие</a>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="placeSubCategory : ${placeSubCategories}">
+                                <td th:text="${placeSubCategory.getTitle()}"></td>
+                                <td class="d-inline-flex align-content-between">
+                                    <a class="btn btn-sm btn-outline-success svg"
+                                       th:href="@{/place-sub-categories/{id}/edit(id=${placeSubCategory.getId()})}">
+                                        <svg class="icon icon-xs text-success me-2" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"></path>
+                                        </svg>
+                                        Изменить
+                                    </a>
+                                    <form th:action="@{/place-sub-categories/{id}(id=${placeSubCategory.getId()})}" th:method="DELETE" th:object="${placeSubCategory}">
+                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                        <button class="btn btn-sm btn-outline-danger svg" type="submit" style="margin-left: 2px">
+                                            <svg  class="icon icon-xs text-danger me-2" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"></path>
+                                            </svg>
+                                            Удалить
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="dataTable-bottom">
+                        <div class="dataTable-info"
+                             th:text="'Showing 1 to ' + ${placeSubCategories.getSize()} + ' of ' + ${placeSubCategories.getTotalElements()} + ' entries'">
+                        </div>
+                        <th:block th:insert="~{pagination/pagination :: paginate(${placeSubCategories}, ${totalPage}, 'place-sub-categories')}"></th:block>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:blokc>

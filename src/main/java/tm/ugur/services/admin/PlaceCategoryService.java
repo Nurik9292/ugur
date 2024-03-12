@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 public class PlaceCategoryService {
 
     private final PlaceCategoryRepository placeCategoryRepository;

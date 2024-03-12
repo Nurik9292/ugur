@@ -87,7 +87,7 @@ public class PlaceCategoryController {
         model.addAttribute("page", "place-category-edit");
         model.addAttribute("placeCategory", this.placeCategoryService.findOne(id).orElse(new PlaceCategory()));
 
-        return "layouts/stops/edit";
+        return "layouts/place_categories/edit";
     }
 
     @PatchMapping("/{id}")
