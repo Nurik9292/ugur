@@ -80,6 +80,26 @@ function onClickSortPlace(sortBy){
     window.location.href = fullUrl;
 }
 
+function onClickSortPlaceCategory(sortBy){
+    const url= host + '/place-categories';
+    const element = data();
+
+    const params = {
+        page: element.page,
+        items: element.items,
+        sortBy: sortBy
+    };
+
+    sortByRoute = sortBy;
+
+    const queryString = Object.entries(params)
+        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+        .join('&');
+
+    const fullUrl = `${url}?${queryString}`;
+    window.location.href = fullUrl;
+}
+
 function  data(){
     const selector = document.getElementById("selector");
     const items = selector.options[selector.selectedIndex].value;

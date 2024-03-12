@@ -96,13 +96,13 @@
                                     <span class="sidebar-text">Заведение</span>
                                 </a>
                             </li>
-                            <li th:class="'nav-item' + ' ' + ${page.startsWith('stop') ? 'active' : ''}">
-                                <a class="nav-link" href="/stops">
+                            <li th:class="'nav-item' + ' ' + ${page.startsWith('place-category') ? 'active' : ''}">
+                                <a class="nav-link" href="/place-categories">
                                     <span class="sidebar-text">Категории</span>
                                 </a>
                             </li>
-                            <li th:class="'nav-item' + ' ' + ${page.startsWith('route') ? 'active' : ''}">
-                                <a class="nav-link" href="/routes">
+                            <li th:class="'nav-item' + ' ' + ${page.startsWith('place-sub') ? 'active' : ''}">
+                                <a class="nav-link" href="/place-sub-categories">
                                     <span class="sidebar-text">Под Категории</span>
                                 </a>
                             </li>

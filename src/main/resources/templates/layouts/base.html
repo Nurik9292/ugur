@@ -55,6 +55,9 @@
     <th:block th:case="route-edit" th:insert="~{pages/routes/edit :: edit}"></th:block>
     <th:block th:case="place-index" th:insert="~{pages/places/index :: index}"></th:block>
     <th:block th:case="place-create" th:insert="~{pages/places/create :: create}"></th:block>
+    <th:block th:case="place-category-index" th:insert="~{pages/place_categories/index :: index}"></th:block>
+    <th:block th:case="place-category-create" th:insert="~{pages/place_categories/create :: create}"></th:block>
+    <th:block th:case="place-category-edit" th:insert="~{pages/place_categories/edit :: edit}"></th:block>
 </th:block>
 
 <div th:replace="~{includes/footer :: footer}"></div>

@@ -3,6 +3,7 @@ package tm.ugur.models;
 import jakarta.persistence.*;
 import org.locationtech.jts.geom.Point;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -43,6 +44,13 @@ public class Place {
     @JoinColumn(name = "place_category_id", referencedColumnName = "id")
     private PlaceCategory category;
 
+    @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+
+    @Column(name = "updated_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
 
     public Place(){
 
@@ -129,6 +137,22 @@ public class Place {
         this.socialNetworks = socialNetworks;
     }
 
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     public void addSocialNetworks(List<SocialNetwork> networks){
         if(Objects.isNull(socialNetworks))
             setSocialNetworks(networks);
@@ -172,6 +196,7 @@ public class Place {
                 ", location=" + location +
                 '}';
     }
+
 
 
 }

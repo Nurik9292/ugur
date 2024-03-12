@@ -2,6 +2,7 @@ package tm.ugur.models;
 
 import jakarta.persistence.*;
 
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -19,6 +20,14 @@ public class PlaceSubCategory {
     @ManyToOne
     @JoinColumn(name = "place_category_id", referencedColumnName = "id")
     private PlaceCategory category;
+
+    @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+
+    @Column(name = "updated_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
 
     public PlaceSubCategory() {
     }
@@ -44,6 +53,22 @@ public class PlaceSubCategory {
         this.title = title;
     }
 
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
@@ -64,4 +89,6 @@ public class PlaceSubCategory {
                 ", title='" + title + '\'' +
                 '}';
     }
+
+
 }

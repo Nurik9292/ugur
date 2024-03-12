@@ -71,7 +71,6 @@ public class PlaceController {
 
         model.addAttribute("title", "Заведение");
         model.addAttribute("page", "place-create");
-        model.addAttribute("socialNetworks", place.getSocialNetworks());
 
         return "layouts/places/create";
     }
