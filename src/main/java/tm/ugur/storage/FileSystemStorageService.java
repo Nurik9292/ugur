@@ -59,10 +59,13 @@ public class FileSystemStorageService implements StorageService{
                 return "";
             }
 
+
             String originalName = file.getOriginalFilename();
+
 
             Path destinationFile = rootLocation.resolve(Paths.get(originalName))
                     .normalize().toAbsolutePath();
+
 
             if (!destinationFile.getParent().equals(rootLocation.toAbsolutePath())) {
                 throw new StorageException("Cannot store file outside current directory.");

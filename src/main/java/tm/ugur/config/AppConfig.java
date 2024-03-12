@@ -16,7 +16,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 @Configuration
-public class AppConfig implements WebMvcConfigurer {
+public class AppConfig  {
 
     @Value("${upload.image}")
     private String uploadFile;
@@ -36,9 +36,4 @@ public class AppConfig implements WebMvcConfigurer {
         return new ReentrantLock();
     }
 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry){
-        registry.addResourceHandler("/img/**")
-                .addResourceLocations("file://" + uploadFile +"/");
-    }
 }

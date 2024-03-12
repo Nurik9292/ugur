@@ -40,7 +40,6 @@ public class SendClientBuses {
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event){
-        System.out.println("connect");
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         scheduledExecutorService.scheduleWithFixedDelay(this::sendBusData, 0, 3, TimeUnit.SECONDS);
     }
@@ -53,7 +52,6 @@ public class SendClientBuses {
     public void sendBusData(){
         try {
             if(Objects.nonNull(number)){
-                System.out.println(number);
                 List<BusDTO> buses = redisBusService.getBuses(String.valueOf(number));
 
                 ObjectMapper mapper = new ObjectMapper();
