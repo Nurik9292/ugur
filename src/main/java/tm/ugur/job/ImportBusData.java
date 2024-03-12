@@ -52,15 +52,15 @@ public class ImportBusData {
         importData();
     }
 
-    @Scheduled(fixedDelay = 5000)
-    public void taskThree(){
-        importData();
-    }
-
-    @Scheduled(fixedDelay = 6000)
-    public void taskFor(){
-        importData();
-    }
+//    @Scheduled(fixedDelay = 5000)
+//    public void taskThree(){
+//        importData();
+//    }
+//
+//    @Scheduled(fixedDelay = 6000)
+//    public void taskFor(){
+//        importData();
+//    }
 
     public void  importData(){
         lock.lock();

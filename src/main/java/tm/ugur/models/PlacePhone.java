@@ -21,9 +21,13 @@ public class PlacePhone extends AbstractEntity{
     @JoinColumn(name = "place_id", referencedColumnName = "id")
     private Place place;
 
+    @Column(name = "type")
+    private String type;
+
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
+
 
     @Column(name = "updated_at")
     @Temporal(TemporalType.TIMESTAMP)
@@ -34,8 +38,12 @@ public class PlacePhone extends AbstractEntity{
     }
 
     public PlacePhone(String number) {
-        this.id = id;
         this.number = number;
+    }
+
+    public PlacePhone(String number, String type) {
+        this.number = number;
+        this.type = type;
     }
 
     public long getId() {
@@ -78,6 +86,14 @@ public class PlacePhone extends AbstractEntity{
         this.updatedAt = updatedAt;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
@@ -98,7 +114,5 @@ public class PlacePhone extends AbstractEntity{
                 ", number='" + number + '\'' +
                 '}';
     }
-
-
 
 }

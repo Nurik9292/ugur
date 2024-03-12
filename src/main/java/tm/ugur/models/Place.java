@@ -1,6 +1,7 @@
 package tm.ugur.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import org.locationtech.jts.geom.Point;
 
 import java.util.Date;
@@ -9,7 +10,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "places")
-public class Place {
+public class Place extends AbstractEntity{
 
     @Id
     @Column(name = "id")
@@ -42,7 +43,7 @@ public class Place {
 
     @ManyToOne
     @JoinColumn(name = "place_category_id", referencedColumnName = "id")
-    private PlaceCategory category;
+    private PlaceCategory placeCategory;
 
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
@@ -51,6 +52,13 @@ public class Place {
     @Column(name = "updated_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
+
+    @Transient
+    private Double lat;
+
+
+    @Transient
+    private Double lng;
 
     public Place(){
 
@@ -72,6 +80,13 @@ public class Place {
         this.title = title;
     }
 
+    public PlaceCategory getPlaceCategory() {
+        return placeCategory;
+    }
+
+    public void setPlaceCategory(PlaceCategory placeCategory) {
+        this.placeCategory = placeCategory;
+    }
 
     public String getImage() {
         return image;
@@ -121,14 +136,6 @@ public class Place {
         this.phones = phones;
     }
 
-    public PlaceCategory getCategory() {
-        return category;
-    }
-
-    public void setCategory(PlaceCategory category) {
-        this.category = category;
-    }
-
     public List<SocialNetwork> getSocialNetworks() {
         return socialNetworks;
     }
@@ -151,6 +158,22 @@ public class Place {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Double getLat() {
+        return lat;
+    }
+
+    public void setLat(Double lat) {
+        this.lat = lat;
+    }
+
+    public Double getLng() {
+        return lng;
+    }
+
+    public void setLng(Double lng) {
+        this.lng = lng;
     }
 
     public void addSocialNetworks(List<SocialNetwork> networks){
@@ -194,6 +217,7 @@ public class Place {
                 ", website='" + website + '\'' +
                 ", email='" + email + '\'' +
                 ", location=" + location +
+                ", placeCategory=" + placeCategory +
                 '}';
     }
 

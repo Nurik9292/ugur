@@ -1,5 +1,5 @@
-// const host = "http://192.168.37.61/:8083";
-const host = "http://localhost:8080";
+const host = "http://192.168.37.61/:8083";
+// const host = "http://localhost:8080";
 let sortByStop = "";
 let sortByRoute = "";
 
@@ -151,12 +151,59 @@ function sendCreatePlace(){
     formDate.append("website", document.getElementById("site").value);
     formDate.append("lat", document.getElementById("lat").value);
     formDate.append("lng", document.getElementById("lng").value);
+    formDate.append("placeCategory", document.getElementById("placeCategory").value);
     formDate.append("social_networks", socialLinks);
     formDate.append("phones", phones);
     formDate.append("image", image);
 
 
     axios.post(host + "/places", formDate, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    }).then(re => {
+        window.location.href = host + "/places";
+    }) .catch((error) => {
+        console.error("Error sending request:", error);
+    });
+}
+
+function sendUpdatePlace(){
+    const formDate = new FormData();
+
+    const image = document.getElementById("image").files[0];
+    const id = document.getElementById("placeId").value;
+
+
+    const instagram = document.getElementById("instagram").value;
+    const tiktok = document.getElementById("tiktok").value;
+    const socialLinks = [instagram, tiktok];
+
+    const cityPhone = document.getElementById("city_phone").value;
+
+    const mobs = document.getElementsByClassName("mob_phone_place");
+    const phones = [];
+
+    for (let i = 0; i < mobs.length; i++) {
+        phones.push(mobs[i].value);
+    }
+
+    phones.push(cityPhone);
+
+    formDate.append("_csrf", document.getElementById("csrf").value);
+    formDate.append("title", document.getElementById("title").value);
+    formDate.append("address", document.getElementById("address").value);
+    formDate.append("email", document.getElementById("email").value);
+    formDate.append("website", document.getElementById("site").value);
+    formDate.append("lat", document.getElementById("lat").value);
+    formDate.append("lng", document.getElementById("lng").value);
+    formDate.append("placeCategory", document.getElementById("placeCategory").value);
+    formDate.append("social_networks", socialLinks);
+    formDate.append("phones", phones);
+    formDate.append("image", image);
+
+
+    axios.put(host + "/places/" + id, formDate, {
         headers: {
             "Content-Type": "multipart/form-data",
         },

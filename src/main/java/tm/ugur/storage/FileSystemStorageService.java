@@ -3,16 +3,22 @@ package tm.ugur.storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 import tm.ugur.util.errors.storage.StorageException;
+import tm.ugur.util.errors.storage.StorageFileNotFoundException;
 import tm.ugur.util.files.FileResize;
 
+import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.stream.Stream;
 
 @Service
@@ -53,7 +59,9 @@ public class FileSystemStorageService implements StorageService{
                 return "";
             }
 
-            Path destinationFile = rootLocation.resolve(Paths.get(file.getOriginalFilename()))
+            String originalName = file.getOriginalFilename();
+
+            Path destinationFile = rootLocation.resolve(Paths.get(originalName))
                     .normalize().toAbsolutePath();
 
             if (!destinationFile.getParent().equals(rootLocation.toAbsolutePath())) {
@@ -63,7 +71,9 @@ public class FileSystemStorageService implements StorageService{
             File tempFile = File.createTempFile("temp", null);
             file.transferTo(tempFile);
 
-            fileResize.resize(tempFile, new File(destinationFile.toString()), 64, 64);
+            Date date = new Date();
+
+            fileResize.resize(tempFile, new File(destinationFile.getParent() + "/" + date.getTime() + "-" + originalName), 64, 64);
 
             tempFile.delete();
 
@@ -83,16 +93,35 @@ public class FileSystemStorageService implements StorageService{
 
     @Override
     public Path load(String filename) {
-        return null;
+        return rootLocation.resolve(filename);
     }
 
     @Override
     public Resource loadAsResource(String filename) {
-        return null;
+        try {
+            Path file = load(filename);
+            Resource resource = new UrlResource(file.toUri());
+            if (resource.exists() || resource.isReadable()) {
+                return resource;
+            }
+            else {
+                throw new StorageFileNotFoundException(
+                        "Could not read file: " + filename);
+
+            }
+        }
+        catch (MalformedURLException e) {
+            throw new StorageFileNotFoundException("Could not read file: " + filename, e);
+        }
     }
 
     @Override
     public void deleteAll() {
+        FileSystemUtils.deleteRecursively(rootLocation.toFile());
+    }
 
+    @Override
+    public void delete(String path){
+        FileSystemUtils.deleteRecursively(new File(path));
     }
 }

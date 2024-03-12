@@ -8,91 +8,103 @@
                     </a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">
-                    <a href="/routes">Routes</a>
+                    <a href="/places">Places</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">
-                    Create
+                    Update
                 </li>
             </ol>
         </nav>
         <div class="d-flex justify-content-between w-100 flex-wrap">
             <div class="mb-3 mb-lg-0">
-                <h1 class="h4">Маршрут</h1>
+                <h1 class="h4">Заведение</h1>
             </div>
         </div>
     </div>
     <div class="card card-body border-0 shadow mb-4">
-        <h2 class="h5 mb-4">Обновить маршрут</h2>
-        <nav>
-            <div class="nav nav-tabs mb-4" id="nav-tab" role="tablist">
-                <a class="nav-item nav-link active" id="nav-data-tab" data-bs-toggle="tab" href="#nav-data-route" role="tab" aria-controls="nav-data-route" aria-selected="true">Данные</a>
-                <a class="nav-item nav-link" id="nav-front-tab" data-bs-toggle="tab" href="#nav-front-route" role="tab" aria-controls="nav-front-route" aria-selected="false">Маршрут Вперед</a>
-                <a class="nav-item nav-link" id="nav-back-tab" data-bs-toggle="tab" href="#nav-back-route" role="tab" aria-controls="nav-back-route" aria-selected="false">Маршрут Обратно</a>
-            </div>
-        </nav>
-        <form th:action="@{/routes/{id}(id=${route.getId()})}" th:method="PATCH" th:object="${route}">
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        <h2 class="h5 mb-4">Обновить заведение</h2>
+        <div>
+            <input type="hidden" id="csrf" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
             <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="nav-data-route" role="tabpanel" aria-labelledby="nav-data-route-tab">
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="name">Имя</label>
-                            <input class="form-control" id="name" name="name" th:value="${route.getName()}" type="text" placeholder="Введите название маршрута" required="">
-                            <div th:if="${nameError}" style="color: red">
-                                Название маршрута должен состоять от 3 до 70 символов.
-                            </div>
+                            <label for="title">Название</label>
+                            <input class="form-control" id="title" name="title" th:value="${place.getTitle()}" type="text" placeholder="Введите название заведения" required="">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="number">Номер маршрута</label>
-                            <input class="form-control" id="number" name="number" th:value="${route.getNumber()}" type="text" placeholder="Введите номер маршрута" required="">
-                            <div th:if="${numberError}" style="color: red">
-                                Заполните номер маршрута.
-                            </div>
+                            <label for="address">Адресс</label>
+                            <input class="form-control" id="address" name="address" th:value="${place.getAddress()}" type="text" placeholder="Введите адресс заведения" required="">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="role">Страна</label>
-                            <select class="form-select mb-0" id="role" name="city" aria-label="Role select example">
-                                <option th:each="city : ${cities}" th:selected="${city.getId() == route.getCity().getId()}" th:value="${city.getId()}" th:text="${city.getName()}"></option>
+                            <label for="email">Почта</label>
+                            <input class="form-control" id="email" name="email" th:value="${place.getEmail()}" type="text" placeholder="Введите почту заведения" required="">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="site">Сайт</label>
+                            <input class="form-control" id="site" name="website" th:value="${place.getWebsite()}" type="text" placeholder="Введите сайт заведения" required="">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="instagram">Инстаграм</label>
+                            <input class="form-control" id="instagram" name="instagram" th:value="${instagram}" type="text" placeholder="Введите сылку на инстаграм" required="">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="tiktok">Тик ток</label>
+                            <input class="form-control" id="tiktok" name="tiktok" th:value="${tiktok}" type="text" placeholder="Введите сылку на тик ток" required="">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="city_phone">Городской телефон</label>
+                            <input class="form-control" id="city_phone" th:value="${cityNumber}" name="city_phone" type="text" placeholder="Введите городской номер" required="">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="mob_phone">Мобильный телефон</label>
+                            <input th:each="number : ${mobNumbers}" th:value="${number}" class="form-control mob_phone_place" id="mob_phone" name="mob_phone" type="text" placeholder="Введите моб телефон" required=""> <br>
+                            <a href="#" class="btn btn-primary ml-3" id="add-input" onclick="addInputMobPhone()">Добавить поле</a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="image">Изображение</label>
+                            <input class="form-control" type="file" id="image" name="image">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="placeCategory">Категория</label>
+                            <select class="form-select mb-0" id="placeCategory" name="placeCategory" aria-label="Category select example">
+                                <option th:each="placeCategory : ${placeCategories}"
+                                        th:selected="${placeCategory.getId() == place.getPlaceCategory().getId()}"
+                                        th:value="${placeCategory.getId()}"
+                                        th:text="${placeCategory.getTitle()}"></option>
                             </select>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="start_stops">Остановки начального маршрута</label>
-                            <select name="startStops" id="start_stops" class="form-select mb-0" multiple>
-                                <option th:each="stop : ${stops}" th:selected="${route.getStartStops().contains(stop)}" th:value="${stop.getId()}" th:text="${stop.getName()}"></option>
-                            </select>
+                            <label for="lat">Широта</label>
+                            <input class="form-control" id="lat" name="lat" th:value="${place.getLat()}" type="text" placeholder="Введите широту" required="">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="end_stops">Остановки обратного маршрута</label>
-                            <select name="endStops" id="end_stops" class="form-select mb-0" multiple>
-                                <option th:each="stop : ${stops}" th:selected="${route.getEndStops().contains(stop)}" th:value="${stop.getId()}" th:text="${stop.getName()}"></option>
-                            </select>
+                            <label for="lng">Долготта</label>
+                            <input class="form-control" id="lng" name="lng" th:value="${place.getLng()}" type="text" placeholder="Введите долготу" required="">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <a href="#" class="btn btn-info mt-2 animate-up-2" onclick="showOnMap()">Отобразить на карте</a>
                         </div>
                     </div>
-                </div>
-                <div class="tab-pane fade" id="nav-front-route" role="tabpanel" aria-labelledby="nav-front-route-tab">
-                    <div id="map-route-front"></div>
-                </div>
-                <div class="tab-pane fade" id="nav-back-route" role="tabpanel" aria-labelledby="nav-back-route-tab">
-                    <div id="map-route-back"></div>
+                    <div class="row align-items-center">
+                        <div id="map-place"></div>
+                    </div>
                 </div>
             </div>
 
-            <input type="hidden" id="selectedOptionsOrderStart" name="selectedStart">
-            <input type="hidden" id="selectedOptionsOrderEnd" name="selectedEnd">
-            <input type="hidden" id="frontCoordinates" name="frontCoordinates">
-            <input type="hidden" id="backCoordinates" name="backCoordinates">
             <div class="mt-3">
-                <button class="btn btn-lg btn-info mt-2 animate-up-2" type="submit">Обновить</button>
+                <button class="btn btn-lg btn-info mt-2 animate-up-2" onclick="sendCreatePlace()">Создать</button>
             </div>
-        </form>
+        </div>
     </div>
-
-    <script th:inline="javascript">
-        let coordinatesFrontEdit = /*[[${route.getFrontLine() == null ? '' : route.getFrontLine().getCoordinates()}]]*/ '';
-        let coordinatesBackEdit = /*[[${route.getBackLine() == null ? '' : route.getBackLine().getCoordinates()}]]*/ '';
-    </script>
 </th:block>

@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "place_sub_categories")
-public class PlaceSubCategory {
+public class PlaceSubCategory extends AbstractEntity{
 
     @Id
     @Column(name = "id")

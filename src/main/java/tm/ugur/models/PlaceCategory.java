@@ -8,7 +8,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "place_categories")
-public class PlaceCategory {
+public class PlaceCategory extends AbstractEntity{
 
     @Id
     @Column(name = "id")
@@ -22,7 +22,7 @@ public class PlaceCategory {
     @OneToMany(mappedBy = "placeCategory")
     private List<PlaceSubCategory> subCategories;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "placeCategory")
     private List<Place> places;
 
     @Column(name = "created_at")

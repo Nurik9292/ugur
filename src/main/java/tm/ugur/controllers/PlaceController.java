@@ -1,6 +1,5 @@
 package tm.ugur.controllers;
 
-import io.netty.handler.codec.http.multipart.FileUpload;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -9,9 +8,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import tm.ugur.models.Place;
+import tm.ugur.models.*;
+import tm.ugur.services.admin.PlaceCategoryService;
 import tm.ugur.services.admin.PlaceService;
-import tm.ugur.storage.FileSystemStorageService;
 import tm.ugur.util.pagination.PaginationService;
 
 import java.util.List;
@@ -22,18 +21,19 @@ import java.util.stream.IntStream;
 public class PlaceController {
 
     private final PlaceService placeService;
+    private final PlaceCategoryService placeCategoryService;
     private final PaginationService paginationService;
-    private final FileSystemStorageService storageService;
 
     private static String sortByStatic = "";
 
     @Autowired
     public PlaceController(PlaceService placeService,
-                           PaginationService paginationService,
-                           FileSystemStorageService storageService) {
+                           PlaceCategoryService placeCategoryService,
+                           PaginationService paginationService) {
         this.placeService = placeService;
+        this.placeCategoryService = placeCategoryService;
         this.paginationService = paginationService;
-        this.storageService = storageService;
+
     }
 
     @GetMapping
@@ -71,6 +71,7 @@ public class PlaceController {
 
         model.addAttribute("title", "Заведение");
         model.addAttribute("page", "place-create");
+        model.addAttribute("placeCategories", placeCategoryService.findAll());
 
         return "layouts/places/create";
     }
@@ -78,14 +79,69 @@ public class PlaceController {
     @PostMapping
     public String store(@RequestParam(value = "social_networks", required = false) List<String> socialNetworks,
                         @RequestParam(value = "phones", required = false) List<String> phones,
-                        @RequestParam("lat") double lat,
-                        @RequestParam("lng") double lng,
                         @RequestParam(value = "image", required = false) MultipartFile image,
                         @ModelAttribute("place") @Valid Place place, BindingResult result, Model model){
 
-        String pathImage = storageService.store(image);
-        placeService.store(place, socialNetworks, phones, pathImage, lat, lng);
 
+        placeService.store(place, socialNetworks, phones, image);
+
+        return "redirect:/places";
+    }
+
+    @GetMapping("/{id}/edit")
+    public String edit(@PathVariable("id") long id, Model model){
+        sortByStatic = "";
+
+        Place place = placeService.findOne(id).orElse(new Place());
+        List<SocialNetwork> socialNetworks = place.getSocialNetworks();
+
+        if(!socialNetworks.isEmpty() && socialNetworks.getFirst().getName().equalsIgnoreCase("instagram")){
+            model.addAttribute("instagram", socialNetworks.getFirst().getName());
+        }
+        if(!socialNetworks.isEmpty() && socialNetworks.getLast().getName().equalsIgnoreCase("tiktok")){
+            model.addAttribute("tiktok", socialNetworks.getLast().getName());
+        }
+
+        List<PlacePhone> phones = place.getPhones();
+
+        model.addAttribute("cityNumber",
+                phones.stream().filter(phone -> phone.getType().equalsIgnoreCase("city"))
+                        .findAny().orElse(new PlacePhone()).getNumber());
+
+        model.addAttribute("mobNumbers", phones.stream().filter(phone ->
+                phone.getType().equalsIgnoreCase("mob")).map(PlacePhone::getNumber).toList());
+
+        model.addAttribute("title", "Изменить заведение");
+        model.addAttribute("page", "place-edit");
+        model.addAttribute("placeCategories", placeCategoryService.findAll());
+        model.addAttribute("place", place);
+
+        return "layouts/places/edit";
+    }
+
+    @PutMapping("/{id}")
+    public String update(@PathVariable("id") long id,
+                         @RequestParam(value = "social_networks", required = false) List<String> socialNetworks,
+                         @RequestParam(value = "phones", required = false) List<String> phones,
+                         @RequestParam(value = "image", required = false) MultipartFile image,
+                         @ModelAttribute("place") @Valid Place place, BindingResult result,
+                         Model model){
+
+        if(result.hasErrors()){
+            model.addAttribute("page", "place-create");
+            model.addAttribute("title", "Обновить заведение");
+            return "layouts/stops/edit";
+        }
+
+
+        this.placeService.update(id, place, socialNetworks, phones, image);
+
+        return "redirect:/places";
+    }
+
+    @DeleteMapping("{id}")
+    public String delete(@PathVariable("id") Long id){
+        this.placeService.delete(id);
         return "redirect:/places";
     }
 }

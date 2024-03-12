@@ -110,7 +110,7 @@ public class StopController {
         if(result.hasErrors()){
             this.errors(model, result);
             model.addAttribute("page", "stop-create");
-            model.addAttribute("title", "Создать остановку");
+            model.addAttribute("title", "Обновить остановку");
             return "layouts/stops/edit";
         }
 

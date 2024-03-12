@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "social_network")
-public class SocialNetwork {
+public class SocialNetwork extends AbstractEntity{
 
     @Id
     @Column(name = "id")

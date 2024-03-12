@@ -8,7 +8,7 @@
                     </a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">
-                    <a href="/places">Routes</a>
+                    <a href="/places">Places</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">
                     Create
@@ -72,6 +72,14 @@
                         <div class="col-md-6 mb-3">
                             <label for="image">Изображение</label>
                             <input class="form-control" type="file" id="image" name="image">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="placeCategory">Категория</label>
+                            <select class="form-select mb-0" id="placeCategory" name="placeCategory" aria-label="Category select example">
+                                <option th:each="placeCategory : ${placeCategories}"
+                                        th:value="${placeCategory.getId()}"
+                                        th:text="${placeCategory.getTitle()}"></option>
+                            </select>
                         </div>
                     </div>
                     <div class="row">
