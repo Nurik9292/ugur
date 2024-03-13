@@ -88,6 +88,7 @@ public class PlaceController {
         return "redirect:/places";
     }
 
+    @CrossOrigin(origins = "http://192.168.37.61:8083")
     @GetMapping("/{id}/edit")
     public String edit(@PathVariable("id") long id, Model model){
         sortByStatic = "";
