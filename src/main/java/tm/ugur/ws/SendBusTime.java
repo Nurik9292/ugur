@@ -49,12 +49,15 @@ public class SendBusTime {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = accessor.getSessionId();
 
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                sendBusTime(sessionId);
-            }
-        }, 3000, 3000);
+        if(Objects.nonNull(timer)){
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    sendBusTime(sessionId);
+                }
+            }, 3000, 3000);
+        }
+
 
 //        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
 //        scheduledExecutorService.scheduleAtFixedRate(this::sendBusTime, 0, 3, TimeUnit.SECONDS);

@@ -82,6 +82,8 @@ public class StopService {
         Stop stop = this.stopRepository.findById(id).orElseThrow(StopNotFoundException::new);
         Hibernate.initialize(stop.getStartRouteStops());
         Hibernate.initialize(stop.getEndRouteStops());
+        Hibernate.initialize(stop.getStartRoutes());
+        Hibernate.initialize(stop.getEndRoutes());
         this.setLatLng(Objects.requireNonNull(stop));
         return stop;
     }

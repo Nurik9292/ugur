@@ -56,12 +56,15 @@ public class SendClientBuses {
         //        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         //        scheduledExecutorService.scheduleWithFixedDelay(this::sendBusData, 0, 3, TimeUnit.SECONDS);
 
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                sendBusData(sessionId);
-            }
-        }, 3000, 3000);
+
+        if(Objects.nonNull(timer)){
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    sendBusData(sessionId);
+                }
+            }, 3000, 3000);
+        }
     }
 
     @EventListener
