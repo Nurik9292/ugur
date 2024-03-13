@@ -14,7 +14,6 @@ import tm.ugur.models.Client;
 import tm.ugur.services.api.BusTimeService;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
