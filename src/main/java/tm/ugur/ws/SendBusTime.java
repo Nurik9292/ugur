@@ -70,7 +70,6 @@ public class SendBusTime {
 
 
     private void sendBusTime(){
-        logger.info("Stop id bus time: " + stopId);
         try {
             if(Objects.nonNull(stopId)){
                 Map<Integer, Double> times = busTimeService.getBusTime(stopId);

@@ -32,7 +32,6 @@ public class BusTimeController {
 
     @GetMapping("/get_bus_time/{id}")
     public ResponseEntity<HttpStatus> getBusTime(@PathVariable("id") Long id){
-        logger.info("Api controller bus time stop id: " + id);
         sendBusTime.setStopId(id);
         sendBusTime.setClient(getAuthClient());
         return ResponseEntity.ok(HttpStatus.OK);
