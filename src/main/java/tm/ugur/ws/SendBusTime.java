@@ -1,7 +1,6 @@
 package tm.ugur.ws;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +15,9 @@ import tm.ugur.services.api.BusTimeService;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class SendBusTime {
@@ -26,16 +25,11 @@ public class SendBusTime {
     private ScheduledExecutorService scheduledExecutorService;
     private final SimpMessagingTemplate messagingTemplate;
     private final BusTimeService busTimeService;
-    private Timer timer;
     private Client client;
 
     private Long stopId;
     private final static Logger logger = LoggerFactory.getLogger(SendBusTime.class);
 
-    @PostConstruct
-    public void init() {
-        timer = new Timer();
-    }
 
     @Autowired
     public SendBusTime(SimpMessagingTemplate messagingTemplate, BusTimeService busTimeService) {
@@ -48,26 +42,25 @@ public class SendBusTime {
     public void handleWebSocketConnectListenerTime(SessionConnectedEvent event){
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = accessor.getSessionId();
+        logger.info("Клиент подключен для отправки и времени, sessionId: " + sessionId);
 
-        if(Objects.nonNull(timer)){
-            timer.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    sendBusTime(sessionId);
-                }
-            }, 3000, 3000);
-        }
-
-
-//        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-//        scheduledExecutorService.scheduleAtFixedRate(this::sendBusTime, 0, 3, TimeUnit.SECONDS);
+        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                sendBusTime(sessionId);
+            }
+        }, 0, 3, TimeUnit.SECONDS);
     }
 
     @EventListener
     public void handleWebSocketDisconnectListenerTime(SessionDisconnectEvent event){
-//        scheduledExecutorService.shutdown();
-        timer.cancel();
+        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
+        String sessionId = accessor.getSessionId();
+        logger.info("Клиент отключен для отправки и времени, sessionId: " + sessionId);
+        scheduledExecutorService.shutdown();
     }
+
 
     private void sendBusTime(String sessionId){
         try {

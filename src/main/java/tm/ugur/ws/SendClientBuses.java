@@ -1,7 +1,6 @@
 package tm.ugur.ws;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +16,14 @@ import tm.ugur.services.redis.RedisBusService;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class SendClientBuses {
 
     private ScheduledExecutorService scheduledExecutorService;
-    private Timer timer;
     private final SimpMessagingTemplate messagingTemplate;
     private final RedisBusService redisBusService;
 
@@ -34,10 +32,6 @@ public class SendClientBuses {
 
     private final static Logger logger = LoggerFactory.getLogger(SendClientBuses.class);
 
-    @PostConstruct
-    public void init() {
-        timer = new Timer();
-    }
 
     @Autowired
     public SendClientBuses(SimpMessagingTemplate messagingTemplate,
@@ -51,29 +45,23 @@ public class SendClientBuses {
 
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = accessor.getSessionId();
-        logger.info("Клиент подключен, sessionId: " + sessionId);
+        logger.info("Клиент подключен для отправки и автобусов, sessionId: " + sessionId);
 
-        //        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        //        scheduledExecutorService.scheduleWithFixedDelay(this::sendBusData, 0, 3, TimeUnit.SECONDS);
-
-
-        if(Objects.nonNull(timer)){
-            timer.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    sendBusData(sessionId);
-                }
-            }, 3000, 3000);
-        }
+        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        scheduledExecutorService.scheduleWithFixedDelay(new Runnable() {
+            @Override
+            public void run() {
+                sendBusData(sessionId);
+            }
+        }, 0, 3, TimeUnit.SECONDS);
     }
 
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event){
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = accessor.getSessionId();
-        logger.info("Клиент отключен, sessionId: " + sessionId);
-//        scheduledExecutorService.shutdown();
-        timer.cancel();
+        logger.info("Клиент отключен для отправки автобусов, sessionId: " + sessionId);
+        scheduledExecutorService.shutdown();
     }
 
     public void sendBusData(String sessionId){
