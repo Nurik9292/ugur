@@ -14,9 +14,12 @@ import tm.ugur.models.Client;
 import tm.ugur.services.api.BusTimeService;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Component
 public class SendBusTime {
@@ -28,12 +31,13 @@ public class SendBusTime {
     private Long stopId;
     private final static Logger logger = LoggerFactory.getLogger(SendBusTime.class);
 
+    private final Lock lock;
 
     @Autowired
     public SendBusTime(SimpMessagingTemplate messagingTemplate, BusTimeService busTimeService) {
         this.messagingTemplate = messagingTemplate;
         this.busTimeService = busTimeService;
-
+        this.lock = new ReentrantLock();
     }
 
     @EventListener
@@ -43,7 +47,17 @@ public class SendBusTime {
         logger.info("Клиент подключен для отправки и времени, sessionId: " + sessionId);
 
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleAtFixedRate(this::sendBusTime, 0, 3, TimeUnit.SECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(()-> {
+            if (lock.tryLock()) {
+                try {
+                    sendBusTime();
+                } finally {
+                    lock.unlock();
+                }
+            } else {
+                logger.warn("Предыдущая задача sendBusTime еще не завершилась");
+            }
+        }, 0, 3, TimeUnit.SECONDS);
     }
 
     @EventListener
@@ -58,7 +72,7 @@ public class SendBusTime {
     private void sendBusTime(){
         logger.info("Stop id bus time: " + stopId);
         try {
-            if(stopId > 0){
+            if(Objects.nonNull(stopId)){
                 Map<Integer, Double> times = busTimeService.getBusTime(stopId);
                 ObjectMapper mapper = new ObjectMapper();
                 messagingTemplate.convertAndSend("/topic/time." + client.getPhone(),
