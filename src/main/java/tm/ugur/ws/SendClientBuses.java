@@ -26,8 +26,6 @@ public class SendClientBuses {
     private ScheduledExecutorService scheduledExecutorService;
     private final SimpMessagingTemplate messagingTemplate;
     private final RedisBusService redisBusService;
-
-    private String sessionId;
     private Integer number;
     private Client client;
 
@@ -45,7 +43,7 @@ public class SendClientBuses {
     public void handleWebSocketConnectListener(SessionConnectedEvent event){
 
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
-        sessionId = accessor.getSessionId();
+        String sessionId = accessor.getSessionId();
         logger.info("Клиент подключен для отправки и автобусов, sessionId: " + sessionId);
 
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
@@ -66,7 +64,7 @@ public class SendClientBuses {
                 List<BusDTO> buses = redisBusService.getBuses(String.valueOf(number));
 
                 ObjectMapper mapper = new ObjectMapper();
-                messagingTemplate.convertAndSendToUser(sessionId , "/topic/mobile." + client.getPhone(),
+                messagingTemplate.convertAndSend("/topic/mobile." + client.getPhone(),
                         mapper.writeValueAsString(buses));
             }
         } catch (Exception e) {
