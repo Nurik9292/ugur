@@ -27,6 +27,7 @@ public class SendBusTime {
     private final BusTimeService busTimeService;
     private Client client;
 
+    private String sessionId;
     private Long stopId;
     private final static Logger logger = LoggerFactory.getLogger(SendBusTime.class);
 
@@ -41,16 +42,11 @@ public class SendBusTime {
     @EventListener
     public void handleWebSocketConnectListenerTime(SessionConnectedEvent event){
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
-        String sessionId = accessor.getSessionId();
+        sessionId = accessor.getSessionId();
         logger.info("Клиент подключен для отправки и времени, sessionId: " + sessionId);
 
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                sendBusTime(sessionId);
-            }
-        }, 0, 3, TimeUnit.SECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(this::sendBusTime, 0, 3, TimeUnit.SECONDS);
     }
 
     @EventListener
@@ -62,10 +58,11 @@ public class SendBusTime {
     }
 
 
-    private void sendBusTime(String sessionId){
+    private void sendBusTime(){
         try {
             if(Objects.nonNull(stopId)){
                 Map<Integer, Double> times = busTimeService.getBusTime(stopId);
+                logger.info("Bus time: " + times);
                 ObjectMapper mapper = new ObjectMapper();
                 messagingTemplate.convertAndSendToUser(sessionId, "/topic/time." + client.getPhone(),
                         mapper.writeValueAsString(times));

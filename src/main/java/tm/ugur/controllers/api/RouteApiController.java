@@ -39,7 +39,6 @@ public class RouteApiController {
     @GetMapping("/{id}")
     public RouteDTO getRoute(@PathVariable("id")  Long id){
         RouteDTO route = this.routeService.findOne(id);
-        System.out.println(route);
         sendClientBuses.setNumber(route.getNumber());
         sendClientBuses.setClient(getAuthClient());
         return route;
