@@ -1,5 +1,6 @@
 package tm.ugur.services.admin;
 
+import org.hibernate.Hibernate;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -73,6 +74,14 @@ public class StopService {
 
     public Stop findOne(Long id){
         Stop stop = this.stopRepository.findById(id).orElseThrow(StopNotFoundException::new);
+        this.setLatLng(Objects.requireNonNull(stop));
+        return stop;
+    }
+
+    public Stop findOneInit(Long id){
+        Stop stop = this.stopRepository.findById(id).orElseThrow(StopNotFoundException::new);
+        Hibernate.initialize(stop.getStartRouteStops());
+        Hibernate.initialize(stop.getEndRouteStops());
         this.setLatLng(Objects.requireNonNull(stop));
         return stop;
     }

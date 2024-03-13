@@ -1,11 +1,13 @@
 package tm.ugur.ws;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
@@ -15,14 +17,15 @@ import tm.ugur.services.redis.RedisBusService;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.Executors;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 @Component
 public class SendClientBuses {
 
     private ScheduledExecutorService scheduledExecutorService;
+    private Timer timer;
     private final SimpMessagingTemplate messagingTemplate;
     private final RedisBusService redisBusService;
 
@@ -30,6 +33,11 @@ public class SendClientBuses {
     private Client client;
 
     private final static Logger logger = LoggerFactory.getLogger(SendClientBuses.class);
+
+    @PostConstruct
+    public void init() {
+        timer = new Timer();
+    }
 
     @Autowired
     public SendClientBuses(SimpMessagingTemplate messagingTemplate,
@@ -40,22 +48,38 @@ public class SendClientBuses {
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event){
-        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleWithFixedDelay(this::sendBusData, 0, 3, TimeUnit.SECONDS);
+
+        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
+        String sessionId = accessor.getSessionId();
+        logger.info("Клиент подключен, sessionId: " + sessionId);
+
+        //        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        //        scheduledExecutorService.scheduleWithFixedDelay(this::sendBusData, 0, 3, TimeUnit.SECONDS);
+
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                sendBusData(sessionId);
+            }
+        }, 3000, 3000);
     }
 
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event){
-        scheduledExecutorService.shutdown();
+        StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
+        String sessionId = accessor.getSessionId();
+        logger.info("Клиент отключен, sessionId: " + sessionId);
+//        scheduledExecutorService.shutdown();
+        timer.cancel();
     }
 
-    public void sendBusData(){
+    public void sendBusData(String sessionId){
         try {
             if(Objects.nonNull(number)){
                 List<BusDTO> buses = redisBusService.getBuses(String.valueOf(number));
 
                 ObjectMapper mapper = new ObjectMapper();
-                messagingTemplate.convertAndSend("/topic/mobile." + client.getPhone(),
+                messagingTemplate.convertAndSendToUser(sessionId , "/topic/mobile." + client.getPhone(),
                         mapper.writeValueAsString(buses));
             }
         } catch (Exception e) {

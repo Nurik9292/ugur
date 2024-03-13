@@ -27,7 +27,7 @@ public class UserSeed implements CommandLineRunner {
         if(this.personService.findByName("super").isEmpty()){
             Person user = new Person();
             user.setUserName("super");
-            user.setRole(Role.ROLE_ADMIN);
+            user.setRole(Role.ROLE_SUPER);
             user.setPassword("superAdmin123");
             this.personService.store(user);
         }

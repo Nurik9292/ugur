@@ -51,7 +51,6 @@ public class SecurityConfig {
         return http
                 .securityMatcher("/websocket-ugur","/api/**").csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users/create", "/users", "/users/store").hasRole("SUPER")
                         .requestMatchers("/api/auth/register", "/api/auth/verify_otp").permitAll()
                         .anyRequest().permitAll())
                 .sessionManagement(sm -> sm
