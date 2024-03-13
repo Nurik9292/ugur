@@ -76,11 +76,12 @@ public class FileSystemStorageService implements StorageService{
 
             Date date = new Date();
 
-            fileResize.resize(tempFile, new File(destinationFile.getParent() + "/" + date.getTime() + "-" + originalName), 64, 64);
+            String newDestinationFile = destinationFile.getParent() + "/" + date.getTime() + "-" + originalName;
+            fileResize.resize(tempFile, new File(newDestinationFile), 64, 64);
 
             tempFile.delete();
 
-            return destinationFile.toString();
+            return newDestinationFile;
 
         } catch (IOException e) {
             logger.error("Failed to store file " + e.getMessage());
@@ -125,6 +126,7 @@ public class FileSystemStorageService implements StorageService{
 
     @Override
     public void delete(String path){
+        System.out.println(path);
         FileSystemUtils.deleteRecursively(new File(path));
     }
 }

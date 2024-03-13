@@ -1,5 +1,5 @@
-const host = "http://192.168.37.61/:8083";
-// const host = "http://localhost:8080";
+// const host = "http://192.168.37.61/:8083";
+const host = "http://localhost:8080";
 let sortByStop = "";
 let sortByRoute = "";
 

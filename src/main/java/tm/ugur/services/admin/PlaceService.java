@@ -161,12 +161,14 @@ public class PlaceService {
 
     @Transactional
     public void delete(Long id){
-         Optional<Place> place = findOne(id);
+        Optional<Place> placeOptional = placeRepository.findById(id);
 
-         String imagePath = place.get().getImage();
-
-         if(!imagePath.isBlank())
-             storageService.delete(imagePath);
+        placeOptional.ifPresent(place -> {
+            String imagePath = place.getImage();
+            if (imagePath != null && !imagePath.isBlank()) {
+                storageService.delete(imagePath);
+            }
+        });
 
         this.placeRepository.deleteById(id);
     }
