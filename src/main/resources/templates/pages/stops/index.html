@@ -31,7 +31,7 @@
                         <div class="dataTable-dropdown">
                             <label>
                                 <form id="myForm">
-                                <select id="selector"  class="dataTable-selector" onchange="onChagePageItems()">
+                                <select id="selector"  class="dataTable-selector" onchange="onChagePageItems('stops')">
                                     <option value="5" th:selected=" 5 == ${stops.getSize()}">5</option>
                                     <option value="10" th:selected="10 == ${stops.getSize()}">10</option>
                                     <option value="15" th:selected="15 == ${stops.getSize()}">15</option>

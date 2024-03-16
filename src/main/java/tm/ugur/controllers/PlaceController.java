@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import tm.ugur.models.*;
 import tm.ugur.services.admin.PlaceCategoryService;
 import tm.ugur.services.admin.PlaceService;
+import tm.ugur.services.admin.PlaceSubCategoryService;
 import tm.ugur.util.pagination.PaginationService;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class PlaceController {
 
     private final PlaceService placeService;
     private final PlaceCategoryService placeCategoryService;
+    private final PlaceSubCategoryService placeSubCategoryService;
     private final PaginationService paginationService;
 
     private static String sortByStatic = "";
@@ -29,9 +31,11 @@ public class PlaceController {
     @Autowired
     public PlaceController(PlaceService placeService,
                            PlaceCategoryService placeCategoryService,
+                           PlaceSubCategoryService placeSubCategoryService,
                            PaginationService paginationService) {
         this.placeService = placeService;
         this.placeCategoryService = placeCategoryService;
+        this.placeSubCategoryService = placeSubCategoryService;
         this.paginationService = paginationService;
 
     }
@@ -72,6 +76,7 @@ public class PlaceController {
         model.addAttribute("title", "Заведение");
         model.addAttribute("page", "place-main-create");
         model.addAttribute("placeCategories", placeCategoryService.findAll());
+        model.addAttribute("placeSubCategory", placeSubCategoryService.findAll());
 
         return "layouts/places/create";
     }

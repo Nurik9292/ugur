@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
@@ -49,18 +50,18 @@ public class SendClientBuses {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = accessor.getSessionId();
         logger.info("Клиент подключен для отправки и автобусов, sessionId: " + sessionId);
-        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleWithFixedDelay( () ->{
-            if (lock.tryLock()) {
-                try {
-                    sendBusData();
-                } finally {
-                    lock.unlock();
-                }
-            } else {
-                logger.warn("Предыдущая задача sendBusData еще не завершилась");
-            }
-        }, 0, 3, TimeUnit.SECONDS);
+//        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+//        scheduledExecutorService.scheduleWithFixedDelay( () ->{
+//            if (lock.tryLock()) {
+//                try {
+//                    sendBusData();
+//                } finally {
+//                    lock.unlock();
+//                }
+//            } else {
+//                logger.warn("Предыдущая задача sendBusData еще не завершилась");
+//            }
+//        }, 0, 3, TimeUnit.SECONDS);
     }
 
 
@@ -69,9 +70,10 @@ public class SendClientBuses {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = accessor.getSessionId();
         logger.info("Клиент отключен для отправки автобусов, sessionId: " + sessionId);
-        scheduledExecutorService.shutdown();
+//        scheduledExecutorService.shutdown();
     }
 
+    @Scheduled(fixedDelay = 3000)
     public void sendBusData(){
         try {
             if(Objects.nonNull(number)){

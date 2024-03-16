@@ -45,6 +45,10 @@ public class Place extends AbstractEntity{
     @JoinColumn(name = "place_category_id", referencedColumnName = "id")
     private PlaceCategory placeCategory;
 
+    @ManyToOne
+    @JoinColumn(name = "place_sub_category_id",referencedColumnName = "id")
+    private PlaceSubCategory placeSubCategory;
+
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
@@ -174,6 +178,15 @@ public class Place extends AbstractEntity{
 
     public void setLng(Double lng) {
         this.lng = lng;
+    }
+
+
+    public PlaceSubCategory getPlaceSubCategory() {
+        return placeSubCategory;
+    }
+
+    public void setPlaceSubCategory(PlaceSubCategory placeSubCategory) {
+        this.placeSubCategory = placeSubCategory;
     }
 
     public void addSocialNetworks(List<SocialNetwork> networks){

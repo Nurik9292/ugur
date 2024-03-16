@@ -2,15 +2,21 @@ package tm.ugur.controllers;
 
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import tm.ugur.dto.PlaceSubCategoryDTO;
 import tm.ugur.models.PlaceCategory;
+import tm.ugur.models.PlaceSubCategory;
 import tm.ugur.services.admin.PlaceCategoryService;
+import tm.ugur.util.mappers.PlaceSubCategoriesMapper;
 import tm.ugur.util.pagination.PaginationService;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 @Controller
@@ -19,12 +25,15 @@ public class PlaceCategoryController {
 
     private final PlaceCategoryService placeCategoryService;
     private final PaginationService paginationService;
+    private final PlaceSubCategoriesMapper placeSubCategoriesMapper;
     private static String sortByStatic = "";
 
     public PlaceCategoryController(PlaceCategoryService placeCategoryService,
-                                   PaginationService paginationService) {
+                                   PaginationService paginationService,
+                                   PlaceSubCategoriesMapper placeSubCategoriesMapper) {
         this.placeCategoryService = placeCategoryService;
         this.paginationService = paginationService;
+        this.placeSubCategoriesMapper = placeSubCategoriesMapper;
     }
 
     @GetMapping
@@ -112,4 +121,22 @@ public class PlaceCategoryController {
         return "redirect:/place-categories";
     }
 
+    @ResponseBody
+    @GetMapping("/getSubcategories/{id}")
+    public ResponseEntity<List<PlaceSubCategoryDTO>> getSubCategories(@PathVariable("id") Long id){
+
+        Optional<PlaceCategory> category =  placeCategoryService.findOne(id);
+
+        if (category.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        PlaceCategory placeCategory = category.get();
+        List<PlaceSubCategoryDTO> placeSubCategories = placeCategory.getSubCategories().stream().map(this::convertToDto).toList();
+
+        return  ResponseEntity.ok(placeSubCategories);
+    }
+
+    private PlaceSubCategoryDTO convertToDto(PlaceSubCategory placeSubCategory){
+        return this.placeSubCategoriesMapper.toDto(placeSubCategory);
+    }
 }

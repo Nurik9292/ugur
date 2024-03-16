@@ -18,17 +18,20 @@ public class PlaceMapper extends AbstractMapper<Place, PlaceDTO> {
     private final PlaceCategoryMapper placeCategoryMapper;
     private final SocialNetworkMapper socialNetworkMapper;
     private final PlacePhoneMapper placePhoneMapper;
+    private final PlaceSubCategoriesMapper placeSubCategoriesMapper;
 
     @Autowired
     public PlaceMapper(ModelMapper modelMapper,
                        PlaceCategoryMapper placeCategoryMapper,
                        SocialNetworkMapper socialNetworkMapper,
-                       PlacePhoneMapper placePhoneMapper) {
+                       PlacePhoneMapper placePhoneMapper,
+                       PlaceSubCategoriesMapper placeSubCategoriesMapper) {
         super(Place.class, PlaceDTO.class);
         this.modelMapper = modelMapper;
         this.placeCategoryMapper = placeCategoryMapper;
         this.socialNetworkMapper = socialNetworkMapper;
         this.placePhoneMapper = placePhoneMapper;
+        this.placeSubCategoriesMapper = placeSubCategoriesMapper;
     }
 
 
@@ -48,20 +51,24 @@ public class PlaceMapper extends AbstractMapper<Place, PlaceDTO> {
             destination.setSocialNetworks(source.getSocialNetworks().stream().map(this::convertToDTO).toList());
             destination.setLocation(new PointDTO(source.getLocation().getX(), source.getLocation().getY()));
             destination.setPlaceCategory(convertToDTO(source.getPlaceCategory()));
+            destination.setPlaceSubCategory(convertToDTO(source.getPlaceSubCategory()));
     }
 
 
     public PlaceCategoryDTO convertToDTO(PlaceCategory placeCategory){
-        return this.placeCategoryMapper.toDto(placeCategory);
+        return placeCategoryMapper.toDto(placeCategory);
     }
 
     public SocialNetworkDTO convertToDTO(SocialNetwork socialNetwork){
-        return this.socialNetworkMapper.toDto(socialNetwork);
+        return socialNetworkMapper.toDto(socialNetwork);
     }
 
     public PlacePhoneDTO convertToDTO(PlacePhone placePhone){
-        return this.placePhoneMapper.toDto(placePhone);
+        return placePhoneMapper.toDto(placePhone);
     }
 
+    public PlaceSubCategoryDTO convertToDTO(PlaceSubCategory placeSubCategory){
+        return placeSubCategoriesMapper.toDto(placeSubCategory);
+    }
 
 }

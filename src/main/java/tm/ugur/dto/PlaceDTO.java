@@ -27,6 +27,8 @@ public class PlaceDTO extends AbstractDTO{
 
     private PlaceCategoryDTO placeCategory;
 
+    private  PlaceSubCategoryDTO placeSubCategory;
+
 
     public PlaceDTO() {
     }
@@ -124,6 +126,14 @@ public class PlaceDTO extends AbstractDTO{
         this.placeCategory = placeCategory;
     }
 
+    public PlaceSubCategoryDTO getPlaceSubCategory() {
+        return placeSubCategory;
+    }
+
+    public void setPlaceSubCategory(PlaceSubCategoryDTO placeSubCategory) {
+        this.placeSubCategory = placeSubCategory;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
@@ -152,4 +162,6 @@ public class PlaceDTO extends AbstractDTO{
                 ", id=" + id +
                 '}';
     }
+
+
 }

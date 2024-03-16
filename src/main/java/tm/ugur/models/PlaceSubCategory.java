@@ -3,6 +3,7 @@ package tm.ugur.models;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -20,6 +21,9 @@ public class PlaceSubCategory extends AbstractEntity{
     @ManyToOne
     @JoinColumn(name = "place_category_id", referencedColumnName = "id")
     private PlaceCategory placeCategory;
+
+    @OneToMany(mappedBy = "placeSubCategory")
+    List<Place> places;
 
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
@@ -75,6 +79,14 @@ public class PlaceSubCategory extends AbstractEntity{
 
     public void setPlaceCategory(PlaceCategory placeCategory) {
         this.placeCategory = placeCategory;
+    }
+
+    public List<Place> getPlaces() {
+        return places;
+    }
+
+    public void setPlaces(List<Place> places) {
+        this.places = places;
     }
 
     @Override

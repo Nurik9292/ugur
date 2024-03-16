@@ -3,8 +3,8 @@ const host = "http://192.168.37.61:8083";
 let sortByStop = "";
 let sortByRoute = "";
 
-function onChagePageItems(){
-    const url= host + '/stops';
+function onChagePageItems(page) {
+    const url = host + '/' + page;
     const element = data();
 
     const params = {
@@ -20,8 +20,8 @@ function onChagePageItems(){
     window.location.href = fullUrl;
 }
 
-function onClickSortStop(){
-    const url= host + '/stops';
+function onClickSortStop() {
+    const url = host + '/stops';
     const element = data();
 
     const params = {
@@ -40,8 +40,8 @@ function onClickSortStop(){
     window.location.href = fullUrl;
 }
 
-function onClickSortRoute(sortBy){
-    const url= host + '/routes';
+function onClickSortRoute(sortBy) {
+    const url = host + '/routes';
     const element = data();
 
     const params = {
@@ -60,8 +60,8 @@ function onClickSortRoute(sortBy){
     window.location.href = fullUrl;
 }
 
-function onClickSortPlace(sortBy){
-    const url= host + '/places';
+function onClickSortPlace(sortBy) {
+    const url = host + '/places';
     const element = data();
 
     const params = {
@@ -80,8 +80,8 @@ function onClickSortPlace(sortBy){
     window.location.href = fullUrl;
 }
 
-function onClickSortPlaceCategory(sortBy){
-    const url= host + '/place-categories';
+function onClickSortPlaceCategory(sortBy) {
+    const url = host + '/place-categories';
     const element = data();
 
     const params = {
@@ -100,7 +100,7 @@ function onClickSortPlaceCategory(sortBy){
     window.location.href = fullUrl;
 }
 
-function  data(){
+function data() {
     const selector = document.getElementById("selector");
     const items = selector.options[selector.selectedIndex].value;
     const active = document.querySelector("[class='active']");
@@ -109,7 +109,7 @@ function  data(){
     return {page: pageNumber, items: items};
 }
 
-function addInputMobPhone(){
+function addInputMobPhone() {
     const addInputButton = document.getElementById("add-input");
     const mobPhoneInput = document.getElementById("mob_phone");
     const newInput = document.createElement("input");
@@ -123,7 +123,7 @@ function addInputMobPhone(){
     mobPhoneInput.parentNode.insertBefore(newInput, mobPhoneInput.nextSibling);
 }
 
-function sendCreatePlace(){
+function sendCreatePlace() {
     const formDate = new FormData();
 
     const image = document.getElementById("image").files[0];
@@ -163,12 +163,12 @@ function sendCreatePlace(){
         },
     }).then(re => {
         window.location.href = host + "/places";
-    }) .catch((error) => {
+    }).catch((error) => {
         console.error("Error sending request:", error);
     });
 }
 
-function sendUpdatePlace(){
+function sendUpdatePlace() {
     const formDate = new FormData();
 
     const image = document.getElementById("image").files[0];
@@ -209,7 +209,80 @@ function sendUpdatePlace(){
         },
     }).then(re => {
         window.location.href = host + "/places";
-    }) .catch((error) => {
+    }).catch((error) => {
         console.error("Error sending request:", error);
+    });
+}
+
+
+//
+// if(document.getElementById("placeCategory")){
+//     const categoryId = document.getElementById("placeCategory").value;
+//     axios.get(host + "/place-categories/getSubcategories/" + categoryId)
+//         .then(res => {
+//             const response = res.data
+//             const placeSubCategorySelect = document.getElementById("placeSubCategory");
+//             placeSubCategorySelect.innerHTML = "";
+//             response.forEach(function (subCategory) {
+//                 let option = document.createElement("option");
+//                 option.value = subCategory.id;
+//                 option.textContent = subCategory.title;
+//                 placeSubCategorySelect.appendChild(option);
+//             })
+//         }).catch(err => {
+//         console.error("Ошибка при загрузке подкатегорий:", err);
+//     });
+// }
+//
+//
+//     function changeCategory() {
+//         const categoryId = this.value; // Получаем выбранный идентификатор категории
+//
+//         axios.get(host + "/place-categories/getSubcategories/" + categoryId)
+//             .then(res => {
+//                 const response = res.data;
+//                 const placeSubCategorySelect = document.getElementById("placeSubCategory");
+//                 placeSubCategorySelect.innerHTML = "";
+//                 response.forEach(function (subCategory) {
+//                     let option = document.createElement("option");
+//                     option.value = subCategory.id;
+//                     option.textContent = subCategory.title;
+//                     placeSubCategorySelect.appendChild(option);
+//                 })
+//             }).catch(err => {
+//             console.error("Ошибка при загрузке подкатегорий:", err);
+//         });
+//     }
+
+function loadSubcategories(categoryId) {
+    axios.get(host + "/place-categories/getSubcategories/" + categoryId)
+        .then(res => {
+            const response = res.data;
+            const placeSubCategorySelect = document.getElementById("placeSubCategory");
+            placeSubCategorySelect.innerHTML = "";
+            response.forEach(function (subCategory) {
+                let option = document.createElement("option");
+                option.value = subCategory.id;
+                option.textContent = subCategory.title;
+                placeSubCategorySelect.appendChild(option);
+            })
+        }).catch(err => {
+        console.error("Ошибка при загрузке подкатегорий:", err);
+    });
+}
+
+
+const placeCategorySelect = document.getElementById("placeCategory");
+
+if(placeCategorySelect.value){
+    const categoryId = placeCategorySelect.value;
+    loadSubcategories(categoryId);
+}
+
+
+if (placeCategorySelect) {
+    placeCategorySelect.addEventListener("change", function () {
+        const categoryId = this.value;
+        loadSubcategories(categoryId);
     });
 }

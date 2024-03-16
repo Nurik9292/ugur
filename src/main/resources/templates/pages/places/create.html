@@ -70,16 +70,24 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="image">Изображение</label>
-                            <input class="form-control" type="file" id="image" name="image">
-                        </div>
-                        <div class="col-md-6 mb-3">
                             <label for="placeCategory">Категория</label>
                             <select class="form-select mb-0" id="placeCategory" name="placeCategory" aria-label="Category select example">
                                 <option th:each="placeCategory : ${placeCategories}"
                                         th:value="${placeCategory.getId()}"
                                         th:text="${placeCategory.getTitle()}"></option>
                             </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="placeSubCategory">Под Категория</label>
+                            <select class="form-select mb-0" id="placeSubCategory" name="placeSubCategory" aria-label="Sun Category select example" >
+                                <option></option>
+                            </select>Категория
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="image">Изображение</label>
+                            <input class="form-control" type="file" id="image" name="image">
                         </div>
                     </div>
                     <div class="row">
