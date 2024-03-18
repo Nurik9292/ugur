@@ -19,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 @Service
@@ -54,7 +55,7 @@ public class FileSystemStorageService implements StorageService{
     @Override
     public String store(MultipartFile file) {
         try {
-            if (file.isEmpty()) {
+            if (Objects.isNull(file) || file.isEmpty()) {
                 logger.warn("Failed to store empty file.");
                 return "";
             }

@@ -1,5 +1,5 @@
-const host = "http://192.168.37.61:8083";
-// const host = "http://localhost:8080";
+// const host = "http://192.168.37.61:8083";
+const host = "http://localhost:8080";
 let sortByStop = "";
 let sortByRoute = "";
 
@@ -119,140 +119,109 @@ function addInputMobPhone() {
     newInput.type = "text";
     newInput.placeholder = "Введите другую моб телефон";
     newInput.required = true;
+    jQuery(function($){
+        $(".mob_phone_place").mask("+993(69) 99-99-99");
+    });
 
     mobPhoneInput.parentNode.insertBefore(newInput, mobPhoneInput.nextSibling);
 }
 
-function sendCreatePlace() {
-    const formDate = new FormData();
-
-    const image = document.getElementById("image").files[0];
-
-
-    const instagram = document.getElementById("instagram").value;
-    const tiktok = document.getElementById("tiktok").value;
-    const socialLinks = [instagram, tiktok];
-
-    const cityPhone = document.getElementById("city_phone").value;
-
-    const mobs = document.getElementsByClassName("mob_phone_place");
-    const phones = [];
-
-    for (let i = 0; i < mobs.length; i++) {
-        phones.push(mobs[i].value);
+function addToFormData(formData, key, value) {
+    if (Array.isArray(value)) {
+        value.forEach(val => formData.append(key, val));
+    } else {
+        formData.append(key, value);
     }
+}
 
-    phones.push(cityPhone);
-
-    formDate.append("_csrf", document.getElementById("csrf").value);
-    formDate.append("title", document.getElementById("title").value);
-    formDate.append("address", document.getElementById("address").value);
-    formDate.append("email", document.getElementById("email").value);
-    formDate.append("website", document.getElementById("site").value);
-    formDate.append("lat", document.getElementById("lat").value);
-    formDate.append("lng", document.getElementById("lng").value);
-    formDate.append("placeCategory", document.getElementById("placeCategory").value);
-    formDate.append("social_networks", socialLinks);
-    formDate.append("phones", phones);
-    formDate.append("image", image);
-
-
-    axios.post(host + "/places", formDate, {
+function sendFormData(method, url, formData) {
+    axios({
+        method: method,
+        url: url,
+        data: formData,
         headers: {
             "Content-Type": "multipart/form-data",
         },
-    }).then(re => {
-        window.location.href = host + "/places";
-    }).catch((error) => {
-        console.error("Error sending request:", error);
-    });
+    })
+        .then(res => {
+            window.location.href = host + "/places";
+        })
+        .catch(error => {
+            if (error.response && error.response.status === 400) {
+                console.error('Validation error:', error.response.data);
+                displayValidationErrors(error.response.data);
+            } else {
+                console.error("Error sending request:", error);
+            }
+        });
+}
+
+function sendCreatePlace() {
+    const formData = new FormData();
+    const image = document.getElementById("image").files[0];
+    const instagram = document.getElementById("instagram").value;
+    const tiktok = document.getElementById("tiktok").value;
+    const cityPhone = document.getElementById("city_phone").value;
+    const socialLinks = [instagram, tiktok];
+    const mobPhones = document.getElementsByClassName("mob_phone_place");
+    const phones = Array.from(mobPhones).map(phone => phone.value);
+    phones.push(cityPhone);
+
+    addToFormData(formData, "_csrf", document.getElementById("csrf").value);
+    addToFormData(formData, "title", document.getElementById("title").value);
+    addToFormData(formData, "address", document.getElementById("address").value);
+    addToFormData(formData, "email", document.getElementById("email").value);
+    addToFormData(formData, "website", document.getElementById("site").value);
+    addToFormData(formData, "lat", document.getElementById("lat").value);
+    addToFormData(formData, "lng", document.getElementById("lng").value);
+    addToFormData(formData, "placeCategory", document.getElementById("placeCategory").value);
+    addToFormData(formData, "placeSubCategory", document.getElementById("placeSubCategory").value);
+    addToFormData(formData, "social_networks", socialLinks);
+    addToFormData(formData, "telephones", phones);
+    addToFormData(formData, "file", image);
+
+    sendFormData('post', host + "/places", formData);
 }
 
 function sendUpdatePlace() {
-    const formDate = new FormData();
-
+    const formData = new FormData();
+    const id = document.getElementById("id").value;
     const image = document.getElementById("image").files[0];
-    const id = document.getElementById("placeId").value;
-
-
     const instagram = document.getElementById("instagram").value;
     const tiktok = document.getElementById("tiktok").value;
-    const socialLinks = [instagram, tiktok];
-
     const cityPhone = document.getElementById("city_phone").value;
-
-    const mobs = document.getElementsByClassName("mob_phone_place");
-    const phones = [];
-
-    for (let i = 0; i < mobs.length; i++) {
-        phones.push(mobs[i].value);
-    }
-
+    const socialLinks = [instagram, tiktok];
+    const mobPhones = document.getElementsByClassName("mob_phone_place");
+    const phones = Array.from(mobPhones).map(phone => phone.value);
     phones.push(cityPhone);
 
-    formDate.append("_csrf", document.getElementById("csrf").value);
-    formDate.append("title", document.getElementById("title").value);
-    formDate.append("address", document.getElementById("address").value);
-    formDate.append("email", document.getElementById("email").value);
-    formDate.append("website", document.getElementById("site").value);
-    formDate.append("lat", document.getElementById("lat").value);
-    formDate.append("lng", document.getElementById("lng").value);
-    formDate.append("placeCategory", document.getElementById("placeCategory").value);
-    formDate.append("social_networks", socialLinks);
-    formDate.append("phones", phones);
-    formDate.append("image", image);
+    addToFormData(formData, "_csrf", document.getElementById("csrf").value);
+    addToFormData(formData, "title", document.getElementById("title").value);
+    addToFormData(formData, "address", document.getElementById("address").value);
+    addToFormData(formData, "email", document.getElementById("email").value);
+    addToFormData(formData, "website", document.getElementById("site").value);
+    addToFormData(formData, "lat", document.getElementById("lat").value);
+    addToFormData(formData, "lng", document.getElementById("lng").value);
+    addToFormData(formData, "placeCategory", document.getElementById("placeCategory").value);
+    addToFormData(formData, "placeSubCategory", document.getElementById("placeSubCategory").value);
+    addToFormData(formData, "social_networks", socialLinks);
+    addToFormData(formData, "telephones", phones);
+    addToFormData(formData, "file", image);
 
+    sendFormData('put', host + "/places/" + id, formData);
+}
 
-    axios.put(host + "/places/" + id, formDate, {
-        headers: {
-            "Content-Type": "multipart/form-data",
-        },
-    }).then(re => {
-        window.location.href = host + "/places";
-    }).catch((error) => {
-        console.error("Error sending request:", error);
+function displayValidationErrors(errors) {
+    Object.keys(errors).forEach(fieldName => {
+        const errorMessage = errors[fieldName];
+        // const errorMessage = errors[fieldName].join(', ');
+        const errorElement =  document.getElementById(fieldName + "-error");
+        if (errorElement) {
+            errorElement.textContent = errorMessage;
+        }
     });
 }
 
-
-//
-// if(document.getElementById("placeCategory")){
-//     const categoryId = document.getElementById("placeCategory").value;
-//     axios.get(host + "/place-categories/getSubcategories/" + categoryId)
-//         .then(res => {
-//             const response = res.data
-//             const placeSubCategorySelect = document.getElementById("placeSubCategory");
-//             placeSubCategorySelect.innerHTML = "";
-//             response.forEach(function (subCategory) {
-//                 let option = document.createElement("option");
-//                 option.value = subCategory.id;
-//                 option.textContent = subCategory.title;
-//                 placeSubCategorySelect.appendChild(option);
-//             })
-//         }).catch(err => {
-//         console.error("Ошибка при загрузке подкатегорий:", err);
-//     });
-// }
-//
-//
-//     function changeCategory() {
-//         const categoryId = this.value; // Получаем выбранный идентификатор категории
-//
-//         axios.get(host + "/place-categories/getSubcategories/" + categoryId)
-//             .then(res => {
-//                 const response = res.data;
-//                 const placeSubCategorySelect = document.getElementById("placeSubCategory");
-//                 placeSubCategorySelect.innerHTML = "";
-//                 response.forEach(function (subCategory) {
-//                     let option = document.createElement("option");
-//                     option.value = subCategory.id;
-//                     option.textContent = subCategory.title;
-//                     placeSubCategorySelect.appendChild(option);
-//                 })
-//             }).catch(err => {
-//             console.error("Ошибка при загрузке подкатегорий:", err);
-//         });
-//     }
 
 function loadSubcategories(categoryId) {
     axios.get(host + "/place-categories/getSubcategories/" + categoryId)
@@ -267,14 +236,15 @@ function loadSubcategories(categoryId) {
                 placeSubCategorySelect.appendChild(option);
             })
         }).catch(err => {
-        console.error("Ошибка при загрузке подкатегорий:", err);
+            if(err.response)
+            console.error("Ошибка при загрузке подкатегорий:", err);
     });
 }
 
 
 const placeCategorySelect = document.getElementById("placeCategory");
 
-if(placeCategorySelect.value){
+if(placeCategorySelect && placeCategorySelect.value){
     const categoryId = placeCategorySelect.value;
     loadSubcategories(categoryId);
 }

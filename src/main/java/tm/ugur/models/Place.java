@@ -1,8 +1,11 @@
 package tm.ugur.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
 import org.locationtech.jts.geom.Point;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.List;
@@ -17,18 +20,23 @@ public class Place extends AbstractEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @NotEmpty(message = "Заполните поле.")
     @Column(name = "title")
     private String title;
+
+
 
     @Column(name = "image")
     private String image;
 
+    @NotEmpty(message = "Заполните поле.")
     @Column(name = "address")
     private String address;
 
     @Column(name = "website")
     private String website;
 
+    @Email(message = "Пожалуйста, введите корректный адрес электронной почты.")
     @Column(name = "email")
     private String email;
 
@@ -56,6 +64,7 @@ public class Place extends AbstractEntity{
     @Column(name = "updated_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
+
 
     @Transient
     private Double lat;

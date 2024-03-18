@@ -139,7 +139,7 @@ public class RouteController {
 
     private void modalAtribitesForCreate(Model model){
         model.addAttribute("title", "Создать маршрут");
-        model.addAttribute("page", "route-craete");
+        model.addAttribute("page", "route-create");
         this.modelForCitiesAndStops(model);
     }
 

@@ -1,6 +1,6 @@
 <th:block th:fragment="base">
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title th:text="${title}">Title</title>
@@ -15,23 +15,21 @@
 
     <!-- Sweet Alert -->
     <link type="text/css" th:href="@{/vendor/sweetalert2/dist/sweetalert2.min.css}" rel="stylesheet">
-
     <!-- Notyf -->
     <link type="text/css" th:href="@{/vendor/notyf/notyf.min.css}" rel="stylesheet">
-
     <!--  Map  -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-          crossorigin=""/>
-
+    <link rel="stylesheet" th:href="@{/leaflet/leaflet.css}">
+    <link rel="stylesheet" th:href="@{/geoman/leaflet-geoman.css}">
     <!-- Volt CSS -->
     <link type="text/css" th:href="@{/css/volt.css}" rel="stylesheet">
     <link type="text/css" th:href="@{/css/custom.css}" rel="stylesheet">
     <link type="text/css" th:href="@{/css/dataTable.css}" rel="stylesheet">
 
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@2.0.1/dist/css/multi-select-tag.css">
+    <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+    <script th:src="@{/js/maskedinput.min.js}"></script>
 
+    <link type="text/css" th:href="@{/css/multi-select.min.css}" rel="stylesheet">
 
 </head>
 <body>
@@ -51,7 +49,7 @@
     <th:block th:case="stop-create" th:insert="~{pages/stops/create :: create}"></th:block>
     <th:block th:case="stop-edit" th:insert="~{pages/stops/edit :: edit}"></th:block>
     <th:block th:case="route-index" th:insert="~{pages/routes/index :: index}"></th:block>
-    <th:block th:case="route-craete" th:insert="~{pages/routes/create :: create}"></th:block>
+    <th:block th:case="route-create" th:insert="~{pages/routes/create :: create}"></th:block>
     <th:block th:case="route-edit" th:insert="~{pages/routes/edit :: edit}"></th:block>
     <th:block th:case="place-main-index" th:insert="~{pages/places/index :: index}"></th:block>
     <th:block th:case="place-main-create" th:insert="~{pages/places/create :: create}"></th:block>
@@ -70,156 +68,42 @@
 </html>
 
     <script th:src="@{/js/axios.min.js}"></script>
-
     <!-- Core -->
     <script th:src="@{'/vendor/@popperjs/core/dist/umd/popper.min.js'}"></script>
     <script th:src="@{/vendor/bootstrap/dist/js/bootstrap.min.js}"></script>
-
     <!-- Vendor JS -->
     <script th:src="@{/vendor/onscreen/dist/on-screen.umd.min.js}"></script>
-
     <!-- Slider -->
     <script th:src="@{/vendor/nouislider/dist/nouislider.min.js}"></script>
-
     <!-- Smooth scroll -->
     <script th:src="@{/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js}"></script>
-
     <!-- Charts -->
     <script th:src="@{/vendor/chartist/dist/chartist.min.js}"></script>
     <script th:src="@{/vendor/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js}"></script>
-
     <!-- Datepicker -->
     <script th:src="@{/vendor/vanillajs-datepicker/dist/js/datepicker.min.js}"></script>
-
     <!-- Sweet Alerts 2 -->
     <script th:src="@{/vendor/sweetalert2/dist/sweetalert2.all.min.js}"></script>
-
     <!-- Moment JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
-
+    <script th:src="@{/js/moment.min.js}"></script>
     <!-- Vanilla JS Datepicker -->
     <script th:src="@{/vendor/vanillajs-datepicker/dist/js/datepicker.min.js}"></script>
-
     <!-- Notyf -->
     <script th:src="@{/vendor/notyf/notyf.min.js}"></script>
-
     <!-- Simplebar -->
     <script th:src="@{/vendor/simplebar/dist/simplebar.min.js}"></script>
-
     <!-- Github buttons -->
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
-
+    <script th:src="@{/js/button.min.js}"></script>
     <!-- Volt JS -->
     <script th:src="@{/assets/js/volt.js}"></script>
-
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-            crossorigin=""></script>
-
-    <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css"/>
-    <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.min.js"></script>
+    <!-- Map   -->
+    <script th:src="@{/leaflet/leaflet.js}"></script>
+    <script th:src="@{/geoman/leaflet-geoman.min.js}"></script>
 
     <script th:src="@{/js/map.js}"></script>
     <script th:src="@{/js/myfunction.js}"></script>
     <script th:src="@{/js/searchTable.js}"></script>
-    <script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@2.0.1/dist/js/multi-select-tag.js"></script>
-
-
-
-    <script>
-        const startStops = document.getElementById("start_stops");
-        const endStops = document.getElementById("end_stops");
-
-        if(startStops){
-            let selectedStart = [];
-
-            if(startStops.selectedOptions){
-                for(const item of startStops.selectedOptions){
-                    selectedStart.push(item.value);
-                }
-
-                document.getElementById("selectedOptionsOrderStart").value = selectedStart.join(",");
-            }
-
-            new MultiSelectTag('start_stops', {
-                rounded: true,
-                shadow: true,
-                placeholder: 'Search',
-                tagColor: {
-                    textColor: '#ffffff',
-                    borderColor: '#2361ce',
-                    bgColor: '#2361ce',
-                },
-                onChange: function(values) {
-                    let res = [];
-                   if(values.length < selectedStart.length){
-                       for(const item of values){
-                           for(const sel of selectedStart)
-                           if(sel === item.value){
-                               res.push(sel);
-                           }
-                       }
-                       selectedStart = selectedStart.filter((element) => {
-                           return res.includes(element);
-                       });
-                   }else{
-                       for(const item of values){
-                           if(!selectedStart.includes(item.value)){
-                               selectedStart.push(item.value);
-                           }
-                       }
-                   }
-
-                   document.getElementById("selectedOptionsOrderStart").value = selectedStart.join(",");
-                }
-
-            })}
-
-
-        if(endStops){
-            let selectedEnd = [];
-
-            if(endStops.selectedOptions){
-                for(const item of endStops.selectedOptions){
-                    selectedEnd.push(item.value);
-                }
-
-                document.getElementById("selectedOptionsOrderEnd").value = selectedEnd.join(",");
-            }
-
-            new MultiSelectTag('end_stops', {
-                rounded: true,
-                shadow: true,
-                placeholder: 'Search',
-                tagColor: {
-                    textColor: '#ffffff',
-                    borderColor: '#2361ce',
-                    bgColor: '#2361ce',
-                },
-                onChange: function(values) {
-                    let res = [];
-                    if(values.length < selectedEnd.length){
-                        for(const item of values){
-                            for(const sel of selectedEnd)
-                                if(sel === item.value){
-                                    res.push(sel);
-                                }
-                        }
-                        selectedEnd = selectedEnd.filter((element) => {
-                            return res.includes(element);
-                        });
-                    }else{
-                        for(const item of values){
-                            if(!selectedEnd.includes(item.value)){
-                                selectedEnd.push(item.value);
-                            }
-                        }
-                    }
-
-                    document.getElementById("selectedOptionsOrderEnd").value = selectedEnd.join(",");
-                }
-            })}
-
-
-    </script>
+    <script th:src="@{/js/masked.js}"></script>
+    <script th:src="@{/js/multi-select.min.js}"></script>
+    <script th:src="@{/js/my-select.js}"></script>
 </th:block>

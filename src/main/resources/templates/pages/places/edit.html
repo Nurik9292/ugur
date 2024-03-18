@@ -23,28 +23,33 @@
     </div>
     <div class="card card-body border-0 shadow mb-4">
         <h2 class="h5 mb-4">Обновить заведение</h2>
-        <div>
+        <form onsubmit="return false;" th:object="${place}">
             <input type="hidden" id="csrf" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <input type="hidden" id="id"  th:value="${place.getId()}">
             <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="nav-data-route" role="tabpanel" aria-labelledby="nav-data-route-tab">
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="title">Название</label>
                             <input class="form-control" id="title" name="title" th:value="${place.getTitle()}" type="text" placeholder="Введите название заведения" required="">
+                            <div style="color: red;" id="placeCategory-title"></div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="address">Адресс</label>
                             <input class="form-control" id="address" name="address" th:value="${place.getAddress()}" type="text" placeholder="Введите адресс заведения" required="">
+                            <div style="color: red;" id="address-error"></div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="email">Почта</label>
                             <input class="form-control" id="email" name="email" th:value="${place.getEmail()}" type="text" placeholder="Введите почту заведения" required="">
+                            <div style="color: red;" id="email-error"></div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="site">Сайт</label>
                             <input class="form-control" id="site" name="website" th:value="${place.getWebsite()}" type="text" placeholder="Введите сайт заведения" required="">
+                            <div style="color: red;" id="website-error"></div>
                         </div>
                     </div>
                     <div class="row">
@@ -70,17 +75,27 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="image">Изображение</label>
-                            <input class="form-control" type="file" id="image" name="image">
-                        </div>
-                        <div class="col-md-6 mb-3">
                             <label for="placeCategory">Категория</label>
                             <select class="form-select mb-0" id="placeCategory" name="placeCategory" aria-label="Category select example">
                                 <option th:each="placeCategory : ${placeCategories}"
-                                        th:selected="${placeCategory.getId() == place.getPlaceCategory().getId()}"
                                         th:value="${placeCategory.getId()}"
                                         th:text="${placeCategory.getTitle()}"></option>
                             </select>
+                            <div style="color: red;" id="placeCategory-error"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="placeSubCategory">Под Категория</label>
+                            <select class="form-select mb-0" id="placeSubCategory" name="placeSubCategory" aria-label="Sun Category select example" >
+                                <option></option>
+                            </select>
+                            <div style="color: red;" id="placeSubCategory-error"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="image">Изображение</label>
+                            <input class="form-control" type="file" id="image" name="file" accept="image/jpeg, image/jpg, image/png">
+                            <div style="color: red;" id="file-error"></div>
                         </div>
                     </div>
                     <div class="row">
@@ -103,8 +118,8 @@
             </div>
 
             <div class="mt-3">
-                <button class="btn btn-lg btn-info mt-2 animate-up-2" onclick="sendCreatePlace()">Создать</button>
+                <button class="btn btn-lg btn-info mt-2 animate-up-2" onclick="sendUpdatePlace()">Обновть</button>
             </div>
-        </div>
+        </form>
     </div>
 </th:block>

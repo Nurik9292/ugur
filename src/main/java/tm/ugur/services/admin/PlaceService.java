@@ -141,7 +141,7 @@ public class PlaceService {
                         new SocialNetwork(network, getSocialNetworkType(countNetwork.getAndIncrement()))))
                 .collect(Collectors.toList());
 
-        place.addSocialNetworks(savedNetworks);
+        place.setSocialNetworks(savedNetworks);
 
 
         AtomicInteger countPhone = new AtomicInteger(0);
@@ -149,7 +149,7 @@ public class PlaceService {
                 .map(phone -> placePhoneRepository.save(new PlacePhone(phone, getPhoneType(countPhone.getAndIncrement()))))
                 .collect(Collectors.toList());
 
-        place.addPhones(savedPhones);
+        place.setPhones(savedPhones);
 
         place.setId(id);
         place.setUpdatedAt(new Date());

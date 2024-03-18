@@ -3,9 +3,13 @@ package tm.ugur.controllers;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tm.ugur.models.*;
@@ -13,8 +17,11 @@ import tm.ugur.services.admin.PlaceCategoryService;
 import tm.ugur.services.admin.PlaceService;
 import tm.ugur.services.admin.PlaceSubCategoryService;
 import tm.ugur.util.pagination.PaginationService;
+import tm.ugur.util.validator.annotation.ValidImage;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 @Controller
@@ -73,27 +80,32 @@ public class PlaceController {
     public String create(@ModelAttribute("place") Place place, Model model){
         sortByStatic = "";
 
-        model.addAttribute("title", "Заведение");
+        model.addAttribute("title", "Создать заведение");
         model.addAttribute("page", "place-main-create");
         model.addAttribute("placeCategories", placeCategoryService.findAll());
-        model.addAttribute("placeSubCategory", placeSubCategoryService.findAll());
 
         return "layouts/places/create";
     }
 
     @PostMapping
-    public String store(@RequestParam(value = "social_networks", required = false) List<String> socialNetworks,
-                        @RequestParam(value = "phones", required = false) List<String> phones,
-                        @RequestParam(value = "image", required = false) MultipartFile image,
-                        @ModelAttribute("place") @Valid Place place, BindingResult result, Model model){
+    public ResponseEntity<?> store(@RequestParam(value = "social_networks", required = false) List<String> socialNetworks,
+                        @RequestParam(value = "telephones", required = false) List<String> telephones,
+                        @RequestParam(value = "file", required = false) @ValidImage MultipartFile file,
+                        @ModelAttribute("place") @Valid Place place, BindingResult result){
 
 
-        placeService.store(place, socialNetworks, phones, image);
+        if(result.hasErrors()){;
+            Map<String, String> errors = new HashMap<>();
+            result.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+            return ResponseEntity.badRequest().body(errors);
+        }
 
-        return "redirect:/places";
+        placeService.store(place, socialNetworks, telephones, file);
+
+        return ResponseEntity.ok("Заведение успешно добавленно");
     }
 
-    @CrossOrigin(origins = "http://192.168.37.61:8083")
+
     @GetMapping("/{id}/edit")
     public String edit(@PathVariable("id") long id, Model model){
         sortByStatic = "";
@@ -126,23 +138,23 @@ public class PlaceController {
     }
 
     @PutMapping("/{id}")
-    public String update(@PathVariable("id") long id,
+    public ResponseEntity<?> update(@PathVariable("id") long id,
                          @RequestParam(value = "social_networks", required = false) List<String> socialNetworks,
-                         @RequestParam(value = "phones", required = false) List<String> phones,
+                         @RequestParam(value = "telephones", required = false) List<String> telephones,
                          @RequestParam(value = "image", required = false) MultipartFile image,
-                         @ModelAttribute("place") @Valid Place place, BindingResult result,
-                         Model model){
+                         @ModelAttribute("place") @Valid Place place, BindingResult result){
 
         if(result.hasErrors()){
-            model.addAttribute("page", "place-main-create");
-            model.addAttribute("title", "Обновить заведение");
-            return "layouts/stops/edit";
+            Map<String, String> errors = new HashMap<>();
+            result.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+            return ResponseEntity.badRequest().body(errors);
         }
 
+        System.out.println(telephones);
 
-        this.placeService.update(id, place, socialNetworks, phones, image);
+        this.placeService.update(id, place, socialNetworks, telephones, image);
 
-        return "redirect:/places";
+        return ResponseEntity.ok("Заведение успешно измененно");
     }
 
     @DeleteMapping("{id}")
@@ -150,4 +162,5 @@ public class PlaceController {
         this.placeService.delete(id);
         return "redirect:/places";
     }
+
 }
