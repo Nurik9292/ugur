@@ -57,6 +57,7 @@ public class AuthClientController {
             return ResponseEntity.badRequest().body(Map.of("message", "Errors"));
         }
 
+
         Optional<Client> optionalClient = clientService.findClientByPhone(authenticationDTO.getPhone());
 
         if(optionalClient.isPresent()) {

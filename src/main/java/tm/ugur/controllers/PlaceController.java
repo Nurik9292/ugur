@@ -90,7 +90,7 @@ public class PlaceController {
     @PostMapping
     public ResponseEntity<?> store(@RequestParam(value = "social_networks", required = false) List<String> socialNetworks,
                         @RequestParam(value = "telephones", required = false) List<String> telephones,
-                        @RequestParam(value = "file", required = false) @ValidImage MultipartFile file,
+                        @RequestParam(value = "file", required = false) MultipartFile file,
                         @ModelAttribute("place") @Valid Place place, BindingResult result){
 
 

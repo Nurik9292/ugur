@@ -31,4 +31,13 @@ public class AuthenticationClientDTO {
     public void setPlatform(String platform) {
         this.platform = platform;
     }
+
+    @Override
+    public String toString() {
+        return "AuthenticationClientDTO{" +
+                "phone='" + phone + '\'' +
+                ", otp='" + otp + '\'' +
+                ", platform='" + platform + '\'' +
+                '}';
+    }
 }

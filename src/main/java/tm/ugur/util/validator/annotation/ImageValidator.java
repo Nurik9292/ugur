@@ -22,6 +22,8 @@ public class ImageValidator implements ConstraintValidator<ValidImage, Multipart
             return true; // пустое изображение считается валидным
         }
 
+
+
         if (!ALLOWED_IMAGE_FORMATS.contains(imageFile.getContentType())) {
             return false;
         }
