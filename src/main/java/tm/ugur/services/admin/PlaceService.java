@@ -134,24 +134,27 @@ public class PlaceService {
 
         place.setLocation(geometryFactory.createPoint(new Coordinate(place.getLat(), place.getLng())));
 
+
         AtomicInteger countNetwork = new AtomicInteger(0);
         List<SocialNetwork> savedNetworks = socialNetworks.stream()
-                .filter(this::isNotBlank)
+                .filter(this::isNotBlank).filter(socialNetwork -> socialNetworkRepository.findByLink(socialNetwork).isEmpty())
                 .map(network -> socialNetworkRepository.save(
                         new SocialNetwork(network, getSocialNetworkType(countNetwork.getAndIncrement()))))
                 .collect(Collectors.toList());
 
-        place.setSocialNetworks(savedNetworks);
+
 
 
         AtomicInteger countPhone = new AtomicInteger(0);
-        List<PlacePhone> savedPhones = phones.stream()
+        List<PlacePhone> savedPhones = phones.stream().filter(this::isNotBlank).filter(phone -> placePhoneRepository.findByNumber(phone).isEmpty())
                 .map(phone -> placePhoneRepository.save(new PlacePhone(phone, getPhoneType(countPhone.getAndIncrement()))))
                 .collect(Collectors.toList());
 
-        place.setPhones(savedPhones);
 
         place.setId(id);
+        place.setSocialNetworks(savedNetworks);
+        place.setPhones(savedPhones);
+
         place.setUpdatedAt(new Date());
 
         Place finalPlace = placeRepository.save(place);
@@ -173,8 +176,8 @@ public class PlaceService {
         this.placeRepository.deleteById(id);
     }
 
-    private boolean isNotBlank(String network){
-        return !network.isBlank();
+    private boolean isNotBlank(String item){
+        return !item.isBlank();
     }
 
     private String getSocialNetworkType(int count) {

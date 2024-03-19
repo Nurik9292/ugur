@@ -60,8 +60,9 @@ public class FileSystemStorageService implements StorageService{
                 return "";
             }
 
-
             String originalName = file.getOriginalFilename();
+
+            System.out.println(originalName);
 
 
             Path destinationFile = rootLocation.resolve(Paths.get(originalName))
@@ -79,6 +80,8 @@ public class FileSystemStorageService implements StorageService{
 
             String newDestinationFile = destinationFile.getParent() + "/" + date.getTime() + "-" + originalName;
             fileResize.resize(tempFile, new File(newDestinationFile), 64, 64);
+
+            System.out.println(newDestinationFile);
 
             tempFile.delete();
 

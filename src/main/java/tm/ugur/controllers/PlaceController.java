@@ -8,8 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tm.ugur.models.*;
@@ -17,7 +15,6 @@ import tm.ugur.services.admin.PlaceCategoryService;
 import tm.ugur.services.admin.PlaceService;
 import tm.ugur.services.admin.PlaceSubCategoryService;
 import tm.ugur.util.pagination.PaginationService;
-import tm.ugur.util.validator.annotation.ValidImage;
 
 import java.util.HashMap;
 import java.util.List;
@@ -150,7 +147,7 @@ public class PlaceController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        System.out.println(telephones);
+        System.out.println(image);
 
         this.placeService.update(id, place, socialNetworks, telephones, image);
 
