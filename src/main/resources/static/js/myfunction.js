@@ -162,7 +162,6 @@ function sendCreatePlace() {
     const instagram = document.getElementById("instagram").value;
     const tiktok = document.getElementById("tiktok").value;
     const cityPhone = document.getElementById("city_phone").value;
-    const socialLinks = [instagram, tiktok];
     const mobPhones = document.getElementsByClassName("mob_phone_place");
     const phones = Array.from(mobPhones).map(phone => phone.value);
 
@@ -176,7 +175,8 @@ function sendCreatePlace() {
     addToFormData(formData, "lng", document.getElementById("lng").value);
     addToFormData(formData, "placeCategory", document.getElementById("placeCategory").value);
     addToFormData(formData, "placeSubCategory", document.getElementById("placeSubCategory").value);
-    addToFormData(formData, "social_networks", socialLinks);
+    addToFormData(formData, "instagram", instagram);
+    addToFormData(formData, "tiktok", tiktok);
     addToFormData(formData, "telephones", phones);
     addToFormData(formData, "cityPhone", cityPhone);
     addToFormData(formData, "file", image);

@@ -17,7 +17,6 @@ import tm.ugur.storage.FileSystemStorageService;
 import tm.ugur.util.pagination.PaginationService;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -87,12 +86,14 @@ public class PlaceService {
 
         place.setLocation(geometryFactory.createPoint(new Coordinate(place.getLat(), place.getLng())));
 
+        System.out.println(instagram);
+        System.out.println(tiktok);
 
         Set<SocialNetwork> savedNetworks = new HashSet<>();
         if(!instagram.isBlank())
-            savedNetworks.add(new SocialNetwork(instagram, "instagram"));
+            savedNetworks.add(socialNetworkRepository.save(new SocialNetwork(instagram, "instagram")));
         if(!tiktok.isBlank())
-            savedNetworks.add(new SocialNetwork(instagram, "tiktok"));
+            savedNetworks.add(socialNetworkRepository.save(new SocialNetwork(tiktok, "tiktok")));
         place.addSocialNetworks(savedNetworks);
 
         Set<PlacePhone> savedPhones = phones.stream()
@@ -140,9 +141,9 @@ public class PlaceService {
         socialNetworkRepository.deleteAll(existingPlace.getSocialNetworks());
         Set<SocialNetwork> savedNetworks = new HashSet<>();
         if(!instagram.isBlank())
-            savedNetworks.add(new SocialNetwork(instagram, "instagram"));
+            savedNetworks.add(socialNetworkRepository.save(new SocialNetwork(instagram, "instagram")));
         if(!tiktok.isBlank())
-            savedNetworks.add(new SocialNetwork(instagram, "tiktok"));
+            savedNetworks.add(socialNetworkRepository.save(new SocialNetwork(tiktok, "tiktok")));
         place.addSocialNetworks(savedNetworks);
 
         placePhoneRepository.deleteAll(existingPlace.getPhones());

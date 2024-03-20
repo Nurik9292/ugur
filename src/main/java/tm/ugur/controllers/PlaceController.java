@@ -95,7 +95,8 @@ public class PlaceController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        System.out.println(telephones);
+        System.out.println(instagram);
+        System.out.println(tiktok);
 
         placeService.store(place, instagram, tiktok, telephones, cityPhone, file);
 
