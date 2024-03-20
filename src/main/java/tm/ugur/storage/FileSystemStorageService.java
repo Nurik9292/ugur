@@ -1,5 +1,6 @@
 package tm.ugur.storage;
 
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -42,6 +43,7 @@ public class FileSystemStorageService implements StorageService{
         this.rootLocation = Paths.get(storageProperties.getLocation());
     }
 
+    @PostConstruct
     @Override
     public void init() {
         try{
@@ -62,9 +64,6 @@ public class FileSystemStorageService implements StorageService{
 
             String originalName = file.getOriginalFilename();
 
-            System.out.println(originalName);
-
-
             Path destinationFile = rootLocation.resolve(Paths.get(originalName))
                     .normalize().toAbsolutePath();
 
@@ -77,15 +76,15 @@ public class FileSystemStorageService implements StorageService{
             file.transferTo(tempFile);
 
             Date date = new Date();
+            String imageName = date.getTime() + "-" + originalName;
 
-            String newDestinationFile = destinationFile.getParent() + "/" + date.getTime() + "-" + originalName;
+            String newDestinationFile = destinationFile.getParent() + "/" + imageName;
             fileResize.resize(tempFile, new File(newDestinationFile), 64, 64);
 
-            System.out.println(newDestinationFile);
 
             tempFile.delete();
 
-            return newDestinationFile;
+            return "/api/images/" + imageName;
 
         } catch (IOException e) {
             logger.error("Failed to store file " + e.getMessage());
@@ -130,7 +129,8 @@ public class FileSystemStorageService implements StorageService{
 
     @Override
     public void delete(String path){
-        System.out.println(path);
-        FileSystemUtils.deleteRecursively(new File(path));
+        System.out.println("delete");
+        System.out.println(rootLocation + "/" + path);
+        FileSystemUtils.deleteRecursively(new File(rootLocation + "/" + path));
     }
 }

@@ -165,7 +165,7 @@ function sendCreatePlace() {
     const socialLinks = [instagram, tiktok];
     const mobPhones = document.getElementsByClassName("mob_phone_place");
     const phones = Array.from(mobPhones).map(phone => phone.value);
-    phones.push(cityPhone);
+
 
     addToFormData(formData, "_csrf", document.getElementById("csrf").value);
     addToFormData(formData, "title", document.getElementById("title").value);
@@ -178,6 +178,7 @@ function sendCreatePlace() {
     addToFormData(formData, "placeSubCategory", document.getElementById("placeSubCategory").value);
     addToFormData(formData, "social_networks", socialLinks);
     addToFormData(formData, "telephones", phones);
+    addToFormData(formData, "cityPhone", cityPhone);
     addToFormData(formData, "file", image);
 
     sendFormData('post', host + "/places", formData);
@@ -190,10 +191,9 @@ function sendUpdatePlace() {
     const instagram = document.getElementById("instagram").value;
     const tiktok = document.getElementById("tiktok").value;
     const cityPhone = document.getElementById("city_phone").value;
-    const socialLinks = [instagram, tiktok];
     const mobPhones = document.getElementsByClassName("mob_phone_place");
+    console.log(mobPhones)
     const phones = Array.from(mobPhones).map(phone => phone.value);
-    phones.push(cityPhone);
 
     addToFormData(formData, "_csrf", document.getElementById("csrf").value);
     addToFormData(formData, "title", document.getElementById("title").value);
@@ -204,8 +204,10 @@ function sendUpdatePlace() {
     addToFormData(formData, "lng", document.getElementById("lng").value);
     addToFormData(formData, "placeCategory", document.getElementById("placeCategory").value);
     addToFormData(formData, "placeSubCategory", document.getElementById("placeSubCategory").value);
-    addToFormData(formData, "social_networks", socialLinks);
+    addToFormData(formData, "instagram", instagram);
+    addToFormData(formData, "tiktok", tiktok);
     addToFormData(formData, "telephones", phones);
+    addToFormData(formData, "cityPhone", cityPhone);
     addToFormData(formData, "file", image);
 
     sendFormData('put', host + "/places/" + id, formData);

@@ -16,10 +16,7 @@ import tm.ugur.repo.SocialNetworkRepository;
 import tm.ugur.storage.FileSystemStorageService;
 import tm.ugur.util.pagination.PaginationService;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -77,8 +74,10 @@ public class PlaceService {
 
     @Transactional
     public void store(Place place,
-                      List<String> socialNetworks,
+                      String instagram,
+                      String tiktok,
                       List<String> phones,
+                      String cityPhone,
                       MultipartFile image) {
 
         String pathImage = storageService.store(image);
@@ -88,21 +87,18 @@ public class PlaceService {
 
         place.setLocation(geometryFactory.createPoint(new Coordinate(place.getLat(), place.getLng())));
 
-        AtomicInteger countNetwork = new AtomicInteger(0);
-        List<SocialNetwork> savedNetworks = socialNetworks.stream()
-                .filter(this::isNotBlank)
-                .map(network -> socialNetworkRepository.save(
-                        new SocialNetwork(network, getSocialNetworkType(countNetwork.getAndIncrement()))))
-                .collect(Collectors.toList());
 
+        Set<SocialNetwork> savedNetworks = new HashSet<>();
+        if(!instagram.isBlank())
+            savedNetworks.add(new SocialNetwork(instagram, "instagram"));
+        if(!tiktok.isBlank())
+            savedNetworks.add(new SocialNetwork(instagram, "tiktok"));
         place.addSocialNetworks(savedNetworks);
 
-
-        AtomicInteger countPhone = new AtomicInteger(0);
-        List<PlacePhone> savedPhones = phones.stream()
-                .map(phone -> placePhoneRepository.save(new PlacePhone(phone, getPhoneType(countPhone.getAndIncrement()))))
-                .collect(Collectors.toList());
-
+        Set<PlacePhone> savedPhones = phones.stream()
+                .map(phone -> placePhoneRepository.save(new PlacePhone(phone, "mob")))
+                .collect(Collectors.toSet());
+        savedPhones.add(new PlacePhone(cityPhone, "city"));
         place.addPhones(savedPhones);
 
         place.setCreatedAt(new Date());
@@ -121,45 +117,46 @@ public class PlaceService {
 
     @Transactional
     public void update(Long id, Place place,
-                       List<String> socialNetworks,
+                       String instagram,
+                       String tiktok,
                        List<String> phones,
+                       String cityPhone,
                        MultipartFile image){
 
         String pathImage = storageService.store(image);
 
+        Place existingPlace = findOne(id).orElseThrow();
+
+
         if(!pathImage.isBlank()){
-            storageService.delete(place.getImage());
+            storageService.delete(pruningPath(existingPlace.getImage()));
             place.setImage(pathImage);
         }
 
         place.setLocation(geometryFactory.createPoint(new Coordinate(place.getLat(), place.getLng())));
 
-
-        AtomicInteger countNetwork = new AtomicInteger(0);
-        List<SocialNetwork> savedNetworks = socialNetworks.stream()
-                .filter(this::isNotBlank).filter(socialNetwork -> socialNetworkRepository.findByLink(socialNetwork).isEmpty())
-                .map(network -> socialNetworkRepository.save(
-                        new SocialNetwork(network, getSocialNetworkType(countNetwork.getAndIncrement()))))
-                .collect(Collectors.toList());
-
-
-
-
-        AtomicInteger countPhone = new AtomicInteger(0);
-        List<PlacePhone> savedPhones = phones.stream().filter(this::isNotBlank).filter(phone -> placePhoneRepository.findByNumber(phone).isEmpty())
-                .map(phone -> placePhoneRepository.save(new PlacePhone(phone, getPhoneType(countPhone.getAndIncrement()))))
-                .collect(Collectors.toList());
-
-
-        place.setId(id);
-        place.setSocialNetworks(savedNetworks);
-        place.setPhones(savedPhones);
-
         place.setUpdatedAt(new Date());
 
+        socialNetworkRepository.deleteAll(existingPlace.getSocialNetworks());
+        Set<SocialNetwork> savedNetworks = new HashSet<>();
+        if(!instagram.isBlank())
+            savedNetworks.add(new SocialNetwork(instagram, "instagram"));
+        if(!tiktok.isBlank())
+            savedNetworks.add(new SocialNetwork(instagram, "tiktok"));
+        place.addSocialNetworks(savedNetworks);
+
+        placePhoneRepository.deleteAll(existingPlace.getPhones());
+        Set<PlacePhone> savedPhones = phones.stream()
+                .map(phone -> placePhoneRepository.save(new PlacePhone(phone, "mob")))
+                .collect(Collectors.toSet());
+        savedPhones.add(new PlacePhone(cityPhone, "city"));
+
+        place.addPhones(savedPhones);
+        place.setId(id);
         Place finalPlace = placeRepository.save(place);
         savedNetworks.forEach(network -> network.setPlace(finalPlace));
         savedPhones.forEach(phone -> phone.setPlace(finalPlace));
+
     }
 
     @Transactional
@@ -169,28 +166,21 @@ public class PlaceService {
         placeOptional.ifPresent(place -> {
             String imagePath = place.getImage();
             if (imagePath != null && !imagePath.isBlank()) {
-                storageService.delete(imagePath);
+                storageService.delete(pruningPath(imagePath));
             }
         });
 
         this.placeRepository.deleteById(id);
     }
 
-    private boolean isNotBlank(String item){
-        return !item.isBlank();
-    }
-
-    private String getSocialNetworkType(int count) {
-        return count == 0 ? "instagram" : "tiktok";
-    }
-
-    private String getPhoneType(int count) {
-        return count == 0 ? "city" : "mob";
-    }
 
     private void setLatLng(Place place){
         Point point = place.getLocation();
         place.setLat(point.getX());
         place.setLng(point.getY());
+    }
+
+    private String pruningPath(String path){
+        return path.substring(path.lastIndexOf("/") + 1);
     }
 }

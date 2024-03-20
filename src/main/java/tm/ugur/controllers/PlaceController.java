@@ -16,9 +16,7 @@ import tm.ugur.services.admin.PlaceService;
 import tm.ugur.services.admin.PlaceSubCategoryService;
 import tm.ugur.util.pagination.PaginationService;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.IntStream;
 
 @Controller
@@ -27,7 +25,6 @@ public class PlaceController {
 
     private final PlaceService placeService;
     private final PlaceCategoryService placeCategoryService;
-    private final PlaceSubCategoryService placeSubCategoryService;
     private final PaginationService paginationService;
 
     private static String sortByStatic = "";
@@ -35,11 +32,9 @@ public class PlaceController {
     @Autowired
     public PlaceController(PlaceService placeService,
                            PlaceCategoryService placeCategoryService,
-                           PlaceSubCategoryService placeSubCategoryService,
                            PaginationService paginationService) {
         this.placeService = placeService;
         this.placeCategoryService = placeCategoryService;
-        this.placeSubCategoryService = placeSubCategoryService;
         this.paginationService = paginationService;
 
     }
@@ -85,8 +80,11 @@ public class PlaceController {
     }
 
     @PostMapping
-    public ResponseEntity<?> store(@RequestParam(value = "social_networks", required = false) List<String> socialNetworks,
+    public ResponseEntity<?> store(
+            @RequestParam(value = "instagram", required = false) String instagram,
+            @RequestParam(value = "tiktok", required = false) String tiktok,
                         @RequestParam(value = "telephones", required = false) List<String> telephones,
+                        @RequestParam(value = "cityPhone", required = false) String cityPhone,
                         @RequestParam(value = "file", required = false) MultipartFile file,
                         @ModelAttribute("place") @Valid Place place, BindingResult result){
 
@@ -97,7 +95,9 @@ public class PlaceController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        placeService.store(place, socialNetworks, telephones, file);
+        System.out.println(telephones);
+
+        placeService.store(place, instagram, tiktok, telephones, cityPhone, file);
 
         return ResponseEntity.ok("Заведение успешно добавленно");
     }
@@ -108,16 +108,16 @@ public class PlaceController {
         sortByStatic = "";
 
         Place place = placeService.findOne(id).orElse(new Place());
-        List<SocialNetwork> socialNetworks = place.getSocialNetworks();
+        List<SocialNetwork> socialNetworks = new ArrayList<>(place.getSocialNetworks());
 
-        if(!socialNetworks.isEmpty() && socialNetworks.getFirst().getName().equalsIgnoreCase("instagram")){
+        if(!socialNetworks.isEmpty() && socialNetworks.  getFirst().getName().equalsIgnoreCase("instagram")){
             model.addAttribute("instagram", socialNetworks.getFirst().getName());
         }
         if(!socialNetworks.isEmpty() && socialNetworks.getLast().getName().equalsIgnoreCase("tiktok")){
             model.addAttribute("tiktok", socialNetworks.getLast().getName());
         }
 
-        List<PlacePhone> phones = place.getPhones();
+        Set<PlacePhone> phones = place.getPhones();
 
         model.addAttribute("cityNumber",
                 phones.stream().filter(phone -> phone.getType().equalsIgnoreCase("city"))
@@ -136,9 +136,11 @@ public class PlaceController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable("id") long id,
-                         @RequestParam(value = "social_networks", required = false) List<String> socialNetworks,
+                         @RequestParam(value = "instagram", required = false) String instagram,
+                         @RequestParam(value = "tiktok", required = false) String tiktok,
                          @RequestParam(value = "telephones", required = false) List<String> telephones,
-                         @RequestParam(value = "image", required = false) MultipartFile image,
+                         @RequestParam(value = "cityPhone", required = false) String cityPhone,
+                         @RequestParam(value = "file", required = false) MultipartFile file,
                          @ModelAttribute("place") @Valid Place place, BindingResult result){
 
         if(result.hasErrors()){
@@ -147,9 +149,9 @@ public class PlaceController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        System.out.println(image);
+        System.out.println(telephones);
 
-        this.placeService.update(id, place, socialNetworks, telephones, image);
+        this.placeService.update(id, place, instagram, tiktok, telephones, cityPhone, file);
 
         return ResponseEntity.ok("Заведение успешно измененно");
     }

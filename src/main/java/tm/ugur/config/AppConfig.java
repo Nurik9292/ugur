@@ -20,10 +20,18 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 @Configuration
-public class AppConfig  {
+public class AppConfig implements WebMvcConfigurer {
 
     @Value("${upload.image}")
-    private String uploadFile;
+    private String uploadPath;
+
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/api/images/**")
+                .addResourceLocations("file:" + uploadPath);
+    }
+
 
     @Bean
     public ModelMapper modelMapper(){

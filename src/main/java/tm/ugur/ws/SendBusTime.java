@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
@@ -24,20 +25,17 @@ import java.util.concurrent.locks.ReentrantLock;
 @Component
 public class SendBusTime {
 
-    private ScheduledExecutorService scheduledExecutorService;
     private final SimpMessagingTemplate messagingTemplate;
     private final BusTimeService busTimeService;
     private Client client;
     private Long stopId;
     private final static Logger logger = LoggerFactory.getLogger(SendBusTime.class);
 
-    private final Lock lock;
 
     @Autowired
     public SendBusTime(SimpMessagingTemplate messagingTemplate, BusTimeService busTimeService) {
         this.messagingTemplate = messagingTemplate;
         this.busTimeService = busTimeService;
-        this.lock = new ReentrantLock();
     }
 
     @EventListener
@@ -45,19 +43,6 @@ public class SendBusTime {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = accessor.getSessionId();
         logger.info("Клиент подключен для отправки и времени, sessionId: " + sessionId);
-
-        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleAtFixedRate(()-> {
-            if (lock.tryLock()) {
-                try {
-                    sendBusTime();
-                } finally {
-                    lock.unlock();
-                }
-            } else {
-                logger.warn("Предыдущая задача sendBusTime еще не завершилась");
-            }
-        }, 0, 3, TimeUnit.SECONDS);
     }
 
     @EventListener
@@ -65,10 +50,9 @@ public class SendBusTime {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = accessor.getSessionId();
         logger.info("Клиент отключен для отправки и времени, sessionId: " + sessionId);
-        scheduledExecutorService.shutdown();
     }
 
-
+    @Scheduled(fixedDelay = 3000)
     private void sendBusTime(){
         try {
             if(Objects.nonNull(stopId)){

@@ -4,12 +4,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import org.locationtech.jts.geom.Point;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "places")
@@ -44,10 +42,10 @@ public class Place extends AbstractEntity{
     private Point location;
 
     @OneToMany(mappedBy = "place")
-    private List<PlacePhone> phones;
+    private Set<PlacePhone> phones;
 
     @OneToMany(mappedBy = "place")
-    private List<SocialNetwork> socialNetworks;
+    private Set<SocialNetwork> socialNetworks;
 
     @ManyToOne
     @JoinColumn(name = "place_category_id", referencedColumnName = "id")
@@ -141,19 +139,19 @@ public class Place extends AbstractEntity{
         this.location = location;
     }
 
-    public List<PlacePhone> getPhones() {
+    public Set<PlacePhone> getPhones() {
         return phones;
     }
 
-    public void setPhones(List<PlacePhone> phones) {
+    public void setPhones(Set<PlacePhone> phones) {
         this.phones = phones;
     }
 
-    public List<SocialNetwork> getSocialNetworks() {
+    public Set<SocialNetwork> getSocialNetworks() {
         return socialNetworks;
     }
 
-    public void setSocialNetworks(List<SocialNetwork> socialNetworks) {
+    public void setSocialNetworks(Set<SocialNetwork> socialNetworks) {
         this.socialNetworks = socialNetworks;
     }
 
@@ -198,13 +196,13 @@ public class Place extends AbstractEntity{
         this.placeSubCategory = placeSubCategory;
     }
 
-    public void addSocialNetworks(List<SocialNetwork> networks){
+    public void addSocialNetworks(Set<SocialNetwork> networks){
         if(Objects.isNull(socialNetworks))
             setSocialNetworks(networks);
         socialNetworks.addAll(networks);
     }
 
-    public void addPhones(List<PlacePhone> placePhones){
+    public void addPhones(Set<PlacePhone> placePhones){
         if(Objects.isNull(phones))
             setPhones(placePhones);
         phones.addAll(placePhones);

@@ -26,8 +26,6 @@ import java.util.concurrent.locks.ReentrantLock;
 @Component
 public class SendClientBuses {
 
-    private ScheduledExecutorService scheduledExecutorService;
-    private final Lock lock;
     private final SimpMessagingTemplate messagingTemplate;
     private final RedisBusService redisBusService;
     private Integer number;
@@ -41,7 +39,6 @@ public class SendClientBuses {
                            RedisBusService redisBusService) {
         this.messagingTemplate = messagingTemplate;
         this.redisBusService = redisBusService;
-        this.lock = new ReentrantLock();
     }
 
     @EventListener
@@ -50,18 +47,6 @@ public class SendClientBuses {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = accessor.getSessionId();
         logger.info("Клиент подключен для отправки и автобусов, sessionId: " + sessionId);
-//        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-//        scheduledExecutorService.scheduleWithFixedDelay( () ->{
-//            if (lock.tryLock()) {
-//                try {
-//                    sendBusData();
-//                } finally {
-//                    lock.unlock();
-//                }
-//            } else {
-//                logger.warn("Предыдущая задача sendBusData еще не завершилась");
-//            }
-//        }, 0, 3, TimeUnit.SECONDS);
     }
 
 
@@ -70,7 +55,6 @@ public class SendClientBuses {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = accessor.getSessionId();
         logger.info("Клиент отключен для отправки автобусов, sessionId: " + sessionId);
-//        scheduledExecutorService.shutdown();
     }
 
     @Scheduled(fixedDelay = 3000)
