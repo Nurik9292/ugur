@@ -1,21 +1,28 @@
 package tm.ugur.services.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tm.ugur.dto.PlaceCategoryDTO;
 import tm.ugur.dto.PlaceDTO;
+import tm.ugur.dto.StopDTO;
+import tm.ugur.models.Client;
 import tm.ugur.models.Place;
 import tm.ugur.models.PlaceCategory;
 import tm.ugur.models.PlaceSubCategory;
 import tm.ugur.repo.PlaceCategoryRepository;
 import tm.ugur.repo.PlaceRepository;
 import tm.ugur.repo.PlaceSubCategoryRepository;
+import tm.ugur.security.ClientDetails;
 import tm.ugur.util.mappers.PlaceMapper;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 public class PlaceApiService {
 
 
@@ -36,11 +43,17 @@ public class PlaceApiService {
     }
 
     public List<PlaceDTO> fetchPlaces(){
-        return placeRepository.findAll().stream().map(this::convertToDTO).toList();
+        List<PlaceDTO> places = placeRepository.findAll().stream().map(this::convertToDTO).toList();
+        places.forEach(place -> place.setFavorite(isFavorite(place)));
+        return places;
     }
 
     public Optional<PlaceDTO> fetchPlace(long id){
         return placeRepository.findById(id).map(this::convertToDTO);
+    }
+
+    public Optional<Place> getPlace(long id){
+        return placeRepository.findById(id);
     }
 
     public List<PlaceDTO> fetchPlacesForSubCategory(long id){
@@ -53,7 +66,27 @@ public class PlaceApiService {
         return placeRepository.findByPlaceCategory(placeCategory.orElseThrow()).stream().map(this::convertToDTO).toList();
     }
 
+    private boolean isFavorite(PlaceDTO placeDTO){
+        Client client = getAuthClient();
+        return client.getPlaces().stream().anyMatch(place ->  place.getId()  == placeDTO.getId());
+    }
+
+    private Client getAuthClient(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        ClientDetails clientDetails = (ClientDetails) authentication.getPrincipal();
+        return clientDetails.getClient();
+    }
+
+    @Transactional
+    public void store(Place place){
+        placeRepository.save(place);
+    }
+
     public PlaceDTO convertToDTO(Place place){
         return this.placeMapper.toDto(place);
     }
+
+
+
+
 }

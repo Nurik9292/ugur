@@ -47,10 +47,6 @@ public class StopApiService {
         return stopDTO;
     }
 
-    public Optional<Stop> findByClientsAndId(Client client, Long id){
-        return this.stopRepository.findAllByClientsAndId(client, id);
-    }
-
 
     @Transactional
     public void store(Stop stop){

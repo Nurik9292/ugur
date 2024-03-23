@@ -19,6 +19,7 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -34,6 +35,7 @@ public class FileSystemStorageService implements StorageService{
 
 
     public FileSystemStorageService(StorageProperties storageProperties, FileResize fileResize) {
+
         this.storageProperties = storageProperties;
         this.fileResize = fileResize;
         if(storageProperties.getLocation().trim().isBlank()){

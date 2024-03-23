@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import org.locationtech.jts.geom.Point;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -54,6 +55,12 @@ public class Place extends AbstractEntity{
     @ManyToOne
     @JoinColumn(name = "place_sub_category_id",referencedColumnName = "id")
     private PlaceSubCategory placeSubCategory;
+
+    @ManyToMany
+    @JoinTable(name = "place_favorites",
+            joinColumns = @JoinColumn(name = "place_id"),
+            inverseJoinColumns = @JoinColumn(name = "client_id"))
+    private List<Client> clients;
 
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
@@ -206,6 +213,14 @@ public class Place extends AbstractEntity{
         if(Objects.isNull(phones))
             setPhones(placePhones);
         phones.addAll(placePhones);
+    }
+
+    public List<Client> getClients() {
+        return clients;
+    }
+
+    public void setClients(List<Client> clients) {
+        this.clients = clients;
     }
 
 

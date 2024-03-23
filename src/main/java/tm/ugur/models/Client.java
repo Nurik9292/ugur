@@ -44,6 +44,9 @@ public class Client {
     @ManyToMany(mappedBy = "clients", fetch = FetchType.EAGER)
     private List<Stop> stops;
 
+    @ManyToMany(mappedBy = "clients")
+    private List<Place> places;
+
 
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
@@ -144,6 +147,14 @@ public class Client {
         this.stops = stops;
     }
 
+    public List<Place> getPlaces() {
+        return places;
+    }
+
+    public void setPlaces(List<Place> places) {
+        this.places = places;
+    }
+
     @Override
     public String toString() {
         return "Client{" +
@@ -164,4 +175,6 @@ public class Client {
     public int hashCode() {
         return Objects.hash(id, phone);
     }
+
+
 }

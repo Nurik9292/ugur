@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import tm.ugur.dto.RouteDTO;
+import tm.ugur.dto.StopDTO;
 import tm.ugur.models.Client;
 import tm.ugur.security.ClientDetails;
 import tm.ugur.services.api.RouteApiService;
@@ -42,6 +43,16 @@ public class RouteApiController {
         sendClientBuses.setNumber(route.getNumber());
         sendClientBuses.setClient(getAuthClient());
         return route;
+    }
+
+    @GetMapping("/start-stops/{id}")
+    public ResponseEntity<String> getRouteStartStop(@PathVariable("id") Long id){
+        return ResponseEntity.ok(routeService.getRouteStartStop(id));
+    }
+
+    @GetMapping("/end-stops/{id}")
+    public ResponseEntity<String> getRouteEndStop(@PathVariable("id") Long id){
+        return ResponseEntity.ok(routeService.getRouteEndStop(id));
     }
 
 

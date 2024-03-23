@@ -29,6 +29,7 @@ public class PlaceDTO extends AbstractDTO{
 
     private  PlaceSubCategoryDTO placeSubCategory;
 
+    private Boolean isFavorite;
 
     public PlaceDTO() {
     }
@@ -134,6 +135,14 @@ public class PlaceDTO extends AbstractDTO{
         this.placeSubCategory = placeSubCategory;
     }
 
+    public Boolean getFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(Boolean favorite) {
+        isFavorite = favorite;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
@@ -162,6 +171,4 @@ public class PlaceDTO extends AbstractDTO{
                 ", id=" + id +
                 '}';
     }
-
-
 }
