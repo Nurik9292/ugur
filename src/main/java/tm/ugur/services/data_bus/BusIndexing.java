@@ -17,10 +17,9 @@ import tm.ugur.models.Stop;
 import tm.ugur.services.admin.EndRouteStopService;
 import tm.ugur.services.admin.RouteService;
 import tm.ugur.services.admin.StartRouteStopService;
-import tm.ugur.services.admin.StopService;
+
 
 import java.util.*;
-import java.util.concurrent.locks.Lock;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -33,7 +32,6 @@ public class BusIndexing {
     private final RouteService routeService;
     private final StartRouteStopService startRouteStopService;
     private final EndRouteStopService endRouteStopService;
-    private final Lock lock;
 
     private final static Logger logger = LoggerFactory.getLogger(BusIndexing.class);
 
@@ -41,12 +39,11 @@ public class BusIndexing {
     public BusIndexing(GeometryFactory factory,
                        RouteService routeService,
                        StartRouteStopService startRouteStopService,
-                       EndRouteStopService endRouteStopService, Lock lock) {
+                       EndRouteStopService endRouteStopService) {
         this.factory = factory;
         this.routeService = routeService;
         this.startRouteStopService = startRouteStopService;
         this.endRouteStopService = endRouteStopService;
-        this.lock = lock;
     }
 
 
@@ -58,10 +55,8 @@ public class BusIndexing {
 
             Optional<Route> route = routeService.findByNumberInitStops(bus.getNumber());
 
-
             List<Stop> stops = Objects.nonNull(bus.getSide()) && bus.getSide().equals("front") ?
                     findNearestStops(route.get().getStartStops(), point) : findNearestStops(route.get().getEndStops(), point) ;
-
 
             if (Objects.isNull(bus.getSide())) {
                 return;
@@ -118,9 +113,4 @@ public class BusIndexing {
             }
         });
     }
-
-
-
-
-
 }

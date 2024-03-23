@@ -2,7 +2,6 @@ package tm.ugur.services.data_bus;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import tm.ugur.dto.BusDTO;
 import tm.ugur.services.data_bus.import_data.AtLogisticImport;
 import tm.ugur.services.data_bus.import_data.ImdataImport;

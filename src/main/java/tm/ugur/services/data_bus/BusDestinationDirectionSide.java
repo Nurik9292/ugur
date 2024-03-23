@@ -1,5 +1,7 @@
 package tm.ugur.services.data_bus;
 
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +24,7 @@ import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Component
 public class BusDestinationDirectionSide {
@@ -29,7 +32,7 @@ public class BusDestinationDirectionSide {
     private final RouteService routeService;
     private final RedisRouteService redisRouteService;
     private final StartRouteStopService startRouteStopService;
-    private final Lock lock;
+    private final GeometryFactory factory;
 
     private static final int EARTH_RADIUS = 6371;
     private static final Logger logger = LoggerFactory.getLogger(BusDestinationDirectionSide.class);
@@ -38,11 +41,11 @@ public class BusDestinationDirectionSide {
     public BusDestinationDirectionSide(RouteService routeService,
                                        RedisRouteService redisRouteService,
                                        StartRouteStopService startRouteStopService,
-                                       Lock lock) {
+                                       GeometryFactory factory) {
         this.routeService = routeService;
         this.redisRouteService = redisRouteService;
         this.startRouteStopService = startRouteStopService;
-        this.lock = lock;
+        this.factory = factory;
     }
 
     @Transactional
@@ -61,15 +64,37 @@ public class BusDestinationDirectionSide {
                         Point pointB = startRouteStops.getLast().getStop().getLocation();
                         PointDTO pointBus = bus.getLocation();
 
-                        double azimuthToA = calculateAzimuth(pointBus.getLat(), pointBus.getLng(), pointA.getX(), pointA.getY());
-                        double azimuthToB = calculateAzimuth(pointBus.getLat(), pointBus.getLng(), pointB.getX(), pointB.getY());
+                        if(isAtPointA(pointA , pointBus))
+                            bus.setSide("front");
 
-                        bus.setSide(determineDirection(Double.parseDouble(bus.getDir()), azimuthToA, azimuthToB));
+                        if(isAtPointB(pointB, pointBus))
+                            bus.setSide("back");
+
+
+                        if(Objects.isNull(bus.getSide())){
+                            double azimuthToA = calculateAzimuth(pointBus.getLat(), pointBus.getLng(), pointA.getX(), pointA.getY());
+                            double azimuthToB = calculateAzimuth(pointBus.getLat(), pointBus.getLng(), pointB.getX(), pointB.getY());
+
+                            bus.setSide(determineDirection(Double.parseDouble(bus.getDir()), azimuthToA, azimuthToB));
+                        }
+
                     }
             }
         });
 
         return buses;
+    }
+
+    private boolean isAtPointA(Point pointA, PointDTO pointB){
+        Point pointTarget = factory.createPoint(new Coordinate(pointB.getLat(), pointB.getLng()));
+        double distance = pointA.distance(pointTarget);
+        return distance <= 10;
+    }
+
+    private boolean isAtPointB(Point pointA, PointDTO pointB){
+        Point pointTarget = factory.createPoint(new Coordinate(pointB.getLat(), pointB.getLng()));
+        double distance = pointA.distance(pointTarget);
+        return distance <= 10;
     }
 
     private double calculateAzimuth(double lat1, double lon1, double lat2, double lon2) {
