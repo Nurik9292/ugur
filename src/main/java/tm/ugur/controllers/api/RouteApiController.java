@@ -1,5 +1,6 @@
 package tm.ugur.controllers.api;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import tm.ugur.dto.RouteDTO;
 import tm.ugur.dto.StopDTO;
+import tm.ugur.dto.views.Views;
 import tm.ugur.models.Client;
 import tm.ugur.security.ClientDetails;
 import tm.ugur.services.api.RouteApiService;
@@ -46,12 +48,14 @@ public class RouteApiController {
     }
 
     @GetMapping("/start-stops/{id}")
-    public ResponseEntity<String> getRouteStartStop(@PathVariable("id") Long id){
+    @JsonView(Views.Location.class)
+    public ResponseEntity<List<StopDTO>> getRouteStartStop(@PathVariable("id") Long id){
         return ResponseEntity.ok(routeService.getRouteStartStop(id));
     }
 
     @GetMapping("/end-stops/{id}")
-    public ResponseEntity<String> getRouteEndStop(@PathVariable("id") Long id){
+    @JsonView(Views.Location.class)
+    public ResponseEntity<List<StopDTO>> getRouteEndStop(@PathVariable("id") Long id){
         return ResponseEntity.ok(routeService.getRouteEndStop(id));
     }
 

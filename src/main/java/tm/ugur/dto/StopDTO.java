@@ -1,17 +1,20 @@
 package tm.ugur.dto;
 
 
-import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonView;
 import tm.ugur.dto.geo.PointDTO;
+import tm.ugur.dto.views.Views;
 
 import java.util.List;
 
-@JsonFilter("stopFilter")
+
 public class StopDTO extends AbstractDTO{
 
+    @JsonView(Views.Summary.class)
     private String name;
     private CityDTO city;
+
+    @JsonView(Views.Location.class)
     private PointDTO location;
     List<Long> startRouteIds;
     List<Long> endRouteIds;

@@ -68,35 +68,15 @@ public class RouteApiService {
     }
 
 
-    public String getRouteStartStop(Long id){
+    public List<StopDTO> getRouteStartStop(Long id){
         Optional<Route> route =  getRoute(id);
-        try {
-
-         List<StopDTO> stopDTOS =  route.orElseThrow(RouteNotFoundException::new).getStartStops().stream().map(this::convertToStopDTO).toList();
-
-            return objectMapper.writer(filters()).writeValueAsString(stopDTOS);
-        } catch (JsonProcessingException e) {
-            return "";
-        }
+         return route.orElseThrow(RouteNotFoundException::new).getStartStops().stream().map(this::convertToStopDTO).toList();
     }
 
-    public String getRouteEndStop(Long id){
+    public List<StopDTO> getRouteEndStop(Long id){
         Optional<Route> route =  getRoute(id);
-        try {
-            List<StopDTO> stopDTOS =  route.orElseThrow(RouteNotFoundException::new).getEndStops().stream().map(this::convertToStopDTO).toList();
+        return route.orElseThrow(RouteNotFoundException::new).getEndStops().stream().map(this::convertToStopDTO).toList();
 
-            return objectMapper.writer(filters()).writeValueAsString(stopDTOS);
-        } catch (JsonProcessingException e) {
-            return "";
-        }
-    }
-
-    private FilterProvider filters(){
-        FilterProvider filter = new SimpleFilterProvider()
-                .addFilter("stopFilter", SimpleBeanPropertyFilter
-                        .filterOutAllExcept("id", "name", "location"));
-
-        return filter;
     }
 
     @Transactional
