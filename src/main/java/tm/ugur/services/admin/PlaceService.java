@@ -86,8 +86,6 @@ public class PlaceService {
 
         place.setLocation(geometryFactory.createPoint(new Coordinate(place.getLat(), place.getLng())));
 
-        System.out.println(instagram);
-        System.out.println(tiktok);
 
         Set<SocialNetwork> savedNetworks = new HashSet<>();
         if(!instagram.isBlank())
@@ -99,7 +97,7 @@ public class PlaceService {
         Set<PlacePhone> savedPhones = phones.stream()
                 .map(phone -> placePhoneRepository.save(new PlacePhone(phone, "mob")))
                 .collect(Collectors.toSet());
-        savedPhones.add(new PlacePhone(cityPhone, "city"));
+        savedPhones.add(placePhoneRepository.save(new PlacePhone(cityPhone, "city")));
         place.addPhones(savedPhones);
 
         place.setCreatedAt(new Date());
@@ -111,9 +109,13 @@ public class PlaceService {
     }
 
     public Optional<Place> findOne(long id){
-        Optional<Place> place = placeRepository.findById(id);
-        setLatLng(place.orElse(new Place()));
-        return place;
+//        Optional<Place> place = placeRepository.findById(id);
+//        setLatLng(place.orElse(new Place()));
+//        return place;
+        return placeRepository.findById(id).map(place -> {
+            setLatLng(place);
+            return place;
+        });
     }
 
     @Transactional
@@ -150,7 +152,7 @@ public class PlaceService {
         Set<PlacePhone> savedPhones = phones.stream()
                 .map(phone -> placePhoneRepository.save(new PlacePhone(phone, "mob")))
                 .collect(Collectors.toSet());
-        savedPhones.add(new PlacePhone(cityPhone, "city"));
+        savedPhones.add(placePhoneRepository.save(new PlacePhone(cityPhone, "city")));
 
         place.addPhones(savedPhones);
         place.setId(id);

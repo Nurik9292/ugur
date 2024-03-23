@@ -88,15 +88,13 @@ public class PlaceController {
                         @RequestParam(value = "file", required = false) MultipartFile file,
                         @ModelAttribute("place") @Valid Place place, BindingResult result){
 
-
+        System.out.println(cityPhone);
         if(result.hasErrors()){;
             Map<String, String> errors = new HashMap<>();
             result.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
             return ResponseEntity.badRequest().body(errors);
         }
 
-        System.out.println(instagram);
-        System.out.println(tiktok);
 
         placeService.store(place, instagram, tiktok, telephones, cityPhone, file);
 
