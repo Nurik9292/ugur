@@ -45,14 +45,6 @@ public class PlaceCategory extends AbstractEntity{
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public List<PlaceSubCategory> getSubCategories() {
         return subCategories;
     }
