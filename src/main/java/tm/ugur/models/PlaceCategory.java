@@ -15,9 +15,8 @@ public class PlaceCategory extends AbstractEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "title")
-    private String title;
-
+    @OneToMany(mappedBy = "placeCategory")
+    private List<PlaceCategoryTranslation> translations;
 
     @OneToMany(mappedBy = "placeCategory")
     private List<PlaceSubCategory> subCategories;
@@ -78,26 +77,41 @@ public class PlaceCategory extends AbstractEntity{
         this.updatedAt = updatedAt;
     }
 
+
+    public List<PlaceCategoryTranslation> getTranslations() {
+        return translations;
+    }
+
+    public void setTranslations(List<PlaceCategoryTranslation> translations) {
+        this.translations = translations;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         PlaceCategory that = (PlaceCategory) object;
-        return id == that.id && Objects.equals(title, that.title);
+        return id == that.id && Objects.equals(translations, that.translations)
+                && Objects.equals(subCategories, that.subCategories)
+                && Objects.equals(places, that.places)
+                && Objects.equals(createdAt, that.createdAt)
+                && Objects.equals(updatedAt, that.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title);
+        return Objects.hash(id, translations, subCategories, places, createdAt, updatedAt);
     }
 
     @Override
     public String toString() {
         return "PlaceCategory{" +
                 "id=" + id +
-                ", title='" + title + '\'' +
+                ", translations=" + translations +
+                ", subCategories=" + subCategories +
+                ", places=" + places +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
                 '}';
     }
-
-
 }
