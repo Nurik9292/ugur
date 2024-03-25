@@ -2,7 +2,6 @@ package tm.ugur.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
 import org.locationtech.jts.geom.Point;
 
 import java.util.Date;
@@ -19,19 +18,6 @@ public class Place extends AbstractEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotEmpty(message = "Заполните поле.")
-    @Column(name = "title")
-    private String title;
-
-
-
-    @Column(name = "image")
-    private String image;
-
-    @NotEmpty(message = "Заполните поле.")
-    @Column(name = "address")
-    private String address;
-
     @Column(name = "website")
     private String website;
 
@@ -47,6 +33,15 @@ public class Place extends AbstractEntity{
 
     @OneToMany(mappedBy = "place")
     private Set<SocialNetwork> socialNetworks;
+
+    @OneToMany(mappedBy = "place", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<PlaceTranslation> translations;
+
+    @OneToMany(mappedBy = "place", cascade = CascadeType.ALL)
+    private List<PlaceImage> images;
+
+    @OneToOne(mappedBy = "place", cascade = CascadeType.ALL)
+    private PlaceThumb thumbs;
 
     @ManyToOne
     @JoinColumn(name = "place_category_id", referencedColumnName = "id")
@@ -90,36 +85,12 @@ public class Place extends AbstractEntity{
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public PlaceCategory getPlaceCategory() {
         return placeCategory;
     }
 
     public void setPlaceCategory(PlaceCategory placeCategory) {
         this.placeCategory = placeCategory;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public String getWebsite() {
@@ -223,6 +194,30 @@ public class Place extends AbstractEntity{
         this.clients = clients;
     }
 
+    public Set<PlaceTranslation> getTranslations() {
+        return translations;
+    }
+
+    public void setTranslations(Set<PlaceTranslation> translations) {
+        this.translations = translations;
+    }
+
+    public List<PlaceImage> getImages() {
+        return images;
+    }
+
+    public void setImages(List<PlaceImage> images) {
+        this.images = images;
+    }
+
+    public PlaceThumb getThumbs() {
+        return thumbs;
+    }
+
+    public void setThumbs(PlaceThumb thumbs) {
+        this.thumbs = thumbs;
+    }
+
 
     @Override
     public boolean equals(Object object) {
@@ -230,32 +225,24 @@ public class Place extends AbstractEntity{
         if (object == null || getClass() != object.getClass()) return false;
         Place place = (Place) object;
         return id == place.id
-                && Objects.equals(title, place.title)
-                && Objects.equals(image, place.image)
-                && Objects.equals(address, place.address)
                 && Objects.equals(website, place.website)
                 && Objects.equals(email, place.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, image, address, website, email);
+        return Objects.hash(id, website, email);
     }
 
     @Override
     public String toString() {
         return "Place{" +
                 "id=" + id +
-                ", title='" + title + '\'' +
-                ", image='" + image + '\'' +
-                ", address='" + address + '\'' +
                 ", website='" + website + '\'' +
                 ", email='" + email + '\'' +
                 ", location=" + location +
                 ", placeCategory=" + placeCategory +
                 '}';
     }
-
-
 
 }
