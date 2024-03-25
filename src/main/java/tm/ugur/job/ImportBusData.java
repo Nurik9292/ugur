@@ -42,22 +42,22 @@ public class ImportBusData {
         this.lock = lock;
     }
 
-    @Scheduled(fixedDelay = 3000)
+    @Scheduled(cron = "*/3 * 6-23 * * *")
     public void taskOne(){
         importData();
     }
 
-    @Scheduled(fixedDelay = 4000)
+    @Scheduled(cron = "*/4 * 6-23 * * *")
     public void taskTwo(){
         importData();
     }
 
-    @Scheduled(fixedDelay = 5000)
+    @Scheduled(cron = "*/5 * 6-23 * * *")
     public void taskThree(){
         importData();
     }
 
-    @Scheduled(fixedDelay = 6000)
+    @Scheduled(cron = "*/6 * 6-23 * * *")
     public void taskFor(){
         importData();
     }
