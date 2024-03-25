@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 
 @Component
 public class FileResize {
