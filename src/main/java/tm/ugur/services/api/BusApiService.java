@@ -1,28 +1,37 @@
 package tm.ugur.services.api;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tm.ugur.dto.BusDTO;
-import tm.ugur.models.Bus;
+import tm.ugur.models.*;
 import tm.ugur.repo.BusRepository;
+import tm.ugur.repo.RouteRepository;
+import tm.ugur.services.redis.RedisBusService;
 import tm.ugur.util.errors.buses.BusNotFoundException;
+import tm.ugur.util.errors.route.RouteNotFoundException;
 import tm.ugur.util.mappers.BusMapper;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
 public class BusApiService {
 
     private final BusRepository busRepository;
-
+    private final RouteRepository routeRepository;
+    private final RedisBusService redisBusService;
     private final BusMapper busMapper;
 
     @Autowired
-    public BusApiService(BusRepository busRepository, BusMapper busMapper) {
+    public BusApiService(BusRepository busRepository,
+                         RouteRepository routeRepository,
+                         RedisBusService redisBusService,
+                         BusMapper busMapper) {
         this.busRepository = busRepository;
+        this.routeRepository = routeRepository;
+        this.redisBusService = redisBusService;
         this.busMapper = busMapper;
     }
 
@@ -35,9 +44,33 @@ public class BusApiService {
         return this.convertToBusDTO(bus);
     }
 
-    public List<BusDTO> getBusForNumber(int number){
-        return this.busRepository.findAllByNumber(number).stream().map(this::convertToBusDTO).toList();
-    }
+    public String getNextStop(long id, String carNumber){
+        Route route = routeRepository.findById(id).orElseThrow(RouteNotFoundException::new);
+        BusDTO bus =  redisBusService.getBuses(
+                String.valueOf(route.getNumber()))
+                .stream().filter(b -> b.getCarNumber().equals(carNumber))
+                .findAny().orElseThrow(BusNotFoundException::new);
+
+        Stop stop;
+        if (bus.getSide().equals("front")) {
+            stop = route.getStartRouteStops()
+                    .stream()
+                    .filter(s -> s.getIndex() > bus.getIndex())
+                    .map(StartRouteStop::getStop)
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("Stop not found"));
+        } else {
+            stop = route.getEndRouteStops()
+                    .stream()
+                    .filter(s -> s.getIndex() > bus.getIndex())
+                    .map(EndRouteStop::getStop)
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalStateException("Stop not found"));
+        }
+
+        return stop.getName();
+     }
+
 
     @Transactional
     public void store(Bus bus){
@@ -51,11 +84,8 @@ public class BusApiService {
     }
 
 
-    public Bus converToBus(BusDTO busDTO){
-        return this.busMapper.toEntity(busDTO);
-    }
 
-    public BusDTO convertToBusDTO(Bus bus){
+    private BusDTO convertToBusDTO(Bus bus){
         return this.busMapper.toDto(bus);
     }
 }

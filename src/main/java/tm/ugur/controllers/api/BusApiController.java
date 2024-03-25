@@ -19,23 +19,30 @@ import java.util.Optional;
 @RequestMapping("/api/buses")
 public class BusApiController {
 
-    private final BusApiService busSservice;
+    private final BusApiService busService;
     private final StopService stopService;
 
     @Autowired
-    public BusApiController(BusApiService busSservice, StopService stopService) {
-        this.busSservice = busSservice;
+    public BusApiController(BusApiService busService, StopService stopService) {
+        this.busService = busService;
         this.stopService = stopService;
     }
 
     @GetMapping
     public List<BusDTO> getBuses(){
-        return this.busSservice.getBuses();
+        return this.busService.getBuses();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<BusDTO> getBus(@PathVariable("id") Long id){
-        return ResponseEntity.ok(this.busSservice.getBus(id));
+        return ResponseEntity.ok(this.busService.getBus(id));
+    }
+
+    @GetMapping("/next-stop/{id}")
+    public ResponseEntity<String> nextStop(@PathVariable("id") Long id,
+                                           @RequestParam("car_number") String carNumber){
+
+        return ResponseEntity.ok(busService.getNextStop(id, carNumber));
     }
 
     @ExceptionHandler

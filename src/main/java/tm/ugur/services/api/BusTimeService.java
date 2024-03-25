@@ -55,14 +55,34 @@ public class BusTimeService {
            return times;
     }
 
+    public Double getBusOneTime(Long id, String number, String carNumber){
+        Stop stop = stopService.findOneInit(id);
 
-    public  double calculateArrivalTime(double busLat, double busLng, double stopLat, double stopLng, double speed) {
+        if (Objects.isNull(stop)) {
+            return 0.0;
+        }
+
+        BusDTO bus =  redisBusService.getBuses(number)
+                .stream().filter(b -> b.getCarNumber().equals(carNumber)).findAny().orElseThrow();
+
+        Double time = calculateArrivalTime(bus.getLocation().getLat(),
+                bus.getLocation().getLng(),
+                stop.getLocation().getX(),
+                stop.getLocation().getY(),
+                Double.parseDouble(bus.getSpeed()));
+
+        return time;
+
+    }
+
+
+    private   double calculateArrivalTime(double busLat, double busLng, double stopLat, double stopLng, double speed) {
         double distance = calculateDistance(busLat, busLng, stopLat, stopLng);
         double timeInHours = distance / speed == 0 ? 20 : speed;
         return TimeUnit.HOURS.toMinutes((long) timeInHours);
     }
 
-    public double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+    private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
         double dLat = Math.toRadians(lat2 - lat1);
         double dLon = Math.toRadians(lon2 - lon1);
         double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
