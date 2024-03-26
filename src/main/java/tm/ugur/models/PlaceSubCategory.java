@@ -15,8 +15,6 @@ public class PlaceSubCategory extends AbstractEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "title")
-    private String title;
 
     @ManyToOne
     @JoinColumn(name = "place_category_id", referencedColumnName = "id")
@@ -24,6 +22,9 @@ public class PlaceSubCategory extends AbstractEntity{
 
     @OneToMany(mappedBy = "placeSubCategory")
     List<Place> places;
+
+    @OneToMany(mappedBy = "placeSubCategory")
+    List<PlaceSubCategoryTranslation> translations;
 
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
@@ -36,9 +37,8 @@ public class PlaceSubCategory extends AbstractEntity{
     public PlaceSubCategory() {
     }
 
-    public PlaceSubCategory(long id, String title) {
+    public PlaceSubCategory(long id) {
         this.id = id;
-        this.title = title;
     }
 
     public long getId() {
@@ -47,14 +47,6 @@ public class PlaceSubCategory extends AbstractEntity{
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public Date getCreatedAt() {
@@ -89,25 +81,38 @@ public class PlaceSubCategory extends AbstractEntity{
         this.places = places;
     }
 
+    public List<PlaceSubCategoryTranslation> getTranslations() {
+        return translations;
+    }
+
+    public void setTranslations(List<PlaceSubCategoryTranslation> translations) {
+        this.translations = translations;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         PlaceSubCategory that = (PlaceSubCategory) object;
-        return id == that.id && Objects.equals(title, that.title);
+        return id == that.id && Objects.equals(placeCategory, that.placeCategory)
+                && Objects.equals(places, that.places)
+                && Objects.equals(translations, that.translations)
+                && Objects.equals(createdAt, that.createdAt)
+                && Objects.equals(updatedAt, that.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title);
+        return Objects.hash(id, placeCategory, places, translations, createdAt, updatedAt);
     }
 
     @Override
     public String toString() {
         return "PlaceSubCategory{" +
                 "id=" + id +
-                ", title='" + title + '\'' +
+                ", placeCategory=" + placeCategory +
+                ", places=" + places +
+                ", translations=" + translations +
                 '}';
     }
-
 }

@@ -218,7 +218,6 @@ public class Place extends AbstractEntity{
         this.thumbs = thumbs;
     }
 
-
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
