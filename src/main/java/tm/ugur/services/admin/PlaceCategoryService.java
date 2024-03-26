@@ -99,6 +99,7 @@ public class PlaceCategoryService {
 
             placeCategory.setId(id);
             placeCategory.setUpdatedAt(new Date());
+            placeCategory.setCreatedAt(category.getCreatedAt());
             placeCategoryRepository.save(placeCategory);
 
         });

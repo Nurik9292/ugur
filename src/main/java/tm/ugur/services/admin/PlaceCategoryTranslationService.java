@@ -7,7 +7,6 @@ import tm.ugur.models.PlaceCategoryTranslation;
 import tm.ugur.repo.PlaceCategoryTranslationRepository;
 
 import java.util.Date;
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -32,9 +31,5 @@ public class PlaceCategoryTranslationService {
         translationRepository.save(placeCategoryTranslation);
     }
 
-    public void deleteAll(List<PlaceCategoryTranslation> translations){
-        for(PlaceCategoryTranslation pct : translations)
-            translationRepository.deleteById(pct.getId());
-    }
 
 }

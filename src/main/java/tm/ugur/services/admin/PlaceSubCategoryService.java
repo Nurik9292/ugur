@@ -4,10 +4,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tm.ugur.models.PlaceCategoryTranslation;
 import tm.ugur.models.PlaceSubCategory;
+import tm.ugur.models.PlaceSubCategoryTranslation;
 import tm.ugur.repo.PlaceSubCategoryRepository;
 import tm.ugur.util.pagination.PaginationService;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -18,11 +21,14 @@ public class PlaceSubCategoryService {
 
     private final PlaceSubCategoryRepository placeSubCategoryRepository;
     private final PaginationService paginationService;
+    private final PlaceSubCategoryTranslationService translationService;
 
     public PlaceSubCategoryService(PlaceSubCategoryRepository placeSubCategoryRepository,
-                                   PaginationService paginationService) {
+                                   PaginationService paginationService,
+                                   PlaceSubCategoryTranslationService translationService) {
         this.placeSubCategoryRepository = placeSubCategoryRepository;
         this.paginationService = paginationService;
+        this.translationService = translationService;
     }
 
     public List<PlaceSubCategory> findAll(){
@@ -52,10 +58,17 @@ public class PlaceSubCategoryService {
     }
 
     @Transactional
-    public void store(PlaceSubCategory placeCategory){
-        placeCategory.setUpdatedAt(new Date());
-        placeCategory.setCreatedAt(new Date());
-        placeSubCategoryRepository.save(placeCategory);
+    public void store(PlaceSubCategory placeSubCategory, String title_tm, String title_ru, String title_en){
+        placeSubCategory.setUpdatedAt(new Date());
+        placeSubCategory.setCreatedAt(new Date());
+        List<PlaceSubCategoryTranslation> psct =
+                new ArrayList<>(List.of(translationService.store(new PlaceSubCategoryTranslation("tm", title_tm)),
+                        translationService.store(new PlaceSubCategoryTranslation("ru", title_ru)),
+                        translationService.store(new PlaceSubCategoryTranslation("en", title_en))));
+        placeSubCategory.setTranslations(psct);
+        PlaceSubCategory newPlaceSubCategory = placeSubCategoryRepository.save(placeSubCategory);
+        psct.forEach(p -> p.setPlaceSubCategory(newPlaceSubCategory));
+
     }
 
     public Optional<PlaceSubCategory> findOne(long id){
@@ -64,10 +77,36 @@ public class PlaceSubCategoryService {
 
 
     @Transactional
-    public void update(long id, PlaceSubCategory placeCategory){
-        placeCategory.setId(id);
-        placeCategory.setUpdatedAt(new Date());
-        placeSubCategoryRepository.save(placeCategory);
+    public void update(long id, PlaceSubCategory placeSubCategory, String title_tm, String title_ru, String title_en){
+        Optional<PlaceSubCategory> subCategory = findOne(id);
+
+        subCategory.ifPresent(sc -> {
+
+            PlaceSubCategoryTranslation existingTranslationTm = getTranslation(sc.getTranslations(),"tm");
+            PlaceSubCategoryTranslation existingTranslationRu = getTranslation(sc.getTranslations(),"ru");
+            PlaceSubCategoryTranslation existingTranslationEn = getTranslation(sc.getTranslations(),"en");
+
+            if (existingTranslationTm != null)
+                translationService.update(existingTranslationTm, title_tm);
+
+            if (existingTranslationTm != null)
+                translationService.update(existingTranslationRu, title_ru);
+
+            if (existingTranslationTm != null)
+                translationService.update(existingTranslationEn, title_en);
+
+            placeSubCategory.setId(id);
+            placeSubCategory.setUpdatedAt(new Date());
+            placeSubCategory.setCreatedAt(sc.getCreatedAt());
+            placeSubCategoryRepository.save(placeSubCategory);
+        });
+    }
+
+    private PlaceSubCategoryTranslation getTranslation(List<PlaceSubCategoryTranslation> translations, String locale){
+        return translations.stream()
+                .filter(translation -> translation.getLocale().equals(locale))
+                .findFirst()
+                .orElse(null);
     }
 
     @Transactional

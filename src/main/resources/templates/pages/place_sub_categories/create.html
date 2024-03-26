@@ -27,15 +27,26 @@
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label for="title">Название</label>
-                    <input class="form-control" id="title" name="title" type="text" placeholder="Введите название категории" required="">
+                    <label for="title_tm">Название TM</label>
+                    <input class="form-control" id="title_tm" name="title_tm" type="text" placeholder="Введите название категории" required="">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="title_ru">Название RU</label>
+                    <input class="form-control" id="title_ru" name="title_ru" type="text" placeholder="Введите название категории" required="">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="title_en">Название EN</label>
+                    <input class="form-control" id="title_en" name="title_en" type="text" placeholder="Введите название категории" required="">
                 </div>
                 <div class="col-md-6 mb-3">
                     <label for="placeCategory">Категория</label>
                     <select class="form-select mb-0" id="placeCategory" name="placeCategory" aria-label="Role select example">
                         <option th:each="placeCategory : ${placeCategories}"
                                 th:value="${placeCategory.getId()}"
-                                th:text="${placeCategory.getTitle()}"></option>
+                                th:text="${titles.get(placeCategory.getId())}">
+                        </option>
                     </select>
                 </div>
             </div>
