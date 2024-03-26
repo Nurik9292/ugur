@@ -31,6 +31,5 @@ public class PlaceSubCategoriesMapper extends AbstractMapper<PlaceSubCategory, P
     @Override
     public void mapSpecificFields(PlaceSubCategory source, PlaceSubCategoryDTO destination) {
         destination.setId(source.getId());
-        destination.setTitle(source.getTitle());
     }
 }

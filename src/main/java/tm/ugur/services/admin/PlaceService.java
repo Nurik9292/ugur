@@ -82,7 +82,7 @@ public class PlaceService {
         String pathImage = storageService.store(image);
 
         if(!pathImage.isBlank())
-            place.setImage(pathImage);
+//            place.setImage(pathImage);
 
         place.setLocation(geometryFactory.createPoint(new Coordinate(place.getLat(), place.getLng())));
 
@@ -132,8 +132,8 @@ public class PlaceService {
 
 
         if(!pathImage.isBlank()){
-            storageService.delete(pruningPath(existingPlace.getImage()));
-            place.setImage(pathImage);
+//            storageService.delete(pruningPath(existingPlace.getImage()));
+//            place.setImage(pathImage);
         }
 
         place.setLocation(geometryFactory.createPoint(new Coordinate(place.getLat(), place.getLng())));
@@ -167,10 +167,10 @@ public class PlaceService {
         Optional<Place> placeOptional = placeRepository.findById(id);
 
         placeOptional.ifPresent(place -> {
-            String imagePath = place.getImage();
-            if (imagePath != null && !imagePath.isBlank()) {
-                storageService.delete(pruningPath(imagePath));
-            }
+//            String imagePath = place.getImage();
+//            if (imagePath != null && !imagePath/.isBlank()) {
+//                storageService.delete(pruningPath(imagePath));
+//            }
         });
 
         this.placeRepository.deleteById(id);

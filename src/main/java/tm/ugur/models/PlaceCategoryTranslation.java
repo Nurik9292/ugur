@@ -25,6 +25,10 @@ public class PlaceCategoryTranslation extends AbstractEntity{
 
     public PlaceCategoryTranslation(){}
 
+    public PlaceCategoryTranslation(String title){
+        this.title = title;
+    }
+
     public long getId() {
         return id;
     }

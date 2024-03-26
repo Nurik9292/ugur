@@ -77,14 +77,17 @@ public class PlaceCategoryController {
     }
 
     @PostMapping
-    public String store(@ModelAttribute("placeCategory") @Valid PlaceCategory placeCategory, BindingResult result, Model model){
+    public String store(@RequestParam("title_tm") String title_tm,
+                        @RequestParam("title_ru") String title_ru,
+                        @RequestParam("title_en") String title_en,
+                        @ModelAttribute("placeCategory") @Valid PlaceCategory placeCategory, BindingResult result, Model model){
         if(result.hasErrors()){
             model.addAttribute("page", "place-category-create");
             model.addAttribute("title", "Создать категорию заведения");
             return "layouts/place_categories/create";
         }
 
-        placeCategoryService.store(placeCategory);
+        placeCategoryService.store(placeCategory, title_tm, title_ru, title_en);
 
         return "redirect:/place-categories";
     }

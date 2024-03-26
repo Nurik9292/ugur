@@ -6,9 +6,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tm.ugur.models.PlaceCategory;
+import tm.ugur.models.PlaceCategoryTranslation;
 import tm.ugur.repo.PlaceCategoryRepository;
 import tm.ugur.util.pagination.PaginationService;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -55,7 +57,7 @@ public class PlaceCategoryService {
     }
 
     @Transactional
-    public void store(PlaceCategory placeCategory){
+    public void store(PlaceCategory placeCategory, String title_tm, String title_ru, String title_en){
         placeCategory.setUpdatedAt(new Date());
         placeCategory.setCreatedAt(new Date());
         placeCategoryRepository.save(placeCategory);
