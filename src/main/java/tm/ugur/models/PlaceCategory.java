@@ -99,9 +99,6 @@ public class PlaceCategory extends AbstractEntity{
     public String toString() {
         return "PlaceCategory{" +
                 "id=" + id +
-                ", translations=" + translations +
-                ", subCategories=" + subCategories +
-                ", places=" + places +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';

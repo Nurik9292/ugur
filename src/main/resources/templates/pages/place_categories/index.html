@@ -49,22 +49,40 @@
                         <table class="table table-flush dataTable-table" id="datatable">
                             <thead class="thead-light">
                             <tr>
-                                <th data-sortable="" style="width: 50%;">
-                                    <a href="#" class="dataTable-sorter" onclick="onClickSortPlaceCategory('title')">
-                                        Название
+                                <th data-sortable="" style="width: 25%;">
+                                    <a href="#" class="dataTable-sorter" onclick="onClickSortPlaceCategory('title_tm')">
+                                        Название Tm
                                         <svg class="icon icon-xxs" data-slot="icon" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5 7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5"></path>
                                         </svg>
                                     </a>
                                 </th>
-                                <th data-sortable="" style="width: 50%;">
+                                <th data-sortable="" style="width: 25%;">
+                                    <a href="#" class="dataTable-sorter" onclick="onClickSortPlaceCategory('title_tm')">
+                                        Название Ru
+                                        <svg class="icon icon-xxs" data-slot="icon" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5 7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5"></path>
+                                        </svg>
+                                    </a>
+                                </th>
+                                <th data-sortable="" style="width: 25%;">
+                                    <a href="#" class="dataTable-sorter" onclick="onClickSortPlaceCategory('title_tm')">
+                                        Название EN
+                                        <svg class="icon icon-xxs" data-slot="icon" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5 7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5"></path>
+                                        </svg>
+                                    </a>
+                                </th>
+                                <th data-sortable="" style="width: 25%;">
                                     <a href="#" class="dataTable-sorter">Действие</a>
                                 </th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr th:each="placeCategory : ${placeCategories}">
-                                <td th:text="${placeCategory.getTitle()}"></td>
+                                <td th:each="trans : ${placeCategory.getTranslations()}" th:if="${trans.getLocale()} == 'tm'" th:text="${trans.getTitle()}"></td>
+                                <td th:each="trans : ${placeCategory.getTranslations()}" th:if="${trans.getLocale()} == 'ru'" th:text="${trans.getTitle()}"></td>
+                                <td th:each="trans : ${placeCategory.getTranslations()}" th:if="${trans.getLocale()} == 'en'" th:text="${trans.getTitle()}"></td>
                                 <td class="d-inline-flex align-content-between">
                                     <a class="btn btn-sm btn-outline-success svg"
                                        th:href="@{/place-categories/{id}/edit(id=${placeCategory.getId()})}">

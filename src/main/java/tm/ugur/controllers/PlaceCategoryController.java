@@ -9,14 +9,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import tm.ugur.dto.PlaceSubCategoryDTO;
 import tm.ugur.models.PlaceCategory;
+import tm.ugur.models.PlaceCategoryTranslation;
 import tm.ugur.models.PlaceSubCategory;
 import tm.ugur.services.admin.PlaceCategoryService;
 import tm.ugur.util.mappers.PlaceSubCategoriesMapper;
 import tm.ugur.util.pagination.PaginationService;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.IntStream;
 
 @Controller
@@ -55,12 +54,10 @@ public class PlaceCategoryController {
             model.addAttribute("pageNumbers", pageNumbers);
         }
 
-
         model.addAttribute("title", "Категория заведении");
         model.addAttribute("page", "place-category-index");
         model.addAttribute("placeCategories", placeCategories);
         model.addAttribute("totalPage", totalPage);
-
 
         return "layouts/place_categories/index";
     }
@@ -72,6 +69,7 @@ public class PlaceCategoryController {
 
         model.addAttribute("title", "Создание категорию заведения");
         model.addAttribute("page", "place-category-create");
+
 
         return "layouts/place_categories/create";
     }
@@ -95,15 +93,28 @@ public class PlaceCategoryController {
     @GetMapping("/{id}/edit")
     public String edit(@PathVariable("id") long id, Model model){
         sortByStatic = "";
+        PlaceCategory placeCategory = placeCategoryService.findOne(id).orElse(new PlaceCategory());
+
+        List<PlaceCategoryTranslation> translations = placeCategory.getTranslations();
+        Map<String, String> translation = new HashMap<>();
+
+        for (PlaceCategoryTranslation pct : translations) {
+            translation.put(pct.getLocale(), pct.getTitle());
+        }
+
         model.addAttribute("title", "Изменить категорию заведения");
         model.addAttribute("page", "place-category-edit");
-        model.addAttribute("placeCategory", this.placeCategoryService.findOne(id).orElse(new PlaceCategory()));
+        model.addAttribute("placeCategory", placeCategory);
+        model.addAttribute("translation", translation);
 
         return "layouts/place_categories/edit";
     }
 
     @PatchMapping("/{id}")
     public String update(@PathVariable("id") long id,
+                         @RequestParam("title_tm") String title_tm,
+                         @RequestParam("title_ru") String title_ru,
+                         @RequestParam("title_en") String title_en,
                          @ModelAttribute("placeCategory") @Valid PlaceCategory placeCategory, BindingResult result,
                          Model model){
 
@@ -113,7 +124,7 @@ public class PlaceCategoryController {
             return "layouts/place_categories/edit";
         }
 
-        this.placeCategoryService.update(id, placeCategory);
+        this.placeCategoryService.update(id, placeCategory, title_tm, title_ru, title_en);
 
         return "redirect:/place-categories";
     }

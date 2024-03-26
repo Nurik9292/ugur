@@ -2,6 +2,7 @@ package tm.ugur.models;
 
 import jakarta.persistence.*;
 
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -23,9 +24,23 @@ public class PlaceCategoryTranslation extends AbstractEntity{
     @JoinColumn(name = "place_category_id", referencedColumnName = "id")
     private PlaceCategory placeCategory;
 
+    @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+
+    @Column(name = "updated_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
+
+
     public PlaceCategoryTranslation(){}
 
     public PlaceCategoryTranslation(String title){
+        this.title = title;
+    }
+
+    public PlaceCategoryTranslation(String locale, String title){
+        this.locale = locale;
         this.title = title;
     }
 
@@ -61,17 +76,33 @@ public class PlaceCategoryTranslation extends AbstractEntity{
         this.placeCategory = placeCategory;
     }
 
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         PlaceCategoryTranslation that = (PlaceCategoryTranslation) object;
-        return id == that.id && Objects.equals(locale, that.locale) && Objects.equals(title, that.title) && Objects.equals(placeCategory, that.placeCategory);
+        return id == that.id && Objects.equals(locale, that.locale) && Objects.equals(title, that.title);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, locale, title, placeCategory);
+        return Objects.hash(id, locale, title);
     }
 
     @Override
@@ -80,7 +111,8 @@ public class PlaceCategoryTranslation extends AbstractEntity{
                 "id=" + id +
                 ", locale='" + locale + '\'' +
                 ", title='" + title + '\'' +
-                ", placeCategory=" + placeCategory +
                 '}';
     }
+
+
 }
