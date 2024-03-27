@@ -1,30 +1,22 @@
 package tm.ugur.dto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import tm.ugur.models.PlaceCategory;
 
+import java.util.List;
 import java.util.Objects;
 
 public class PlaceSubCategoryDTO extends AbstractDTO{
 
-    private String title;
-
+    private List<TranslationDTO> translations;
 
     public PlaceSubCategoryDTO() {
     }
 
-    public PlaceSubCategoryDTO(String title) {
-        this.title = title;
+    public List<TranslationDTO> getTranslations() {
+        return translations;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
+    public void setTranslations(List<TranslationDTO> translations) {
+        this.translations = translations;
     }
 
     @Override
@@ -32,18 +24,18 @@ public class PlaceSubCategoryDTO extends AbstractDTO{
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         PlaceSubCategoryDTO that = (PlaceSubCategoryDTO) object;
-        return Objects.equals(title, that.title);
+        return Objects.equals(translations, that.translations);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title);
+        return Objects.hash(translations);
     }
 
     @Override
     public String toString() {
         return "PlaceSubCategoryDTO{" +
-                "title='" + title + '\'' +
+                "translations=" + translations +
                 ", id=" + id +
                 '}';
     }

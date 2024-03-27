@@ -156,19 +156,27 @@ function sendFormData(method, url, formData) {
         });
 }
 
-function sendCreatePlace() {
+function sendForm(method, url) {
     const formData = new FormData();
-    const image = document.getElementById("image").files[0];
+    const images = document.getElementById("image").files;
+    const prev = document.getElementById("prev").files[0];
     const instagram = document.getElementById("instagram").value;
     const tiktok = document.getElementById("tiktok").value;
     const cityPhone = document.getElementById("city_phone").value;
     const mobPhones = document.getElementsByClassName("mob_phone_place");
     const phones = Array.from(mobPhones).map(phone => phone.value);
 
+    for (let i = 0; i < images.length; i++) {
+        formData.append('files', images[i]);
+    }
 
     addToFormData(formData, "_csrf", document.getElementById("csrf").value);
-    addToFormData(formData, "title", document.getElementById("title").value);
-    addToFormData(formData, "address", document.getElementById("address").value);
+    addToFormData(formData, "title_tm", document.getElementById("title_tm").value);
+    addToFormData(formData, "title_ru", document.getElementById("title_ru").value);
+    addToFormData(formData, "title_en", document.getElementById("title_en").value);
+    addToFormData(formData, "address_tm", document.getElementById("address_tm").value);
+    addToFormData(formData, "address_ru", document.getElementById("address_ru").value);
+    addToFormData(formData, "address_en", document.getElementById("address_en").value);
     addToFormData(formData, "email", document.getElementById("email").value);
     addToFormData(formData, "website", document.getElementById("site").value);
     addToFormData(formData, "lat", document.getElementById("lat").value);
@@ -179,38 +187,18 @@ function sendCreatePlace() {
     addToFormData(formData, "tiktok", tiktok);
     addToFormData(formData, "telephones", phones);
     addToFormData(formData, "cityPhone", cityPhone);
-    addToFormData(formData, "file", image);
+    addToFormData(formData, "prev", prev);
 
-    sendFormData('post', host + "/places", formData);
+    sendFormData(method, url, formData);
+}
+
+function sendCreatePlace() {
+    sendForm('post', host + "/places");
 }
 
 function sendUpdatePlace() {
-    const formData = new FormData();
     const id = document.getElementById("id").value;
-    const image = document.getElementById("image").files[0];
-    const instagram = document.getElementById("instagram").value;
-    const tiktok = document.getElementById("tiktok").value;
-    const cityPhone = document.getElementById("city_phone").value;
-    const mobPhones = document.getElementsByClassName("mob_phone_place");
-    console.log(mobPhones)
-    const phones = Array.from(mobPhones).map(phone => phone.value);
-
-    addToFormData(formData, "_csrf", document.getElementById("csrf").value);
-    addToFormData(formData, "title", document.getElementById("title").value);
-    addToFormData(formData, "address", document.getElementById("address").value);
-    addToFormData(formData, "email", document.getElementById("email").value);
-    addToFormData(formData, "website", document.getElementById("site").value);
-    addToFormData(formData, "lat", document.getElementById("lat").value);
-    addToFormData(formData, "lng", document.getElementById("lng").value);
-    addToFormData(formData, "placeCategory", document.getElementById("placeCategory").value);
-    addToFormData(formData, "placeSubCategory", document.getElementById("placeSubCategory").value);
-    addToFormData(formData, "instagram", instagram);
-    addToFormData(formData, "tiktok", tiktok);
-    addToFormData(formData, "telephones", phones);
-    addToFormData(formData, "cityPhone", cityPhone);
-    addToFormData(formData, "file", image);
-
-    sendFormData('put', host + "/places/" + id, formData);
+    sendForm('put', host + "/places/" + id);
 }
 
 function displayValidationErrors(errors) {
@@ -228,13 +216,19 @@ function displayValidationErrors(errors) {
 function loadSubcategories(categoryId) {
     axios.get(host + "/place-categories/getSubcategories/" + categoryId)
         .then(res => {
-            const response = res.data;
+
+            const response = res.data.map(item => ({
+                id: item.id,
+                translations: item.translations.filter(translation => translation.locale === 'ru')
+            }));
+
             const placeSubCategorySelect = document.getElementById("placeSubCategory");
             placeSubCategorySelect.innerHTML = "";
             response.forEach(function (subCategory) {
                 let option = document.createElement("option");
+                console.log(subCategory)
                 option.value = subCategory.id;
-                option.textContent = subCategory.title;
+                option.textContent = subCategory.translations[0].title;
                 placeSubCategorySelect.appendChild(option);
             })
         }).catch(err => {

@@ -29,6 +29,9 @@ public class PlaceService {
     private final PaginationService paginationService;
     private final GeometryFactory geometryFactory;
     private final FileSystemStorageService storageService;
+    private final PlaceImageService placeImageService;
+    private final PlaceTranslationService translationService;
+    private final PlaceThumbService thumbService;
 
     @Autowired
     public PlaceService(PlaceRepository placeRepository,
@@ -36,13 +39,19 @@ public class PlaceService {
                         SocialNetworkRepository socialNetworkRepository,
                         PaginationService paginationService,
                         GeometryFactory geometryFactory,
-                        FileSystemStorageService storageService) {
+                        FileSystemStorageService storageService,
+                        PlaceImageService placeImageService,
+                        PlaceTranslationService translationService,
+                        PlaceThumbService thumbService) {
         this.placeRepository = placeRepository;
         this.placePhoneRepository = placePhoneRepository;
         this.socialNetworkRepository = socialNetworkRepository;
         this.paginationService = paginationService;
         this.geometryFactory = geometryFactory;
         this.storageService = storageService;
+        this.placeImageService = placeImageService;
+        this.translationService = translationService;
+        this.thumbService = thumbService;
     }
 
     public List<Place> findAll(){
@@ -57,6 +66,13 @@ public class PlaceService {
     public Page<Place> findAll(int pageNumber, int itemsPerPage)
     {
         return paginationService.createPage(placeRepository.findAll(), pageNumber, itemsPerPage);
+    }
+
+    public Optional<Place> findOne(long id){
+        return placeRepository.findById(id).map(place -> {
+            setLatLng(place);
+            return place;
+        });
     }
 
 
@@ -77,28 +93,27 @@ public class PlaceService {
                       String tiktok,
                       List<String> phones,
                       String cityPhone,
-                      MultipartFile image) {
+                      MultipartFile[] images,
+                      MultipartFile prev,
+                      Map<String, String> titles,
+                      Map<String, String> address) {
 
-        String pathImage = storageService.store(image);
+        List<PlaceImage> savedImages = storeImages(images);
+        place.setImages(savedImages);
 
-        if(!pathImage.isBlank())
-//            place.setImage(pathImage);
+        PlaceThumb savedThumb =  storeThumb(prev);
+        place.setThumbs(savedThumb);
 
         place.setLocation(geometryFactory.createPoint(new Coordinate(place.getLat(), place.getLng())));
 
-
-        Set<SocialNetwork> savedNetworks = new HashSet<>();
-        if(!instagram.isBlank())
-            savedNetworks.add(socialNetworkRepository.save(new SocialNetwork(instagram, "instagram")));
-        if(!tiktok.isBlank())
-            savedNetworks.add(socialNetworkRepository.save(new SocialNetwork(tiktok, "tiktok")));
+        Set<SocialNetwork> savedNetworks = saveSocialNetworks(instagram, tiktok);
         place.addSocialNetworks(savedNetworks);
 
-        Set<PlacePhone> savedPhones = phones.stream()
-                .map(phone -> placePhoneRepository.save(new PlacePhone(phone, "mob")))
-                .collect(Collectors.toSet());
-        savedPhones.add(placePhoneRepository.save(new PlacePhone(cityPhone, "city")));
+        Set<PlacePhone> savedPhones = savePlacePhones(phones, cityPhone);
         place.addPhones(savedPhones);
+
+        Set<PlaceTranslation> savedTranslations = savePlaceTranslations(titles, address);
+        place.setTranslations(savedTranslations);
 
         place.setCreatedAt(new Date());
         place.setUpdatedAt(new Date());
@@ -106,16 +121,10 @@ public class PlaceService {
         Place finalPlace = placeRepository.save(place);
         savedNetworks.forEach(network -> network.setPlace(finalPlace));
         savedPhones.forEach(phone -> phone.setPlace(finalPlace));
-    }
-
-    public Optional<Place> findOne(long id){
-//        Optional<Place> place = placeRepository.findById(id);
-//        setLatLng(place.orElse(new Place()));
-//        return place;
-        return placeRepository.findById(id).map(place -> {
-            setLatLng(place);
-            return place;
-        });
+        savedImages.forEach(image -> image.setPlace(finalPlace));
+        savedTranslations.forEach(translation -> translation.setPlace(finalPlace));
+        if (Objects.nonNull(savedThumb))
+            savedThumb.setPlace(finalPlace);
     }
 
     @Transactional
@@ -124,42 +133,49 @@ public class PlaceService {
                        String tiktok,
                        List<String> phones,
                        String cityPhone,
-                       MultipartFile image){
-
-        String pathImage = storageService.store(image);
+                       MultipartFile[] images,
+                       MultipartFile prev,
+                       Map<String, String> titles,
+                       Map<String, String> address){
 
         Place existingPlace = findOne(id).orElseThrow();
 
+        if(!existingPlace.getImages().isEmpty())
+            existingPlace.getImages().forEach(placeImageService::delete);
 
-        if(!pathImage.isBlank()){
-//            storageService.delete(pruningPath(existingPlace.getImage()));
-//            place.setImage(pathImage);
-        }
+        List<PlaceImage> savedImages = storeImages(images);
+        place.setImages(savedImages);
+
+        if(Objects.nonNull(existingPlace.getThumbs()))
+            thumbService.delete(existingPlace.getThumbs());
+
+        PlaceThumb savedThumb =  storeThumb(prev);
+        place.setThumbs(savedThumb);
 
         place.setLocation(geometryFactory.createPoint(new Coordinate(place.getLat(), place.getLng())));
 
-        place.setUpdatedAt(new Date());
-
         socialNetworkRepository.deleteAll(existingPlace.getSocialNetworks());
-        Set<SocialNetwork> savedNetworks = new HashSet<>();
-        if(!instagram.isBlank())
-            savedNetworks.add(socialNetworkRepository.save(new SocialNetwork(instagram, "instagram")));
-        if(!tiktok.isBlank())
-            savedNetworks.add(socialNetworkRepository.save(new SocialNetwork(tiktok, "tiktok")));
+        Set<SocialNetwork> savedNetworks = saveSocialNetworks(instagram, tiktok);
         place.addSocialNetworks(savedNetworks);
 
         placePhoneRepository.deleteAll(existingPlace.getPhones());
-        Set<PlacePhone> savedPhones = phones.stream()
-                .map(phone -> placePhoneRepository.save(new PlacePhone(phone, "mob")))
-                .collect(Collectors.toSet());
-        savedPhones.add(placePhoneRepository.save(new PlacePhone(cityPhone, "city")));
+        Set<PlacePhone> savedPhones = savePlacePhones(phones, cityPhone);
+        place.addPhones(savedPhones);
+
+        Set<PlaceTranslation> savedTranslations = updatePlaceTranslations(existingPlace.getTranslations(), titles, address);
+        place.setTranslations(savedTranslations);
 
         place.addPhones(savedPhones);
         place.setId(id);
+        place.setCreatedAt(existingPlace.getCreatedAt());
+        place.setUpdatedAt(new Date());
         Place finalPlace = placeRepository.save(place);
         savedNetworks.forEach(network -> network.setPlace(finalPlace));
         savedPhones.forEach(phone -> phone.setPlace(finalPlace));
-
+        savedImages.forEach(image -> image.setPlace(finalPlace));
+        savedTranslations.forEach(translation -> translation.setPlace(finalPlace));
+        if (Objects.nonNull(savedThumb))
+            savedThumb.setPlace(finalPlace);
     }
 
     @Transactional
@@ -167,15 +183,86 @@ public class PlaceService {
         Optional<Place> placeOptional = placeRepository.findById(id);
 
         placeOptional.ifPresent(place -> {
-//            String imagePath = place.getImage();
-//            if (imagePath != null && !imagePath/.isBlank()) {
-//                storageService.delete(pruningPath(imagePath));
-//            }
+          place.getImages().forEach(placeImageService::delete);
+          thumbService.delete(place.getThumbs());
         });
 
         this.placeRepository.deleteById(id);
     }
 
+    private List<PlaceImage> storeImages(MultipartFile[] images) {
+        List<PlaceImage> placeImages = new ArrayList<>();
+        for (MultipartFile image : images) {
+            String pathImage = storageService.store(image, "place", 360, 620);
+            if (!pathImage.isBlank()) {
+                placeImages.add(placeImageService.store(new PlaceImage(pathImage)));
+            }
+        }
+        return placeImages;
+    }
+
+    private PlaceThumb storeThumb(MultipartFile image){
+        String thumbPath = storageService.store(image,  "place/thumb",64, 64);
+        return thumbPath.isBlank() ? null
+                : thumbService.store(new PlaceThumb(thumbPath));
+    }
+
+    private Set<SocialNetwork> saveSocialNetworks(String instagram, String tiktok) {
+        Set<SocialNetwork> savedNetworks = new HashSet<>();
+        if(!instagram.isBlank())
+            savedNetworks.add(socialNetworkRepository.save(new SocialNetwork(instagram, "instagram")));
+        if(!tiktok.isBlank())
+            savedNetworks.add(socialNetworkRepository.save(new SocialNetwork(tiktok, "tiktok")));
+        return savedNetworks;
+    }
+
+    private Set<PlacePhone> savePlacePhones(List<String> phones, String cityPhone){
+        Set<PlacePhone> savedPhones = phones.stream()
+                .map(phone -> placePhoneRepository.save(new PlacePhone(phone, "mob")))
+                .collect(Collectors.toSet());
+        savedPhones.add(placePhoneRepository.save(new PlacePhone(cityPhone, "city")));
+
+        return savedPhones;
+    }
+
+    private Set<PlaceTranslation> savePlaceTranslations(Map<String, String> titles, Map<String, String> address){
+        Set<PlaceTranslation> translations = new HashSet<>();
+        translations.add(translationService.store(new PlaceTranslation("tm", titles.get("tm"), address.get("tm"))));
+        translations.add(translationService.store(new PlaceTranslation("ru", titles.get("ru"), address.get("ru"))));
+        translations.add(translationService.store(new PlaceTranslation("en", titles.get("en"), address.get("en"))));
+        return translations;
+    }
+
+    private Set<PlaceTranslation> updatePlaceTranslations(Set<PlaceTranslation> existTranslation,
+                                                          Map<String, String> titles, Map<String, String> address){
+        System.out.println(existTranslation);
+        Map<String, PlaceTranslation> existingTranslations = existTranslation.stream()
+                .collect(Collectors.toMap(PlaceTranslation::getLocale, translation -> translation));
+
+
+        return updateTranslations(existingTranslations, titles, address);
+    }
+
+    private Set<PlaceTranslation> updateTranslations(Map<String, PlaceTranslation> existingTranslations,
+                                         Map<String, String> titles, Map<String, String> address) {
+        Set<PlaceTranslation> translations = new HashSet<>();
+        for (String locale : Arrays.asList("tm", "ru", "en")) {
+            String title = titles.get(locale);
+            String addressText = address.get(locale);
+            PlaceTranslation translation = existingTranslations.get(locale);
+            if (title != null) {
+                if (translation != null) {
+                    translation.setTitle(title);
+                    translation.setAddress(addressText);
+                    translations.add(translationService.update(translation));
+                } else {
+                    translations.add(translationService.store(new PlaceTranslation(locale, title, addressText)));
+                }
+            }
+        }
+
+        return translations;
+    }
 
     private void setLatLng(Place place){
         Point point = place.getLocation();

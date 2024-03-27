@@ -27,18 +27,65 @@
             <input type="hidden" id="csrf" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
             <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="nav-data-route" role="tabpanel" aria-labelledby="nav-data-route-tab">
+
                     <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="title">Название</label>
-                                <input class="form-control" id="title" name="title"  type="text" placeholder="Введите название заведения" required="">
-                                <div style="color: red;" id="title-error"></div>
+                        <div class="col-12">
+                            <!-- Tab -->
+                            <nav>
+                                <div class="nav nav-tabs mb-4" id="nav-tab" role="tablist">
+                                    <a class="nav-item nav-link active" id="nav-tm-tab" data-bs-toggle="tab" href="#nav-tm" role="tab" aria-controls="nav-tm" aria-selected="true">TM</a>
+                                    <a class="nav-item nav-link" id="nav-ru-tab" data-bs-toggle="tab" href="#nav-ru" role="tab" aria-controls="nav-ru" aria-selected="false">RU</a>
+                                    <a class="nav-item nav-link" id="nav-en-tab" data-bs-toggle="tab" href="#nav-en" role="tab" aria-controls="nav-en" aria-selected="false">EN</a>
+                                </div>
+                            </nav>
+                            <div class="tab-content" id="nav-tabContent-nav">
+                                <div class="tab-pane fade show active" id="nav-tm" role="tabpanel" aria-labelledby="nav-tm-tab">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="title_tm">Название TM</label>
+                                            <input class="form-control" id="title_tm" name="title_tm"  type="text" placeholder="Введите название заведения" required="">
+                                            <div style="color: red;" id="title_tm-error"></div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="address_tm">Адресс TM</label>
+                                            <input class="form-control" id="address_tm" name="address_tm" type="text" placeholder="Введите адресс заведения" required="">
+                                            <div style="color: red;" id="address_tm-error"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="nav-ru" role="tabpanel" aria-labelledby="nav-ru-tab">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="title_ru">Название RU</label>
+                                            <input class="form-control" id="title_ru" name="title_ru"  type="text" placeholder="Введите название заведения" required="">
+                                            <div style="color: red;" id="title_ru-error"></div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="address_ru">Адресс RU</label>
+                                            <input class="form-control" id="address_ru" name="address_ru" type="text" placeholder="Введите адресс заведения" required="">
+                                            <div style="color: red;" id="address_ru-error"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="nav-en" role="tabpanel" aria-labelledby="nav-en-tab">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="title_en">Название EN</label>
+                                            <input class="form-control" id="title_en" name="title_en"  type="text" placeholder="Введите название заведения" required="">
+                                            <div style="color: red;" id="title_en-error"></div>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="address_en">Адресс EN</label>
+                                            <input class="form-control" id="address_en" name="address_en" type="text" placeholder="Введите адресс заведения" required="">
+                                            <div style="color: red;" id="address_en-error"></div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="address">Адресс</label>
-                                <input class="form-control" id="address" name="address" type="text" placeholder="Введите адресс заведения" required="">
-                                <div style="color: red;" id="address-error"></div>
-                            </div>
+                            <!-- End of tab -->
                         </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="email">Почта</label>
@@ -79,7 +126,7 @@
                             <select class="form-select mb-0" id="placeCategory" name="placeCategory" aria-label="Category select example">
                                 <option th:each="placeCategory : ${placeCategories}"
                                         th:value="${placeCategory.getId()}"
-                                        th:text="${placeCategory.getTitle()}"></option>
+                                        th:text="${categoryTitles.get(placeCategory.getId())}"></option>
                             </select>
                             <div style="color: red;" id="placeCategory-error"></div>
                         </div>
@@ -94,8 +141,13 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="image">Изображение</label>
-                            <input class="form-control" type="file" id="image" name="file" accept="image/jpeg, image/jpg, image/png">
+                            <input class="form-control" type="file" id="image" name="files[]" multiple accept="image/jpeg, image/jpg, image/png">
                             <div style="color: red;" id="file-error"></div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="prev">Превью</label>
+                            <input class="form-control" type="file" id="prev" name="prev" multiple accept="image/jpeg, image/jpg, image/png">
+                            <div style="color: red;" id="prev-error"></div>
                         </div>
                     </div>
                     <div class="row">

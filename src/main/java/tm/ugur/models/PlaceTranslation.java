@@ -2,10 +2,11 @@ package tm.ugur.models;
 
 import jakarta.persistence.*;
 
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
-@Table(name = "place_translation")
+@Table(name = "place_translations")
 public class PlaceTranslation extends AbstractEntity{
 
     @Id
@@ -26,7 +27,22 @@ public class PlaceTranslation extends AbstractEntity{
     @JoinColumn(name = "place_id", referencedColumnName ="id", nullable = false)
     private Place place;
 
+    @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+
+    @Column(name = "updated_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
+
     public PlaceTranslation(){}
+
+
+    public PlaceTranslation(String locale, String title, String address){
+        this.locale = locale;
+        this.title = title;
+        this.address = address;
+    }
 
     public long getId() {
         return id;
@@ -68,6 +84,22 @@ public class PlaceTranslation extends AbstractEntity{
         this.place = place;
     }
 
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
@@ -91,4 +123,6 @@ public class PlaceTranslation extends AbstractEntity{
                 ", place=" + place +
                 '}';
     }
+
+
 }

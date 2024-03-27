@@ -5,17 +5,26 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import tm.ugur.dto.PlaceSubCategoryDTO;
+import tm.ugur.dto.TranslationDTO;
 import tm.ugur.models.PlaceSubCategory;
+import tm.ugur.models.PlaceSubCategoryTranslation;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class PlaceSubCategoriesMapper extends AbstractMapper<PlaceSubCategory, PlaceSubCategoryDTO>{
 
 
     private final ModelMapper modelMapper;
+    private final TranslationPlaceSubCategoryMapper translationMapper;
+
     @Autowired
-    public PlaceSubCategoriesMapper(ModelMapper modelMapper) {
+    public PlaceSubCategoriesMapper(ModelMapper modelMapper,
+                                    TranslationPlaceSubCategoryMapper translationMapper) {
         super(PlaceSubCategory.class, PlaceSubCategoryDTO.class);
         this.modelMapper = modelMapper;
+        this.translationMapper = translationMapper;
     }
 
 
@@ -31,5 +40,11 @@ public class PlaceSubCategoriesMapper extends AbstractMapper<PlaceSubCategory, P
     @Override
     public void mapSpecificFields(PlaceSubCategory source, PlaceSubCategoryDTO destination) {
         destination.setId(source.getId());
+        destination.setTranslations(getTranslationDTO(source.getTranslations()));
+    }
+
+
+    private List<TranslationDTO> getTranslationDTO(List<PlaceSubCategoryTranslation> translations){
+        return translations.stream().map(translationMapper::toDto).collect(Collectors.toList());
     }
 }

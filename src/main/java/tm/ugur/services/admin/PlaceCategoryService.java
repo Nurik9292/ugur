@@ -10,10 +10,7 @@ import tm.ugur.models.PlaceCategoryTranslation;
 import tm.ugur.repo.PlaceCategoryRepository;
 import tm.ugur.util.pagination.PaginationService;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -116,5 +113,19 @@ public class PlaceCategoryService {
     @Transactional
     public void delete(Long id){
         this.placeCategoryRepository.deleteById(id);
+    }
+
+
+    public Map<Long, String> getCategoryTitles(List<PlaceCategory> placeCategories){
+        Map<Long, String> titles = new HashMap<>();
+
+        placeCategories.forEach(placeCategory -> {
+            placeCategory.getTranslations().stream()
+                    .filter(pct -> pct.getLocale().equals("ru"))
+                    .findFirst()
+                    .ifPresent(pct -> titles.put(placeCategory.getId(), pct.getTitle()));
+        });
+
+        return titles;
     }
 }

@@ -77,7 +77,7 @@ public class PlaceSubCategoryController {
         model.addAttribute("title", "Создание под категорию заведения");
         model.addAttribute("page", "place-sub-category-create");
         model.addAttribute("placeCategories", placeCategories);
-        model.addAttribute("titles", getCategoryTitles(placeCategories));
+        model.addAttribute("titles", placeCategoryService.getCategoryTitles(placeCategories));
 
         return "layouts/place_sub_categories/create";
     }
@@ -118,7 +118,7 @@ public class PlaceSubCategoryController {
         model.addAttribute("page", "place-sub-category-edit");
         model.addAttribute("placeSubCategory", placeSubCategory);
         model.addAttribute("placeCategories", placeCategories);
-        model.addAttribute("titles", getCategoryTitles(placeCategories));
+        model.addAttribute("titles", placeCategoryService.getCategoryTitles(placeCategories));
         model.addAttribute("translation", translation);
 
         return "layouts/place_sub_categories/edit";
@@ -149,17 +149,4 @@ public class PlaceSubCategoryController {
         return "redirect:/place-sub-categories";
     }
 
-
-    private Map<Long, String> getCategoryTitles(List<PlaceCategory> placeCategories){
-        Map<Long, String> titles = new HashMap<>();
-
-        placeCategories.forEach(placeCategory -> {
-            placeCategory.getTranslations().stream()
-                    .filter(pct -> pct.getLocale().equals("ru"))
-                    .findFirst()
-                    .ifPresent(pct -> titles.put(placeCategory.getId(), pct.getTitle()));
-        });
-
-        return titles;
-    }
 }

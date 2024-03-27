@@ -57,7 +57,7 @@ public class FileSystemStorageService implements StorageService{
     }
 
     @Override
-    public String store(MultipartFile file) {
+    public String store(MultipartFile file, String folder, int width, int height) {
         try {
             if (Objects.isNull(file) || file.isEmpty()) {
                 logger.warn("Failed to store empty file.");
@@ -78,10 +78,12 @@ public class FileSystemStorageService implements StorageService{
             file.transferTo(tempFile);
 
             Date date = new Date();
-            String imageName = date.getTime() + "-" + originalName;
+            String imageName = folder + "/" + date.getTime() + "-" + originalName;
+
+            Files.createDirectories(Path.of(destinationFile.getParent() + "/" + folder));
 
             String newDestinationFile = destinationFile.getParent() + "/" + imageName;
-            fileResize.resize(tempFile, new File(newDestinationFile), 64, 64);
+            fileResize.resize(tempFile, new File(newDestinationFile), width, height);
 
 
             tempFile.delete();
@@ -131,8 +133,7 @@ public class FileSystemStorageService implements StorageService{
 
     @Override
     public void delete(String path){
-        System.out.println("delete");
-        System.out.println(rootLocation + "/" + path);
-        FileSystemUtils.deleteRecursively(new File(rootLocation + "/" + path));
+        System.out.println(rootLocation + "/" + path.substring(12));
+        FileSystemUtils.deleteRecursively(new File(rootLocation + "/" + path.substring(12)));
     }
 }
