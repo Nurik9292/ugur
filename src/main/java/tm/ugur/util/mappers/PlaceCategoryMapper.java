@@ -10,10 +10,13 @@ import tm.ugur.dto.PlaceCategoryDTO;
 import tm.ugur.dto.PlaceDTO;
 import tm.ugur.dto.PlaceSubCategoryDTO;
 import tm.ugur.dto.geo.PointDTO;
-import tm.ugur.models.Bus;
-import tm.ugur.models.Place;
-import tm.ugur.models.PlaceCategory;
-import tm.ugur.models.PlaceSubCategory;
+import tm.ugur.models.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -22,13 +25,16 @@ public class PlaceCategoryMapper extends AbstractMapper<PlaceCategory, PlaceCate
 
     private final ModelMapper modelMapper;
     private final PlaceSubCategoriesMapper placeSubCategoriesMapper;
+    private final TranslationPlaceCategoryMapper translationCategoryMapper;
 
     @Autowired
     public PlaceCategoryMapper(ModelMapper modelMapper,
-                               PlaceSubCategoriesMapper placeSubCategoriesMapper) {
+                               PlaceSubCategoriesMapper placeSubCategoriesMapper,
+                               TranslationPlaceCategoryMapper translationCategoryMapper) {
         super(PlaceCategory.class, PlaceCategoryDTO.class);
         this.modelMapper = modelMapper;
         this.placeSubCategoriesMapper = placeSubCategoriesMapper;
+        this.translationCategoryMapper = translationCategoryMapper;
     }
 
 
@@ -44,7 +50,13 @@ public class PlaceCategoryMapper extends AbstractMapper<PlaceCategory, PlaceCate
     @Override
     public void mapSpecificFields(PlaceCategory source, PlaceCategoryDTO destination) {
             destination.setId(source.getId());
+            destination.setTitles(getTitleTranslations(source.getTranslations()));
             destination.setSubCategories(source.getSubCategories().stream().map(this::convertToDTO).toList());
+    }
+
+    private Map<String, String> getTitleTranslations(List<PlaceCategoryTranslation> translations){
+        return translations.stream()
+                .collect(Collectors.toMap(PlaceCategoryTranslation::getLocale, PlaceCategoryTranslation::getTitle));
     }
 
 

@@ -2,21 +2,27 @@ package tm.ugur.dto;
 
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class PlaceSubCategoryDTO extends AbstractDTO{
 
-    private List<TranslationDTO> translations;
+
+    private Map<String, String> titles;
 
     public PlaceSubCategoryDTO() {
     }
 
-    public List<TranslationDTO> getTranslations() {
-        return translations;
+    public PlaceSubCategoryDTO(Map<String, String> titles) {
+        this.titles = titles;
     }
 
-    public void setTranslations(List<TranslationDTO> translations) {
-        this.translations = translations;
+    public Map<String, String> getTitles() {
+        return titles;
+    }
+
+    public void setTitles(Map<String, String> titles) {
+        this.titles = titles;
     }
 
     @Override
@@ -24,18 +30,18 @@ public class PlaceSubCategoryDTO extends AbstractDTO{
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         PlaceSubCategoryDTO that = (PlaceSubCategoryDTO) object;
-        return Objects.equals(translations, that.translations);
+        return Objects.equals(titles, that.titles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(translations);
+        return Objects.hash(titles);
     }
 
     @Override
     public String toString() {
         return "PlaceSubCategoryDTO{" +
-                "translations=" + translations +
+                "titles=" + titles +
                 ", id=" + id +
                 '}';
     }

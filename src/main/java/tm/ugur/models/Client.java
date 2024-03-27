@@ -44,7 +44,7 @@ public class Client {
     @ManyToMany(mappedBy = "clients", fetch = FetchType.EAGER)
     private List<Stop> stops;
 
-    @ManyToMany(mappedBy = "clients")
+    @ManyToMany(mappedBy = "clients", fetch = FetchType.EAGER)
     private List<Place> places;
 
 

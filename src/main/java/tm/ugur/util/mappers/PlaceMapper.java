@@ -10,6 +10,11 @@ import tm.ugur.dto.*;
 import tm.ugur.dto.geo.PointDTO;
 import tm.ugur.models.*;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Component
 public class PlaceMapper extends AbstractMapper<Place, PlaceDTO> {
 
@@ -52,6 +57,24 @@ public class PlaceMapper extends AbstractMapper<Place, PlaceDTO> {
             destination.setLocation(new PointDTO(source.getLocation().getX(), source.getLocation().getY()));
             destination.setPlaceCategory(convertToDTO(source.getPlaceCategory()));
             destination.setPlaceSubCategory(convertToDTO(source.getPlaceSubCategory()));
+            destination.setTitles(getTitleTranslations(source.getTranslations()));
+            destination.setAddress(getAddressTranslations(source.getTranslations()));
+            destination.setImages(getImages(source.getImages()));
+            destination.setThumb(new PlaceThumbDTO(source.getThumbs().getPath()));
+    }
+
+    private List<PlaceImageDTO> getImages(List<PlaceImage> images){
+        return images.stream().map(image -> new PlaceImageDTO(image.getPath())).collect(Collectors.toList());
+    }
+
+    private Map<String, String> getTitleTranslations(Set<PlaceTranslation> translations){
+        return translations.stream()
+                .collect(Collectors.toMap(PlaceTranslation::getLocale, PlaceTranslation::getTitle));
+    }
+
+    private Map<String, String> getAddressTranslations(Set<PlaceTranslation> translations){
+        return translations.stream()
+                .collect(Collectors.toMap(PlaceTranslation::getLocale, PlaceTranslation::getAddress));
     }
 
 

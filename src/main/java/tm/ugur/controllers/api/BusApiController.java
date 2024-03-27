@@ -20,12 +20,10 @@ import java.util.Optional;
 public class BusApiController {
 
     private final BusApiService busService;
-    private final StopService stopService;
 
     @Autowired
-    public BusApiController(BusApiService busService, StopService stopService) {
+    public BusApiController(BusApiService busService) {
         this.busService = busService;
-        this.stopService = stopService;
     }
 
     @GetMapping

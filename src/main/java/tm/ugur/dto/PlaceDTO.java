@@ -5,16 +5,18 @@ import tm.ugur.models.PlaceCategory;
 
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class PlaceDTO extends AbstractDTO{
 
-    private String title;
+    private Map<String, String> titles;
 
-    private String image;
+    private Map<String, String> address;
 
-    private String address;
+    private List<PlaceImageDTO> images;
 
+    private PlaceThumbDTO thumb;
     private String website;
 
     private String email;
@@ -35,48 +37,23 @@ public class PlaceDTO extends AbstractDTO{
     }
 
 
-    public PlaceDTO(String title, String image, String address, String website, String email) {
-        this.title = title;
-        this.image = image;
-        this.address = address;
+    public PlaceDTO(String website, String email) {
         this.website = website;
         this.email = email;
     }
 
-    public PlaceDTO(String title, String image, String address, String website, String email, PointDTO location, List<PlacePhoneDTO> phones, List<SocialNetworkDTO> socialNetworks, PlaceCategoryDTO placeCategory) {
-        this.title = title;
-        this.image = image;
-        this.address = address;
+    public PlaceDTO(String website,
+                    String email,
+                    PointDTO location,
+                    List<PlacePhoneDTO> phones,
+                    List<SocialNetworkDTO> socialNetworks,
+                    PlaceCategoryDTO placeCategory) {
         this.website = website;
         this.email = email;
         this.location = location;
         this.phones = phones;
         this.socialNetworks = socialNetworks;
         this.placeCategory = placeCategory;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public String getWebsite() {
@@ -143,32 +120,35 @@ public class PlaceDTO extends AbstractDTO{
         isFavorite = favorite;
     }
 
-    @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-        PlaceDTO placeDTO = (PlaceDTO) object;
-        return Objects.equals(title, placeDTO.title) && Objects.equals(image, placeDTO.image) && Objects.equals(address, placeDTO.address) && Objects.equals(website, placeDTO.website) && Objects.equals(email, placeDTO.email);
+    public Map<String, String> getTitles() {
+        return titles;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(title, image, address, website, email);
+    public void setTitles(Map<String, String> titles) {
+        this.titles = titles;
     }
 
-    @Override
-    public String toString() {
-        return "PlaceDTO{" +
-                "title='" + title + '\'' +
-                ", image='" + image + '\'' +
-                ", address='" + address + '\'' +
-                ", website='" + website + '\'' +
-                ", email='" + email + '\'' +
-                ", location=" + location +
-                ", phones=" + phones +
-                ", socialNetworks=" + socialNetworks +
-                ", placeCategory=" + placeCategory +
-                ", id=" + id +
-                '}';
+    public Map<String, String> getAddress() {
+        return address;
+    }
+
+    public void setAddress(Map<String, String> address) {
+        this.address = address;
+    }
+
+    public List<PlaceImageDTO> getImages() {
+        return images;
+    }
+
+    public void setImages(List<PlaceImageDTO> images) {
+        this.images = images;
+    }
+
+    public PlaceThumbDTO getThumb() {
+        return thumb;
+    }
+
+    public void setThumb(PlaceThumbDTO thumb) {
+        this.thumb = thumb;
     }
 }

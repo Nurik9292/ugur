@@ -46,6 +46,7 @@ public class BusApiService {
 
     public String getNextStop(long id, String carNumber){
         Route route = routeRepository.findById(id).orElseThrow(RouteNotFoundException::new);
+        System.out.println(route.getNumber() + " " + carNumber);
         BusDTO bus =  redisBusService.getBuses(
                 String.valueOf(route.getNumber()))
                 .stream().filter(b -> b.getCarNumber().equals(carNumber))
@@ -58,17 +59,17 @@ public class BusApiService {
                     .filter(s -> s.getIndex() > bus.getIndex())
                     .map(StartRouteStop::getStop)
                     .findFirst()
-                    .orElseThrow(() -> new IllegalStateException("Stop not found"));
+                    .orElse(null);
         } else {
             stop = route.getEndRouteStops()
                     .stream()
                     .filter(s -> s.getIndex() > bus.getIndex())
                     .map(EndRouteStop::getStop)
                     .findFirst()
-                    .orElseThrow(() -> new IllegalStateException("Stop not found"));
+                    .orElse(null);
         }
 
-        return stop.getName();
+        return stop !=  null ? stop.getName() : "Stop not found";
      }
 
 

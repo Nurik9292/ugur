@@ -216,19 +216,18 @@ function displayValidationErrors(errors) {
 function loadSubcategories(categoryId) {
     axios.get(host + "/place-categories/getSubcategories/" + categoryId)
         .then(res => {
-
             const response = res.data.map(item => ({
                 id: item.id,
-                translations: item.translations.filter(translation => translation.locale === 'ru')
+                title: item.titles.ru
             }));
+
 
             const placeSubCategorySelect = document.getElementById("placeSubCategory");
             placeSubCategorySelect.innerHTML = "";
             response.forEach(function (subCategory) {
                 let option = document.createElement("option");
-                console.log(subCategory)
                 option.value = subCategory.id;
-                option.textContent = subCategory.translations[0].title;
+                option.textContent = subCategory.title;
                 placeSubCategorySelect.appendChild(option);
             })
         }).catch(err => {
