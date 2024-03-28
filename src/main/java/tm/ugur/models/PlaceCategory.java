@@ -37,6 +37,10 @@ public class PlaceCategory extends AbstractEntity{
 
     }
 
+    public PlaceCategory(List<PlaceCategoryTranslation> translations){
+            this.translations = translations;
+    }
+
     public long getId() {
         return id;
     }

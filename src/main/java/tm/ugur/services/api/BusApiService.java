@@ -14,6 +14,7 @@ import tm.ugur.util.mappers.BusMapper;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -54,19 +55,14 @@ public class BusApiService {
 
         Stop stop;
         if (bus.getSide().equals("front")) {
-            stop = route.getStartRouteStops()
+           stop =  route.getStartRouteStops()
                     .stream()
-                    .filter(s -> s.getIndex() > bus.getIndex())
-                    .map(StartRouteStop::getStop)
-                    .findFirst()
-                    .orElse(null);
+                    .filter(s -> s.getIndex() > bus.getIndex()).toList().getFirst().getStop();
+
         } else {
             stop = route.getEndRouteStops()
                     .stream()
-                    .filter(s -> s.getIndex() > bus.getIndex())
-                    .map(EndRouteStop::getStop)
-                    .findFirst()
-                    .orElse(null);
+                    .filter(s -> s.getIndex() > bus.getIndex()).toList().getFirst().getStop();
         }
 
         return stop !=  null ? stop.getName() : "Stop not found";

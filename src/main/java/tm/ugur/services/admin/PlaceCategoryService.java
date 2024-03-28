@@ -69,6 +69,13 @@ public class PlaceCategoryService {
         pct.forEach(p -> p.setPlaceCategory(newPlaceCategory));
     }
 
+    @Transactional
+    public PlaceCategory store(PlaceCategory placeCategory){
+        placeCategory.setCreatedAt(new Date());
+        placeCategory.setUpdatedAt(new Date());
+        return placeCategoryRepository.save(placeCategory);
+    }
+
     public Optional<PlaceCategory> findOne(long id){
         return placeCategoryRepository.findById(id);
     }

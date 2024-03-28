@@ -19,12 +19,14 @@ public class PlaceSubCategoryTranslationService {
         this.translationRepository = translationRepository;
     }
 
+    @Transactional
     public PlaceSubCategoryTranslation store(PlaceSubCategoryTranslation placeSubCategoryTranslation){
         placeSubCategoryTranslation.setCreatedAt(new Date());
         placeSubCategoryTranslation.setUpdatedAt(new Date());
         return translationRepository.save(placeSubCategoryTranslation);
     }
 
+    @Transactional
     public void update(PlaceSubCategoryTranslation placeSubCategoryTranslation, String title){
         placeSubCategoryTranslation.setTitle(title);
         placeSubCategoryTranslation.setUpdatedAt(new Date());

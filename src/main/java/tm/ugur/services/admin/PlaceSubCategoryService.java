@@ -71,6 +71,13 @@ public class PlaceSubCategoryService {
 
     }
 
+    @Transactional
+    public PlaceSubCategory store(PlaceSubCategory placeSubCategory){
+        placeSubCategory.setCreatedAt(new Date());
+        placeSubCategory.setUpdatedAt(new Date());
+        return placeSubCategoryRepository.save(placeSubCategory);
+    }
+
     public Optional<PlaceSubCategory> findOne(long id){
         return placeSubCategoryRepository.findById(id);
     }

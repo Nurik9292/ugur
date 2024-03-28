@@ -37,6 +37,11 @@ public class PlaceSubCategory extends AbstractEntity{
     public PlaceSubCategory() {
     }
 
+    public PlaceSubCategory(PlaceCategory placeCategory, List<PlaceSubCategoryTranslation> translations) {
+        this.placeCategory = placeCategory;
+        this.translations = translations;
+    }
+
     public PlaceSubCategory(long id) {
         this.id = id;
     }
