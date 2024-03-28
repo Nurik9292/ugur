@@ -82,6 +82,14 @@ public class PlaceCategory extends AbstractEntity{
         this.translations = translations;
     }
 
+    public List<Place> getPlaces() {
+        return places;
+    }
+
+    public void setPlaces(List<Place> places) {
+        this.places = places;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;

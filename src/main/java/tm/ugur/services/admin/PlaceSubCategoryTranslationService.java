@@ -7,6 +7,8 @@ import tm.ugur.models.PlaceSubCategoryTranslation;
 import tm.ugur.repo.PlaceSubCategoryTranslationRepository;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -31,5 +33,9 @@ public class PlaceSubCategoryTranslationService {
         placeSubCategoryTranslation.setTitle(title);
         placeSubCategoryTranslation.setUpdatedAt(new Date());
         translationRepository.save(placeSubCategoryTranslation);
+    }
+
+    public List<PlaceSubCategoryTranslation> findByLocaleAndTitle(String locale, String title){
+        return translationRepository.findByLocaleAndTitle(locale, title);
     }
 }

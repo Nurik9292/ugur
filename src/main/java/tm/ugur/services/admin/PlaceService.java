@@ -14,6 +14,7 @@ import tm.ugur.repo.PlacePhoneRepository;
 import tm.ugur.repo.PlaceRepository;
 import tm.ugur.repo.SocialNetworkRepository;
 import tm.ugur.storage.FileSystemStorageService;
+import tm.ugur.util.ImageDownload;
 import tm.ugur.util.pagination.PaginationService;
 
 import java.util.*;
@@ -32,6 +33,7 @@ public class PlaceService {
     private final PlaceImageService placeImageService;
     private final PlaceTranslationService translationService;
     private final PlaceThumbService thumbService;
+    private final ImageDownload imageDownload;
 
     @Autowired
     public PlaceService(PlaceRepository placeRepository,
@@ -42,7 +44,8 @@ public class PlaceService {
                         FileSystemStorageService storageService,
                         PlaceImageService placeImageService,
                         PlaceTranslationService translationService,
-                        PlaceThumbService thumbService) {
+                        PlaceThumbService thumbService,
+                        ImageDownload imageDownload) {
         this.placeRepository = placeRepository;
         this.placePhoneRepository = placePhoneRepository;
         this.socialNetworkRepository = socialNetworkRepository;
@@ -52,6 +55,7 @@ public class PlaceService {
         this.placeImageService = placeImageService;
         this.translationService = translationService;
         this.thumbService = thumbService;
+        this.imageDownload = imageDownload;
     }
 
     public List<Place> findAll(){
@@ -125,6 +129,45 @@ public class PlaceService {
         savedTranslations.forEach(translation -> translation.setPlace(finalPlace));
         if (Objects.nonNull(savedThumb))
             savedThumb.setPlace(finalPlace);
+    }
+
+    @Transactional
+    public void store(PlaceCategory placeCategory,
+                       PlaceSubCategory placeSubCategory,
+                       String title_tm,
+                       String title_ru,
+                       String address_tm,
+                       String address_ru,
+                       String image,
+                       double latitude,
+                       double longitude){
+
+        Place place = new Place();
+        place.setPlaceSubCategory(placeSubCategory);
+        place.setPlaceCategory(placeCategory);
+        place.setLocation(geometryFactory.createPoint(new Coordinate(latitude, longitude)));
+
+        Set<PlaceTranslation>  translations = Set.of(
+                translationService.store(new PlaceTranslation("tm", title_tm, address_tm)),
+                translationService.store(new PlaceTranslation("ru", title_ru, address_ru)));
+        place.setTranslations(translations);
+
+        byte[] byteImages = imageDownload.getImageByte(image);
+
+        PlaceImage placeImage = placeImageService.store(new PlaceImage(storageService.store(byteImages,
+                        "place", 360, 620)));
+        place.setImages(new ArrayList<>(List.of(placeImage)));
+        PlaceThumb placeThumb = thumbService.store(new PlaceThumb(storageService.store(byteImages,
+                        "place/thumb", 64, 64)));
+        place.setThumbs(placeThumb);
+
+
+        place.setCreatedAt(new Date());
+        place.setUpdatedAt(new Date());
+
+        Place newPlace = placeRepository.save(place);
+        placeImage.setPlace(newPlace);
+        placeThumb.setPlace(newPlace);
     }
 
     @Transactional

@@ -1,6 +1,7 @@
 package tm.ugur.storage;
 
 import jakarta.annotation.PostConstruct;
+import net.coobird.thumbnailator.Thumbnails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -12,14 +13,15 @@ import tm.ugur.util.errors.storage.StorageException;
 import tm.ugur.util.errors.storage.StorageFileNotFoundException;
 import tm.ugur.util.files.FileResize;
 
-import javax.xml.crypto.Data;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -93,6 +95,25 @@ public class FileSystemStorageService implements StorageService{
         } catch (IOException e) {
             logger.error("Failed to store file " + e.getMessage());
             throw new StorageException("Failed to store file.", e);
+        }
+
+    }
+
+    public String store(byte[] imageBytes, String folder, int width, int height){
+        InputStream inputStream = new ByteArrayInputStream(imageBytes);
+        try {
+            Date date = new Date();
+
+            String imageName = folder + "/" + date.getTime() + ".jpg";
+
+            String filePath = rootLocation + "/" + imageName;
+
+            fileResize.resize(inputStream, filePath, width, height);
+
+            return "/api/images/" + imageName;
+        } catch (IOException e) {
+            logger.error("Failed to store file from api" + e.getMessage());
+            throw new StorageException("Failed to store file from api.", e);
         }
 
     }
