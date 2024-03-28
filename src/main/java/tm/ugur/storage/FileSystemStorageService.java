@@ -100,8 +100,10 @@ public class FileSystemStorageService implements StorageService{
     }
 
     public String store(byte[] imageBytes, String folder, int width, int height){
-        InputStream inputStream = new ByteArrayInputStream(imageBytes);
-        try {
+
+        try(InputStream inputStream = new ByteArrayInputStream(imageBytes);) {
+            Files.createDirectories(Path.of( rootLocation + "/" + folder));
+
             Date date = new Date();
 
             String imageName = folder + "/" + date.getTime() + ".jpg";

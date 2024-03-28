@@ -1,0 +1,913 @@
+{
+"places": [
+    {
+        "id": 583,
+        "name_tm": "Şowhunly Nesil - oýunlar toplumy",
+        "name_ru": "Шовхунлы Несил - игровой комплекс",
+        "image": "sowhunly-nesil-oyunlar-toplumy_20230815112610.jpg",
+        "address_tm": "\"Hazar\" we \"Berkarar\" myhmanhanalary",
+        "address_ru": "отели \"Хазар\" и \"Беркарар\"",
+        "map_url": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1817.8276791516412!2d52.824122299246966!3d39.9814220266954!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x402c19a3bd3c0405%3A0x73da2355ea8a164e!2z0JPQvtGB0YLQuNC90LjRhtCwICLQpdCw0LfQsNGAIg!5e0!3m2!1sru!2sus!4v1692080734150!5m2!1sru!2sus\" width=\"400\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+        "is_open": true,
+        "slug": "sowhunly-nesil-oyunlar-toplumy-583",
+        "has_post": false,
+        "is_official": false,
+        "latitude": 39.980886762723145,
+        "longitude": 52.824830413033645,
+        "star": 0,
+        "view_count": 903,
+        "created_at": "2023-07-27 15:52",
+        "categories": [
+            {
+                "id": 5594,
+                "category_id": 98,
+                "name_tm": "Awaza",
+                "name_ru": "Аваза",
+                "slug": "awaza-98"
+            },
+            {
+                "id": 5595,
+                "category_id": 111,
+                "name_tm": "Çagalar üçin",
+                "name_ru": "Для детей",
+                "slug": "cagalar-ucin-111"
+            }
+        ]
+    },
+    {
+        "id": 475,
+        "name_tm": "Köpetdag Restoran",
+        "name_ru": "Ресторан Копетдаг",
+        "image": "kopetdag-restoran_20230707161632.jpg",
+        "address_tm": "Awaza kanalyň kenary, Ýelken Ýaht Klubyň golaýy",
+        "address_ru": "На берегу канала Аваза, не далеко от Яхт-клуб \"Yelken\"",
+        "map_url": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12235.18471179312!2d52.878661436349525!3d39.945948594076725!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x402c1b7a6f2a2ea7%3A0x31b9bf36827baf42!2sKopetdag%20restoran!5e0!3m2!1sru!2s!4v1688728498969!5m2!1sru!2s\" width=\"600\" height=\"450\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+        "is_open": true,
+        "slug": "kopetdag-restoran-475",
+        "has_post": true,
+        "is_official": false,
+        "latitude": 39.94923314326321,
+        "longitude": 52.8821450449016,
+        "star": 0,
+        "view_count": 1686,
+        "created_at": "2023-07-07 16:16",
+        "categories": [
+            {
+                "id": 3897,
+                "category_id": 98,
+                "name_tm": "Awaza",
+                "name_ru": "Аваза",
+                "slug": "awaza-98"
+            },
+            {
+                "id": 3898,
+                "category_id": 130,
+                "name_tm": "Döner",
+                "name_ru": "Дёнер",
+                "slug": "doner-130"
+            },
+            {
+                "id": 3899,
+                "category_id": 124,
+                "name_tm": "Eltip bermek",
+                "name_ru": "Доставка",
+                "slug": "eltip-bermek-124"
+            },
+            {
+                "id": 3900,
+                "category_id": 123,
+                "name_tm": "Fastfood",
+                "name_ru": "Fastfood",
+                "slug": "fastfood-123"
+            },
+            {
+                "id": 3901,
+                "category_id": 61,
+                "name_tm": "Kofe",
+                "name_ru": "Кофе",
+                "slug": "kofe-61"
+            },
+            {
+                "id": 3902,
+                "category_id": 68,
+                "name_tm": "Mangal",
+                "name_ru": "Мангал",
+                "slug": "mangal-68"
+            },
+            {
+                "id": 3903,
+                "category_id": 55,
+                "name_tm": "Milli tagamlar",
+                "name_ru": "Национальные блюда",
+                "slug": "milli-tagamlar-55"
+            },
+            {
+                "id": 3904,
+                "category_id": 63,
+                "name_tm": "Pizza",
+                "name_ru": "Пицца",
+                "slug": "pizza-63"
+            },
+            {
+                "id": 3905,
+                "category_id": 66,
+                "name_tm": "Süýjülikler",
+                "name_ru": "Сладости",
+                "slug": "suyjulikler-66"
+            }
+        ]
+    },
+    {
+        "id": 474,
+        "name_tm": "Sümmül Kafe",
+        "name_ru": "Кафе Суммул",
+        "image": "summul-kafe_20230707153726.jpg",
+        "address_tm": "Awaza kanalyň kenary, Hazyna myhmanhananyň golaýy",
+        "address_ru": "На берегу канала Аваза, не далеко от отеля Хазына",
+        "map_url": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7274.549288524238!2d52.8724928908116!3d39.95097999931248!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x402c1b88e3acd9cb%3A0xd91f3c9a6e6075f9!2sSummul%20cafe!5e0!3m2!1sru!2s!4v1688724798147!5m2!1sru!2s\" width=\"600\" height=\"450\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+        "is_open": true,
+        "slug": "summul-kafe-474",
+        "has_post": true,
+        "is_official": false,
+        "latitude": 39.95249820259129,
+        "longitude": 52.87875863068287,
+        "star": 0,
+        "view_count": 1791,
+        "created_at": "2023-07-07 15:37",
+        "categories": [
+            {
+                "id": 4898,
+                "category_id": 98,
+                "name_tm": "Awaza",
+                "name_ru": "Аваза",
+                "slug": "awaza-98"
+            },
+            {
+                "id": 4899,
+                "category_id": 123,
+                "name_tm": "Fastfood",
+                "name_ru": "Fastfood",
+                "slug": "fastfood-123"
+            },
+            {
+                "id": 4900,
+                "category_id": 61,
+                "name_tm": "Kofe",
+                "name_ru": "Кофе",
+                "slug": "kofe-61"
+            },
+            {
+                "id": 4901,
+                "category_id": 68,
+                "name_tm": "Mangal",
+                "name_ru": "Мангал",
+                "slug": "mangal-68"
+            },
+            {
+                "id": 4902,
+                "category_id": 55,
+                "name_tm": "Milli tagamlar",
+                "name_ru": "Национальные блюда",
+                "slug": "milli-tagamlar-55"
+            },
+            {
+                "id": 4903,
+                "category_id": 63,
+                "name_tm": "Pizza",
+                "name_ru": "Пицца",
+                "slug": "pizza-63"
+            },
+            {
+                "id": 4904,
+                "category_id": 60,
+                "name_tm": "Steýk",
+                "name_ru": "Стейк",
+                "slug": "steyk-60"
+            },
+            {
+                "id": 4905,
+                "category_id": 66,
+                "name_tm": "Süýjülikler",
+                "name_ru": "Сладости",
+                "slug": "suyjulikler-66"
+            }
+        ]
+    },
+    {
+        "id": 463,
+        "name_tm": "Dispetçer Taksi Awaza",
+        "name_ru": "Диспетчер такси Аваза",
+        "image": "dispetcer-taxi-awaza_20230703225903.jpg",
+        "address_tm": "",
+        "address_ru": "",
+        "map_url": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1528.4761185769853!2d52.873483058721924!3d39.98717270000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x402c17535a3cda8f%3A0x8153ddc9fdaaeba4!2sDispetcer%20TAXI%20AWAZA!5e0!3m2!1sru!2s!4v1688407128401!5m2!1sru!2s\" width=\"400\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+        "is_open": true,
+        "slug": "dispetcer-taksi-awaza-463",
+        "has_post": false,
+        "is_official": false,
+        "latitude": 39.98726723348611,
+        "longitude": 52.87460422203064,
+        "star": 0,
+        "round_the_clock": true,
+        "view_count": 1748,
+        "created_at": "2023-07-03 22:59",
+        "categories": [
+            {
+                "id": 5003,
+                "category_id": 98,
+                "name_tm": "Awaza",
+                "name_ru": "Аваза",
+                "slug": "awaza-98"
+            }
+        ]
+    },
+    {
+        "id": 454,
+        "name_tm": "Akwapark Awaza ",
+        "name_ru": "Аквапарк Аваза ",
+        "image": "akwapark-awaza_20230629220012.jpg",
+        "address_tm": "Kenardan 2-nji setir",
+        "address_ru": "2-й ряд от берега",
+        "map_url": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3636.7052001738816!2d52.842574860931926!3d39.9616875555217!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x402c1a2b4ead95d1%3A0xcdfd6fe4395de57e!2z0JrRgNGL0YLRi9C5INCw0LrQstCw0L_QsNGA0Lo!5e0!3m2!1sru!2s!4v1688057993518!5m2!1sru!2s\" width=\"400\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+        "is_open": true,
+        "slug": "akwapark-awaza-454",
+        "has_post": true,
+        "is_official": false,
+        "latitude": 39.96165821762833,
+        "longitude": 52.843416942226966,
+        "star": 0,
+        "round_the_clock": true,
+        "view_count": 2367,
+        "created_at": "2023-06-29 22:00",
+        "categories": [
+            {
+                "id": 4978,
+                "category_id": 98,
+                "name_tm": "Awaza",
+                "name_ru": "Аваза",
+                "slug": "awaza-98"
+            },
+            {
+                "id": 4979,
+                "category_id": 101,
+                "name_tm": "Basseýn we Hammam",
+                "name_ru": "Бассейн и Баня",
+                "slug": "basseyn-we-hammam-101"
+            }
+        ]
+    },
+    {
+        "id": 453,
+        "name_tm": "La Tartine (Gämi myhmanhana)",
+        "name_ru": "LaTartine (Гами отел)",
+        "image": "la-tartine-gami-myhmanhana_20230629202955.jpg",
+        "address_tm": "Gämi myhmanhanasy, 1-nji gat",
+        "address_ru": "Гями отель, 1-й этаж ",
+        "map_url": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d908.9447885305432!2d52.82507831255164!3d39.979095388327245!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x402c19a23b8c1243%3A0x623b1457cc01e98d!2z0JPQvtGB0YLQuNC90LjRhtCwIMKr0JPRj9C80LjCuw!5e0!3m2!1sru!2sus!4v1688720839057!5m2!1sru!2sus\" width=\"600\" height=\"450\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+        "is_open": true,
+        "slug": "la-tartine-gami-myhmanhana-453",
+        "has_post": true,
+        "is_official": false,
+        "latitude": 39.979328297079526,
+        "longitude": 52.82512023206905,
+        "star": 0,
+        "round_the_clock": true,
+        "view_count": 1696,
+        "created_at": "2023-06-29 20:29",
+        "categories": [
+            {
+                "id": 4974,
+                "category_id": 98,
+                "name_tm": "Awaza",
+                "name_ru": "Аваза",
+                "slug": "awaza-98"
+            },
+            {
+                "id": 4975,
+                "category_id": 69,
+                "name_tm": "Ertirlik",
+                "name_ru": "Завтраки",
+                "slug": "ertirlik-69"
+            },
+            {
+                "id": 4976,
+                "category_id": 123,
+                "name_tm": "Fastfood",
+                "name_ru": "Fastfood",
+                "slug": "fastfood-123"
+            },
+            {
+                "id": 4977,
+                "category_id": 61,
+                "name_tm": "Kofe",
+                "name_ru": "Кофе",
+                "slug": "kofe-61"
+            }
+        ]
+    },
+    {
+        "id": 452,
+        "name_tm": "Piers restoran",
+        "name_ru": "Piers ресторан",
+        "image": "piers-restoran_20230629194956.jpg",
+        "address_tm": "Gämi oteliň pirsinde",
+        "address_ru": "на пирсе отеля Гями",
+        "map_url": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4323.771434154769!2d52.822350367984214!3d39.97787851117576!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x402c19fc22350341%3A0x2872c5cbb8eaab93!2sPiers!5e0!3m2!1sru!2s!4v1688050145073!5m2!1sru!2s\" width=\"400\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+        "is_open": true,
+        "slug": "piers-restoran-452",
+        "has_post": false,
+        "is_official": false,
+        "latitude": 39.97851798513823,
+        "longitude": 52.821394477510715,
+        "star": 0,
+        "round_the_clock": true,
+        "view_count": 1160,
+        "created_at": "2023-06-29 19:49",
+        "categories": [
+            {
+                "id": 4969,
+                "category_id": 98,
+                "name_tm": "Awaza",
+                "name_ru": "Аваза",
+                "slug": "awaza-98"
+            },
+            {
+                "id": 4970,
+                "category_id": 64,
+                "name_tm": "Burger",
+                "name_ru": "Бургер",
+                "slug": "burger-64"
+            },
+            {
+                "id": 4971,
+                "category_id": 123,
+                "name_tm": "Fastfood",
+                "name_ru": "Fastfood",
+                "slug": "fastfood-123"
+            },
+            {
+                "id": 4972,
+                "category_id": 61,
+                "name_tm": "Kofe",
+                "name_ru": "Кофе",
+                "slug": "kofe-61"
+            },
+            {
+                "id": 4973,
+                "category_id": 68,
+                "name_tm": "Mangal",
+                "name_ru": "Мангал",
+                "slug": "mangal-68"
+            }
+        ]
+    },
+    {
+        "id": 451,
+        "name_tm": "MADO-KEBAPÇY (\"Ýelken\" ýaht klub)",
+        "name_ru": "MADO-KEBAPÇY (Яхт-клуб \"Ýelken\")",
+        "image": "mado-kebapcy-yelken-yaht-klub_20230629192821.jpg",
+        "address_tm": "\"Ýelken\" ýaht kluby, basseýniň ýanynda",
+        "address_ru": "Яхт-клуб \"Ýelken\", возле бассейна",
+        "map_url": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1529.4067414744527!2d52.87737525910255!3d39.94556154670838!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x402c1b6dfe1c627d%3A0x71697f3d232dcf98!2z0JrQsNGE0LUgIk1BRE8i!5e0!3m2!1sru!2s!4v1688047395854!5m2!1sru!2s\" width=\"400\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+        "is_open": true,
+        "slug": "mado-kebapcy-yelken-yaht-klub-451",
+        "has_post": true,
+        "is_official": false,
+        "latitude": 39.9456250441841,
+        "longitude": 52.87783907411234,
+        "star": 0,
+        "round_the_clock": true,
+        "view_count": 1681,
+        "created_at": "2023-06-29 19:28",
+        "categories": [
+            {
+                "id": 5819,
+                "category_id": 98,
+                "name_tm": "Awaza",
+                "name_ru": "Аваза",
+                "slug": "awaza-98"
+            },
+            {
+                "id": 5820,
+                "category_id": 69,
+                "name_tm": "Ertirlik",
+                "name_ru": "Завтраки",
+                "slug": "ertirlik-69"
+            },
+            {
+                "id": 5821,
+                "category_id": 123,
+                "name_tm": "Fastfood",
+                "name_ru": "Fastfood",
+                "slug": "fastfood-123"
+            },
+            {
+                "id": 5822,
+                "category_id": 66,
+                "name_tm": "Süýjülikler",
+                "name_ru": "Сладости",
+                "slug": "suyjulikler-66"
+            }
+        ]
+    },
+    {
+        "id": 450,
+        "name_tm": "Ýelken Кафе ",
+        "name_ru": "Кафе \"Yelken\" Парус",
+        "image": "yelken_20230629185514.jpg",
+        "address_tm": "Awaza derýa, Kuwwat myhmanhananyň golaýynda",
+        "address_ru": "река Аваза, возле отеля Кувват",
+        "map_url": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3058.480635012087!2d52.865141596133114!3d39.95300554793274!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x402c1a497672eb2f%3A0xdbf018d16065467c!2z0JrQsNGE0LUgIlllbGtlbiIgKNCf0LDRgNGD0YEp!5e0!3m2!1sru!2s!4v1688046869276!5m2!1sru!2s\" width=\"400\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+        "is_open": true,
+        "slug": "yelken-450",
+        "has_post": true,
+        "is_official": false,
+        "latitude": 39.95271046996394,
+        "longitude": 52.8666819936137,
+        "star": 0,
+        "round_the_clock": true,
+        "view_count": 2123,
+        "created_at": "2023-06-29 18:55",
+        "categories": [
+            {
+                "id": 4960,
+                "category_id": 98,
+                "name_tm": "Awaza",
+                "name_ru": "Аваза",
+                "slug": "awaza-98"
+            },
+            {
+                "id": 4961,
+                "category_id": 69,
+                "name_tm": "Ertirlik",
+                "name_ru": "Завтраки",
+                "slug": "ertirlik-69"
+            },
+            {
+                "id": 4962,
+                "category_id": 123,
+                "name_tm": "Fastfood",
+                "name_ru": "Fastfood",
+                "slug": "fastfood-123"
+            }
+        ]
+    },
+    {
+        "id": 449,
+        "name_tm": "Burger Zone (Awaza)",
+        "name_ru": "Burger Zone (Аваза)",
+        "image": "burger-zone-hazar-myhmanhana_20230627231510.jpg",
+        "address_tm": "Hazar Myhmanhanasy, 1-nji gat",
+        "address_ru": "Отель Хазар, 1-й этаж",
+        "map_url": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d321.35221968258827!2d52.824236393765766!3d39.98085857521631!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x402c19cf32e6787f%3A0x959706de1cd77b62!2sBurger%20Zone!5e0!3m2!1sru!2s!4v1687889607470!5m2!1sru!2s\" width=\"400\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+        "is_open": true,
+        "slug": "burger-zone-awaza-449",
+        "has_post": true,
+        "is_official": false,
+        "latitude": 39.98081841800894,
+        "longitude": 52.82439665321441,
+        "star": 0,
+        "view_count": 1489,
+        "created_at": "2023-06-27 23:15",
+        "categories": [
+            {
+                "id": 3726,
+                "category_id": 98,
+                "name_tm": "Awaza",
+                "name_ru": "Аваза",
+                "slug": "awaza-98"
+            },
+            {
+                "id": 3727,
+                "category_id": 64,
+                "name_tm": "Burger",
+                "name_ru": "Бургер",
+                "slug": "burger-64"
+            },
+            {
+                "id": 3728,
+                "category_id": 123,
+                "name_tm": "Fastfood",
+                "name_ru": "Fastfood",
+                "slug": "fastfood-123"
+            }
+        ]
+    },
+    {
+        "id": 448,
+        "name_tm": "Altyn Çag restoran",
+        "name_ru": "Ресторан Алтын Чаг",
+        "image": "altyn-cag-restoran_20230627230108.jpg",
+        "address_tm": "Awaza kanalynyň kenary, Merdana myhmanhananyň golaýy",
+        "address_ru": "На берегу канала Аваза, не далеко от отеля Мердана",
+        "map_url": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2571.312822332084!2d52.83045121527147!3d39.967698629973036!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x402c1982768f322b%3A0x1ff92b5924e9fd94!2z0KDQtdGB0YLQvtGA0LDQvSAiQWx0eW4gw4dhZyI!5e0!3m2!1sru!2s!4v1687888822922!5m2!1sru!2s\" width=\"400\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+        "is_open": true,
+        "slug": "altyn-cag-restoran-448",
+        "has_post": true,
+        "is_official": false,
+        "latitude": 39.968002862823234,
+        "longitude": 52.83332016016999,
+        "star": 0,
+        "view_count": 1204,
+        "created_at": "2023-06-27 23:01",
+        "categories": [
+            {
+                "id": 5829,
+                "category_id": 98,
+                "name_tm": "Awaza",
+                "name_ru": "Аваза",
+                "slug": "awaza-98"
+            },
+            {
+                "id": 5830,
+                "category_id": 69,
+                "name_tm": "Ertirlik",
+                "name_ru": "Завтраки",
+                "slug": "ertirlik-69"
+            },
+            {
+                "id": 5831,
+                "category_id": 123,
+                "name_tm": "Fastfood",
+                "name_ru": "Fastfood",
+                "slug": "fastfood-123"
+            },
+            {
+                "id": 5832,
+                "category_id": 68,
+                "name_tm": "Mangal",
+                "name_ru": "Мангал",
+                "slug": "mangal-68"
+            },
+            {
+                "id": 5833,
+                "category_id": 63,
+                "name_tm": "Pizza",
+                "name_ru": "Пицца",
+                "slug": "pizza-63"
+            },
+            {
+                "id": 5834,
+                "category_id": 60,
+                "name_tm": "Steýk",
+                "name_ru": "Стейк",
+                "slug": "steyk-60"
+            },
+            {
+                "id": 5835,
+                "category_id": 58,
+                "name_tm": "Ýewropa tagamlary",
+                "name_ru": "Европейская кухня",
+                "slug": "yewropa-tagamlary-58"
+            }
+        ]
+    },
+    {
+        "id": 447,
+        "name_tm": "Jadyly Kafe",
+        "name_ru": "Кафе Jadyly",
+        "image": "jadyly-kafe_20230627220600.jpg",
+        "address_tm": "Berkarar myhmanhananyň howlysy, kenar tarapy",
+        "address_ru": "На территории отеля Беркарар, возле берега  ",
+        "map_url": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1081.1985299437792!2d52.83181550971674!3d39.9617125265315!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x402c1921ef33fc1b%3A0xccac83159a26f517!2z0JrQsNGE0LUgIkphZHlseSI!5e0!3m2!1sru!2s!4v1688043133430!5m2!1sru!2s\" width=\"400\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+        "is_open": true,
+        "slug": "jadyly-kafe-447",
+        "has_post": true,
+        "is_official": false,
+        "latitude": 39.96167036920482,
+        "longitude": 52.83161826248173,
+        "star": 0,
+        "view_count": 1507,
+        "created_at": "2023-06-27 22:06",
+        "categories": [
+            {
+                "id": 3713,
+                "category_id": 98,
+                "name_tm": "Awaza",
+                "name_ru": "Аваза",
+                "slug": "awaza-98"
+            },
+            {
+                "id": 3714,
+                "category_id": 62,
+                "name_tm": "Doňdurma",
+                "name_ru": "Мороженое",
+                "slug": "dondurma-62"
+            },
+            {
+                "id": 3715,
+                "category_id": 124,
+                "name_tm": "Eltip bermek",
+                "name_ru": "Доставка",
+                "slug": "eltip-bermek-124"
+            },
+            {
+                "id": 3716,
+                "category_id": 123,
+                "name_tm": "Fastfood",
+                "name_ru": "Fastfood",
+                "slug": "fastfood-123"
+            },
+            {
+                "id": 3717,
+                "category_id": 61,
+                "name_tm": "Kofe",
+                "name_ru": "Кофе",
+                "slug": "kofe-61"
+            },
+            {
+                "id": 3718,
+                "category_id": 63,
+                "name_tm": "Pizza",
+                "name_ru": "Пицца",
+                "slug": "pizza-63"
+            }
+        ]
+    },
+    {
+        "id": 446,
+        "name_tm": "Arzuw - Saglygy dikeldiş merkezi",
+        "name_ru": "Арзув - Центр реабилитации здоровья",
+        "image": "arzuw-saglygy-dikeldis-merkezi_20230627214047.jpg",
+        "address_tm": "Kenardan 1-nji setir",
+        "address_ru": "1-й ряд от берега",
+        "map_url": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3058.344938987735!2d52.84737501744385!3d39.95604!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x402c1bcd1e2e249d%3A0xe86861fda3274b9d!2z0KbQtdC90YLRgCDRgNC10LDQsdC40LvQuNGC0LDRhtC40Lgg0LfQtNC-0YDQvtCy0YzRjyDCq9CQ0YDQt9GD0LLCuw!5e0!3m2!1sru!2s!4v1687884037912!5m2!1sru!2s\" width=\"400\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+        "is_open": true,
+        "slug": "arzuw-saglygy-dikeldis-merkezi-446",
+        "has_post": true,
+        "is_official": false,
+        "latitude": 39.95617158473544,
+        "longitude": 52.849660259403265,
+        "star": 0,
+        "round_the_clock": true,
+        "view_count": 1320,
+        "created_at": "2023-06-27 21:40",
+        "categories": [
+            {
+                "id": 4958,
+                "category_id": 98,
+                "name_tm": "Awaza",
+                "name_ru": "Аваза",
+                "slug": "awaza-98"
+            },
+            {
+                "id": 4959,
+                "category_id": 95,
+                "name_tm": "Şypahana",
+                "name_ru": "Санатории",
+                "slug": "sypahana-95"
+            }
+        ]
+    },
+    {
+        "id": 445,
+        "name_tm": " Pälwan Kafe",
+        "name_ru": "Кафе Палван",
+        "image": "palwan-kafe_20230627211503.jpg",
+        "address_tm": "Awaza kanalyň kenary, Akwaparkyň golaýy",
+        "address_ru": "На берегу канала Аваза, не далеко от Аквапарка",
+        "map_url": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3058.147142327271!2d52.85140767243596!3d39.9604628109758!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x402c1b4fc4e60741%3A0xcef2094cc5b28252!2sPALWAN%20ABUNA!5e0!3m2!1sru!2s!4v1687881779209!5m2!1sru!2s\" width=\"400\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+        "is_open": true,
+        "slug": "palwan-kafe-445",
+        "has_post": true,
+        "is_official": false,
+        "latitude": 39.96090344040445,
+        "longitude": 52.85135312684486,
+        "star": 0,
+        "view_count": 1589,
+        "created_at": "2023-06-27 21:15",
+        "categories": [
+            {
+                "id": 3721,
+                "category_id": 98,
+                "name_tm": "Awaza",
+                "name_ru": "Аваза",
+                "slug": "awaza-98"
+            },
+            {
+                "id": 3722,
+                "category_id": 130,
+                "name_tm": "Döner",
+                "name_ru": "Дёнер",
+                "slug": "doner-130"
+            },
+            {
+                "id": 3723,
+                "category_id": 124,
+                "name_tm": "Eltip bermek",
+                "name_ru": "Доставка",
+                "slug": "eltip-bermek-124"
+            },
+            {
+                "id": 3724,
+                "category_id": 123,
+                "name_tm": "Fastfood",
+                "name_ru": "Fastfood",
+                "slug": "fastfood-123"
+            },
+            {
+                "id": 3725,
+                "category_id": 63,
+                "name_tm": "Pizza",
+                "name_ru": "Пицца",
+                "slug": "pizza-63"
+            }
+        ]
+    },
+    {
+        "id": 444,
+        "name_tm": "Daýanç - sagaldyş merkezi",
+        "name_ru": "Даянч - Оздоровительный центр",
+        "image": "dayanc-sagaldys-merkezi_20230627004016.jpg",
+        "address_tm": "Kenardan 1-nji setir",
+        "address_ru": "1-й ряд от берега",
+        "map_url": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2571.613355825985!2d52.84639120926411!3d39.95970800982109!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x402c1bd27902d2b1%3A0x2033341b85c9d6dc!2z0J7Qt9C00L7RgNC-0LLQuNGC0LXQu9GM0L3Ri9C5INGG0LXQvdGC0YAgwqvQlNCw0Y_QvdGHwrs!5e0!3m2!1sru!2s!4v1687808243506!5m2!1sru!2s\" width=\"400\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+        "is_open": true,
+        "slug": "dayanc-sagaldys-merkezi-444",
+        "has_post": true,
+        "is_official": false,
+        "latitude": 39.958629229098314,
+        "longitude": 52.84515521727953,
+        "star": 0,
+        "round_the_clock": true,
+        "view_count": 2250,
+        "created_at": "2023-06-27 00:40",
+        "categories": [
+            {
+                "id": 5459,
+                "category_id": 98,
+                "name_tm": "Awaza",
+                "name_ru": "Аваза",
+                "slug": "awaza-98"
+            },
+            {
+                "id": 5460,
+                "category_id": 95,
+                "name_tm": "Şypahana",
+                "name_ru": "Санатории",
+                "slug": "sypahana-95"
+            }
+        ]
+    },
+    {
+        "id": 443,
+        "name_tm": "A-Coffee (Awaza)",
+        "name_ru": "A-Coffee (Аваза)",
+        "image": "a-coffee-berkarar-oteli_20230627003259.jpg",
+        "address_tm": "Berkarar myhmanhanasy, 1-nji gat",
+        "address_ru": "Отель Беркарар, 1-й этаж",
+        "map_url": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1529.0590741877552!2d52.832323638543905!3d39.96111109287912!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x402c1b9747dfc799%3A0xcff2ddb6679a3082!2sA-COFFEE%20AWAZA!5e0!3m2!1sru!2s!4v1687807843280!5m2!1sru!2s\" width=\"400\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+        "is_open": true,
+        "slug": "a-coffee-awaza-443",
+        "has_post": true,
+        "is_official": false,
+        "latitude": 39.96078269362126,
+        "longitude": 52.834274235524184,
+        "star": 0,
+        "view_count": 903,
+        "created_at": "2023-06-27 00:32",
+        "categories": [
+            {
+                "id": 3731,
+                "category_id": 98,
+                "name_tm": "Awaza",
+                "name_ru": "Аваза",
+                "slug": "awaza-98"
+            },
+            {
+                "id": 3732,
+                "category_id": 61,
+                "name_tm": "Kofe",
+                "name_ru": "Кофе",
+                "slug": "kofe-61"
+            }
+        ]
+    },
+    {
+        "id": 442,
+        "name_tm": "Nebitçi myhmanhanasy",
+        "name_ru": "Отель Небитчи",
+        "image": "nebitci-myhmanhanasy_20230627002038.jpg",
+        "address_tm": "Kenardan 1-nji setir",
+        "address_ru": "1-й ряд от берега",
+        "map_url": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3058.596519527165!2d52.8523399749806!3d39.950413971518344!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x402c1bb5919498ed%3A0xa6a5303d0a25c721!2z0JPQvtGB0YLQuNC90LjRhtCwIMKr0J3QtdCx0LjRgtGH0LjCuw!5e0!3m2!1sru!2s!4v1687807224018!5m2!1sru!2s\" width=\"400\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+        "is_open": true,
+        "slug": "nebitci-myhmanhanasy-442",
+        "has_post": true,
+        "is_official": false,
+        "latitude": 39.950603140055755,
+        "longitude": 52.85491489549823,
+        "star": 0,
+        "round_the_clock": true,
+        "view_count": 1091,
+        "created_at": "2023-06-27 00:20",
+        "categories": [
+            {
+                "id": 5458,
+                "category_id": 98,
+                "name_tm": "Awaza",
+                "name_ru": "Аваза",
+                "slug": "awaza-98"
+            }
+        ]
+    },
+    {
+        "id": 441,
+        "name_tm": "Serdar myhmanhana",
+        "name_ru": "Отель Сердар",
+        "image": "serdar-myhmanhana_20230627001122.jpg",
+        "address_tm": "Kenardan 1-nji setir",
+        "address_ru": "1-й ряд от берега",
+        "map_url": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1529.2836660815376!2d52.85309341853897!3d39.951066714572015!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x402c1bca6868435f%3A0xa812a7b0760ec750!2z0JPQvtGB0YLQuNC90LjRhtCwICLQodC10YDQtNCw0YAi!5e0!3m2!1sru!2s!4v1687806605603!5m2!1sru!2s\" width=\"400\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+        "is_open": true,
+        "slug": "serdar-myhmanhana-441",
+        "has_post": true,
+        "is_official": false,
+        "latitude": 39.95119830887592,
+        "longitude": 52.85313096946318,
+        "star": 0,
+        "round_the_clock": true,
+        "view_count": 1526,
+        "created_at": "2023-06-27 00:11",
+        "categories": [
+            {
+                "id": 5457,
+                "category_id": 98,
+                "name_tm": "Awaza",
+                "name_ru": "Аваза",
+                "slug": "awaza-98"
+            }
+        ]
+    },
+    {
+        "id": 440,
+        "name_tm": "Kerwen - sagaldyş merkezi",
+        "name_ru": "Кервен - Оздоровительный центр ",
+        "image": "kerwen-sagaldys-merkezi_20230627000231.jpg",
+        "address_tm": "Kenardan 1-nji setir",
+        "address_ru": "1-й ряд от берега",
+        "map_url": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3058.6882662462203!2d52.86786211744384!3d39.94836210000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x402c1a4dc0aca60f%3A0xf1a4040707e14cf0!2z0J7Qt9C00L7RgNC-0LLQuNGC0LXQu9GM0L3Ri9C5INGG0LXQvdGC0YAgwqvQmtC10YDQstC10L3Cuw!5e0!3m2!1sru!2s!4v1687806007793!5m2!1sru!2s\" width=\"400\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+        "is_open": true,
+        "slug": "kerwen-sagaldys-merkezi-440",
+        "has_post": true,
+        "is_official": false,
+        "latitude": 39.948559499165675,
+        "longitude": 52.87000788454187,
+        "star": 0,
+        "round_the_clock": true,
+        "view_count": 1691,
+        "created_at": "2023-06-27 00:02",
+        "categories": [
+            {
+                "id": 5455,
+                "category_id": 98,
+                "name_tm": "Awaza",
+                "name_ru": "Аваза",
+                "slug": "awaza-98"
+            },
+            {
+                "id": 5456,
+                "category_id": 95,
+                "name_tm": "Şypahana",
+                "name_ru": "Санатории",
+                "slug": "sypahana-95"
+            }
+        ]
+    },
+    {
+        "id": 439,
+        "name_tm": "Kuwwat - bejeriş sagaldyş merkezi",
+        "name_ru": "Кувват - оздоровительный центр ",
+        "image": "kuwwat-bejeris-sagaldys-merkezi_20230626235027.jpg",
+        "address_tm": "Kenardan 1-nji setir",
+        "address_ru": "1-й ряд от берега",
+        "map_url": "<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3058.7060494616894!2d52.86739589471502!3d39.947964376735506!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x402c1a4d016eb6ef%3A0xc19fed03fcc11a95!2z0J7Qt9C00L7RgNC-0LLQuNGC0LXQu9GM0L3Ri9C5INGG0LXQvdGC0YAgwqvQmtGD0LLQstCw0YLCuw!5e0!3m2!1sru!2s!4v1687805316974!5m2!1sru!2s\" width=\"400\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>",
+        "is_open": true,
+        "slug": "kuwwat-bejeris-sagaldys-merkezi-439",
+        "has_post": true,
+        "is_official": false,
+        "latitude": 39.94848255134311,
+        "longitude": 52.867610471424825,
+        "star": 0,
+        "round_the_clock": true,
+        "view_count": 2004,
+        "created_at": "2023-06-26 23:50",
+        "categories": [
+            {
+                "id": 5453,
+                "category_id": 98,
+                "name_tm": "Awaza",
+                "name_ru": "Аваза",
+                "slug": "awaza-98"
+            },
+            {
+                "id": 5454,
+                "category_id": 95,
+                "name_tm": "Şypahana",
+                "name_ru": "Санатории",
+                "slug": "sypahana-95"
+            }
+        ]
+    }
+]
+}

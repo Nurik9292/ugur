@@ -40,7 +40,6 @@ public class ParserPlaceSeed implements CommandLineRunner {
             places.forEach(place -> {
                 place.getCategories().forEach(category -> {
                     List<PlaceSubCategoryTranslation> translation = translationService.findByLocaleAndTitle("ru", category.getName_ru());
-                    System.out.println(translation);
 
                     if(!translation.isEmpty()){
                         PlaceSubCategory sub = translation.getFirst().getPlaceSubCategory();

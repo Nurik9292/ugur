@@ -34,7 +34,6 @@ public class BusDestinationDirectionSide {
     private final StartRouteStopService startRouteStopService;
     private final GeometryFactory factory;
 
-    private static final int EARTH_RADIUS = 6371;
     private static final Logger logger = LoggerFactory.getLogger(BusDestinationDirectionSide.class);
 
     @Autowired
@@ -57,6 +56,8 @@ public class BusDestinationDirectionSide {
 
             if (route.isPresent()) {
                 List<StartRouteStop> startRouteStops = startRouteStopService.findByRoute(route.get());
+                    logger.info(startRouteStops.getFirst().getStop().toString());
+                    logger.info(startRouteStops.getLast().getStop().toString());
 
                     if(!startRouteStops.isEmpty()) {
 
@@ -71,11 +72,10 @@ public class BusDestinationDirectionSide {
                             bus.setSide("back");
 
 
-                        if(Objects.isNull(bus.getSide())){
-                            double azimuthToA = calculateAzimuth(pointBus.getLat(), pointBus.getLng(), pointA.getX(), pointA.getY());
-                            double azimuthToB = calculateAzimuth(pointBus.getLat(), pointBus.getLng(), pointB.getX(), pointB.getY());
-
-                            bus.setSide(determineDirection(Double.parseDouble(bus.getDir()), azimuthToA, azimuthToB));
+                        if(Objects.isNull(bus.getSide()) || bus.getSide().isBlank()){
+                            bus.setSide(getBusSide(pointA.getX(), pointA.getY(),
+                                    pointB.getX(),pointB.getY(),
+                                    bus.getLocation().getLat(), bus.getLocation().getLng()));
                         }
 
                     }
@@ -97,28 +97,27 @@ public class BusDestinationDirectionSide {
         return distance <= 10;
     }
 
-    private double calculateAzimuth(double lat1, double lon1, double lat2, double lon2) {
-        double dLon = lon2 - lon1;
-        double y = Math.sin(Math.toRadians(dLon)) * Math.cos(Math.toRadians(lat2));
-        double x = Math.cos(Math.toRadians(lat1)) * Math.sin(Math.toRadians(lat2)) -
-                Math.sin(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) * Math.cos(Math.toRadians(dLon));
-        double azimuth = Math.toDegrees(Math.atan2(y, x));
-        return (azimuth + 360) % 360; // Приводим значение азимута к диапазону [0, 360)
-    }
 
-    // Определение направления движения автобуса
-    private  String determineDirection(double currentDirection, double azimuthToA, double azimuthToB) {
-        // Проверяем, к какой точке ближе текущее направление движения
-        double diffToA = Math.abs(azimuthToA - currentDirection);
-        double diffToB = Math.abs(azimuthToB - currentDirection);
 
-        if (diffToA < diffToB) {
-            return "front";
-        } else {
+    public String getBusSide(double ax, double ay,
+                                  double bx, double by,
+                                  double busX, double busY) {
+
+        double vX = bx - ax;
+        double vY = by - ay;
+
+        double busVX = busX - ax;
+        double busVY = busY - ay;
+
+        double scalarProduct = vX * busVX + vY * busVY;
+
+        if (scalarProduct > 0) {
+            return "Bus is moving towards B";
+        } else if (scalarProduct < 0) {
             return "back";
+        } else {
+            return "";
         }
     }
-
-
 
 }
