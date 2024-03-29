@@ -21,12 +21,20 @@ public class ImageController {
         this.storageService = storageService;
     }
 
-    @GetMapping("/{imageName}")
-    public ResponseEntity<Resource> getImage(@PathVariable("imageName") String imageName) {
+    @GetMapping("/place/{imageName}")
+    public ResponseEntity<Resource> getPlaceImage(@PathVariable("imageName") String imageName) {
         System.out.println(imageName);
-        System.out.println("test");
+        Resource image = storageService.loadAsResource("place/" + imageName);
 
-        Resource image = storageService.loadAsResource(imageName);
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(image);
+    }
+
+    @GetMapping("/place/thumb/{imageName}")
+    public ResponseEntity<Resource> getPlaceThumb(@PathVariable("imageName") String imageName) {
+
+        Resource image = storageService.loadAsResource("place/thumb/" + imageName);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG)

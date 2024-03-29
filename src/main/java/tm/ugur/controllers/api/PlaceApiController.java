@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import tm.ugur.dto.PlaceDTO;
+import tm.ugur.models.Place;
 import tm.ugur.services.api.PlaceApiService;
 import tm.ugur.util.errors.places.PlaceErrorResponse;
 import tm.ugur.util.errors.places.PlaceNotFoundException;
@@ -40,7 +41,8 @@ public class PlaceApiController {
 
     @GetMapping("categories/{id}")
     public ResponseEntity<List<PlaceDTO>> getPlaceForCategory(@PathVariable("id") Long id){
-        return ResponseEntity.ok(placeApiService.fetchPlacesForCategory(id));
+        List<PlaceDTO> places = placeApiService.fetchPlacesForCategory(id);
+        return ResponseEntity.ok(places);
     }
 
 

@@ -18,6 +18,7 @@ import tm.ugur.repo.PlaceSubCategoryRepository;
 import tm.ugur.security.ClientDetails;
 import tm.ugur.util.mappers.PlaceMapper;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,12 +59,16 @@ public class PlaceApiService {
 
     public List<PlaceDTO> fetchPlacesForSubCategory(long id){
         Optional<PlaceSubCategory> placeSubCategory = placeSubCategoryRepository.findById(id);
-        return placeRepository.findByPlaceSubCategory(placeSubCategory.orElseThrow()).stream().map(this::convertToDTO).toList();
+        if(placeSubCategory.isEmpty())
+            return Collections.emptyList();
+        return placeRepository.findByPlaceSubCategory(placeSubCategory.get()).stream().map(this::convertToDTO).toList();
     }
 
     public List<PlaceDTO> fetchPlacesForCategory(long id){
         Optional<PlaceCategory> placeCategory = placeCategoryRepository.findById(id);
-        return placeRepository.findByPlaceCategory(placeCategory.orElseThrow()).stream().map(this::convertToDTO).toList();
+        if(placeCategory.isEmpty())
+            return Collections.emptyList();
+        return placeRepository.findByPlaceCategory(placeCategory.get()).stream().map(this::convertToDTO).toList();
     }
 
     private boolean isFavorite(PlaceDTO placeDTO){

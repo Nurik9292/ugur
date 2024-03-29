@@ -2,7 +2,14 @@ package tm.ugur.services.parser;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +23,7 @@ import java.util.List;
 public class ParserService {
 
     public List<PlaceUgur> parser(){
+
         ClassPathResource resource = new ClassPathResource("places.json");
         try(InputStream fis = resource.getInputStream()) {
             byte[] jsonData = fis.readAllBytes();

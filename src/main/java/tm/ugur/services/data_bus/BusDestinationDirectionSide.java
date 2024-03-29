@@ -86,13 +86,13 @@ public class BusDestinationDirectionSide {
     private boolean isAtPointA(Point pointA, PointDTO pointB){
         Point pointTarget = factory.createPoint(new Coordinate(pointB.getLat(), pointB.getLng()));
         double distance = pointA.distance(pointTarget);
-        return distance <= 10;
+        return distance <= 100;
     }
 
     private boolean isAtPointB(Point pointA, PointDTO pointB){
         Point pointTarget = factory.createPoint(new Coordinate(pointB.getLat(), pointB.getLng()));
         double distance = pointA.distance(pointTarget);
-        return distance <= 10;
+        return distance <= 100;
     }
 
 
