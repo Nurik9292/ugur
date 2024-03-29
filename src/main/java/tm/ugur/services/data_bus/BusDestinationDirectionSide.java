@@ -56,8 +56,6 @@ public class BusDestinationDirectionSide {
 
             if (route.isPresent()) {
                 List<StartRouteStop> startRouteStops = startRouteStopService.findByRoute(route.get());
-                    logger.info(startRouteStops.getFirst().getStop().toString());
-                    logger.info(startRouteStops.getLast().getStop().toString());
 
                     if(!startRouteStops.isEmpty()) {
 
