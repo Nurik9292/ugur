@@ -24,6 +24,7 @@ public class ParserPlaceSeed implements CommandLineRunner {
     private final ParserService parserService;
     private final PlaceSubCategoryTranslationService translationService;
 
+
     @Autowired
     public ParserPlaceSeed(PlaceService placeService,
                            ParserService parserService,
@@ -36,7 +37,7 @@ public class ParserPlaceSeed implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         if(placeService.findAll().isEmpty()){
-            List<PlaceUgur> places = parserService.parser();
+            List<PlaceUgur> places = parserService.parserUrl();
 
             places.forEach(place -> {
                 for (Category category : place.getCategories()) {

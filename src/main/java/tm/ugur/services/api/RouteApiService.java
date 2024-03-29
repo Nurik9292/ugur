@@ -13,15 +13,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import tm.ugur.dto.RouteDTO;
 import tm.ugur.dto.StopDTO;
-import tm.ugur.models.Client;
-import tm.ugur.models.Route;
-import tm.ugur.models.Stop;
+import tm.ugur.models.*;
 import tm.ugur.repo.RouteRepository;
 import tm.ugur.security.ClientDetails;
 import tm.ugur.util.errors.route.RouteNotFoundException;
 import tm.ugur.util.mappers.RouteMapper;
 import tm.ugur.util.mappers.StopMapper;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,14 +32,14 @@ public class RouteApiService {
     private final RouteRepository routeRepository;
     private final RouteMapper routeMapper;
     private final StopMapper stopMapper;
-    private final ObjectMapper objectMapper;
 
     @Autowired
-    public RouteApiService(RouteRepository routeRepository, RouteMapper routeMapper, StopMapper stopMapper, ObjectMapper objectMapper) {
+    public RouteApiService(RouteRepository routeRepository,
+                           RouteMapper routeMapper,
+                           StopMapper stopMapper) {
         this.routeRepository = routeRepository;
         this.routeMapper = routeMapper;
         this.stopMapper = stopMapper;
-        this.objectMapper = objectMapper;
     }
 
 
@@ -70,12 +69,19 @@ public class RouteApiService {
 
     public List<StopDTO> getRouteStartStop(Long id){
         Optional<Route> route =  getRoute(id);
-         return route.orElseThrow(RouteNotFoundException::new).getStartStops().stream().map(this::convertToStopDTO).toList();
+         return route.orElseThrow(RouteNotFoundException::new)
+                 .getStartRouteStops().stream()
+                 .sorted(Comparator.comparing(StartRouteStop::getIndex))
+                 .map(rs -> convertToStopDTO(rs.getStop()))
+                 .toList();
     }
 
     public List<StopDTO> getRouteEndStop(Long id){
         Optional<Route> route =  getRoute(id);
-        return route.orElseThrow(RouteNotFoundException::new).getEndStops().stream().map(this::convertToStopDTO).toList();
+        return route.orElseThrow(RouteNotFoundException::new)
+                .getEndRouteStops().stream()
+                .sorted(Comparator.comparing(EndRouteStop::getIndex))
+                .map(rs -> convertToStopDTO(rs.getStop())).toList();
 
     }
 
@@ -84,9 +90,6 @@ public class RouteApiService {
         this.routeRepository.save(route);
     }
 
-    public Route converToRoute(RouteDTO routeDTO){
-        return routeMapper.toEntity(routeDTO);
-    }
 
     public RouteDTO convertToRouteDTO(Route route){
         return routeMapper.toDto(route);

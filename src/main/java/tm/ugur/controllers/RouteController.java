@@ -11,7 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import tm.ugur.models.EndRouteStop;
 import tm.ugur.models.Route;
+import tm.ugur.models.StartRouteStop;
 import tm.ugur.security.PersonDetails;
 import tm.ugur.services.admin.*;
 import tm.ugur.util.errors.route.RouteErrorResponse;
@@ -76,7 +78,7 @@ public class RouteController {
     @GetMapping("/create")
     public String create(@ModelAttribute("route") Route route, Model model){
         sortByStatic = "";
-        this.modalAtribitesForCreate(model);
+        this.modalAttributesForCreate(model);
         return "layouts/routes/create";
     }
 
@@ -88,7 +90,7 @@ public class RouteController {
             @ModelAttribute("route") @Valid Route route, BindingResult result, Model model){
 
         if(result.hasErrors() || selectedStart.isEmpty() || selectedEnd.isEmpty()){
-                this.modalAtribitesForCreate(model);
+                this.modalAttributesForCreate(model);
             return "layouts/routes/create";
         }
 
@@ -105,7 +107,15 @@ public class RouteController {
         sortByStatic = "";
         Route route = this.routeService.findOne(id).orElse(null);
         model.addAttribute("route", route);
-        this.modalAtribitesForEdit(model);
+        model.addAttribute("existStartStops", Objects.requireNonNull(route).getStartRouteStops()
+                .stream()
+                .sorted(Comparator.comparing(StartRouteStop::getIndex))
+                .map(StartRouteStop::getStop).toList());
+        model.addAttribute("existEndStops", Objects.requireNonNull(route).getEndRouteStops()
+                .stream()
+                .sorted(Comparator.comparing(EndRouteStop::getIndex))
+                .map(EndRouteStop::getStop).toList());
+        this.modalAttributesForEdit(model);
         return "layouts/routes/edit";
     }
 
@@ -118,7 +128,7 @@ public class RouteController {
                         @ModelAttribute("route") @Valid Route route, BindingResult result, Model model){
 
         if(result.hasErrors()){
-            this.modalAtribitesForCreate(model);
+            this.modalAttributesForCreate(model);
             return "layouts/routes/edit";
         }
 
@@ -137,13 +147,13 @@ public class RouteController {
     }
 
 
-    private void modalAtribitesForCreate(Model model){
+    private void modalAttributesForCreate(Model model){
         model.addAttribute("title", "Создать маршрут");
         model.addAttribute("page", "route-create");
         this.modelForCitiesAndStops(model);
     }
 
-    private void modalAtribitesForEdit(Model model){
+    private void modalAttributesForEdit(Model model){
         model.addAttribute("title", "Изменить  Маршрут");
         model.addAttribute("page", "route-edit");
         this.modelForCitiesAndStops(model);

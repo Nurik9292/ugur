@@ -50,7 +50,7 @@ public class RouteApiController {
     @GetMapping("/start-stops/{id}")
     @JsonView(Views.Location.class)
     public ResponseEntity<List<StopDTO>> getRouteStartStop(@PathVariable("id") Long id){
-        System.out.println(id);
+
         return ResponseEntity.ok(routeService.getRouteStartStop(id));
     }
 

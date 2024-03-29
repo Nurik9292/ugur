@@ -55,12 +55,17 @@ public class BusDestinationDirectionSide {
             Optional<Route> route = routeService.findByNumber(bus.getNumber());
 
             if (route.isPresent()) {
-                List<StartRouteStop> startRouteStops = startRouteStopService.findByRoute(route.get());
+                List<StartRouteStop> startRouteStops = route.get().getStartRouteStops();
 
                     if(!startRouteStops.isEmpty()) {
 
-                        Point pointA = startRouteStops.getFirst().getStop().getLocation();
-                        Point pointB = startRouteStops.getLast().getStop().getLocation();
+                        List<Stop> stops = startRouteStops.stream()
+                                .sorted(Comparator.comparing(StartRouteStop::getIndex))
+                                .map(StartRouteStop::getStop).toList();
+
+
+                        Point pointA = stops.getFirst().getLocation();
+                        Point pointB = stops.getLast().getLocation();
                         PointDTO pointBus = bus.getLocation();
 
                         if(isAtPointA(pointA , pointBus))

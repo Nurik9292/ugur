@@ -62,13 +62,13 @@
                         <div class="col-md-6 mb-3">
                             <label for="start_stops">Остановки начального маршрута</label>
                             <select name="startStops" id="start_stops" class="form-select mb-0" multiple>
-                                <option th:each="stop : ${stops}" th:selected="${route.getStartStops().contains(stop)}" th:value="${stop.getId()}" th:text="${stop.getName()}"></option>
+                                <option th:each="stop : ${stops}" th:selected="${existStartStops.contains(stop)}" th:value="${stop.getId()}" th:text="${stop.getName()}"></option>
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="end_stops">Остановки обратного маршрута</label>
                             <select name="endStops" id="end_stops" class="form-select mb-0" multiple>
-                                <option th:each="stop : ${stops}" th:selected="${route.getEndStops().contains(stop)}" th:value="${stop.getId()}" th:text="${stop.getName()}"></option>
+                                <option th:each="stop : ${stops}" th:selected="${existEndStops.contains(stop)}" th:value="${stop.getId()}" th:text="${stop.getName()}"></option>
                             </select>
                         </div>
                     </div>

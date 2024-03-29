@@ -1,26 +1,28 @@
 package tm.ugur.services.parser;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
+import tm.ugur.services.api.ApiService;
+
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 
 @Service
 public class ParserService {
+
+    private final ApiService apiService;
+
+    @Autowired
+    public ParserService(ApiService apiService) {
+        this.apiService = apiService;
+    }
 
     public List<PlaceUgur> parser(){
 
@@ -49,9 +51,50 @@ public class ParserService {
                        categories
                ));
             });
-            System.out.println(places);
+
             return places;
         } catch (IOException e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
+    public List<PlaceUgur> parserUrl(){
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            JsonNode jsonNode = objectMapper.readTree(apiService.fetchDataFromApi());
+            List<PlaceUgur> places = new ArrayList<>();
+            for(JsonNode node : jsonNode.get("data").get("banners")){
+                System.out.println(node.get("title_ru").asText());
+                if(node.get("businesses") != null && !node.get("businesses").isEmpty()){
+                    node.get("businesses").forEach(place -> {
+
+                        System.out.println(place);
+                        List<Category> categories = new ArrayList<>();
+                        place.get("categories").forEach(category -> {
+                            categories.add(new Category(
+                                    category.get("name_tm").asText(),
+                                    category.get("name_ru").asText()
+                            ));
+                        });
+
+                        if(!place.get("latitude").isNull())
+                            places.add(new PlaceUgur(
+                                place.get("name_tm").asText(),
+                                place.get("name_ru").asText(),
+                                "https://yakyn.biz:8000/media/businesses/l/" + place.get("image").asText(),
+                                place.get("address_tm").asText(),
+                                place.get("address_ru").asText(),
+                                Double.parseDouble(place.get("latitude").asText()),
+                                Double.parseDouble(place.get("longitude").asText()),
+                                categories
+                            ));
+                    });
+                }
+            }
+
+            return places;
+        } catch (JsonProcessingException e) {
             e.printStackTrace();
             return Collections.emptyList();
         }
