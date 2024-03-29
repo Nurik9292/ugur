@@ -166,6 +166,7 @@ public class PlaceService {
         place.setUpdatedAt(new Date());
 
         Place newPlace = placeRepository.save(place);
+        translations.forEach(translation -> translation.setPlace(newPlace));
         placeImage.setPlace(newPlace);
         placeThumb.setPlace(newPlace);
     }
