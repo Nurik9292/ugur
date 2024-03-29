@@ -41,7 +41,7 @@ public class ParserService {
                        categories
                ));
             });
-
+            System.out.println(places);
             return places;
         } catch (IOException e) {
             e.printStackTrace();

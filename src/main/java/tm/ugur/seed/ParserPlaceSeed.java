@@ -10,6 +10,7 @@ import tm.ugur.models.PlaceSubCategory;
 import tm.ugur.models.PlaceSubCategoryTranslation;
 import tm.ugur.services.admin.PlaceService;
 import tm.ugur.services.admin.PlaceSubCategoryTranslationService;
+import tm.ugur.services.parser.Category;
 import tm.ugur.services.parser.ParserService;
 import tm.ugur.services.parser.PlaceUgur;
 
@@ -38,10 +39,10 @@ public class ParserPlaceSeed implements CommandLineRunner {
             List<PlaceUgur> places = parserService.parser();
 
             places.forEach(place -> {
-                place.getCategories().forEach(category -> {
+                for (Category category : place.getCategories()) {
                     List<PlaceSubCategoryTranslation> translation = translationService.findByLocaleAndTitle("ru", category.getName_ru());
 
-                    if(!translation.isEmpty()){
+                    if (!translation.isEmpty()) {
                         PlaceSubCategory sub = translation.getFirst().getPlaceSubCategory();
                         PlaceCategory placeCategory = sub.getPlaceCategory();
                         placeService.store(placeCategory,
@@ -53,9 +54,9 @@ public class ParserPlaceSeed implements CommandLineRunner {
                                 place.getImage(),
                                 place.getLatitude(),
                                 place.getLongitude());
-
+                        break;
                     }
-                });
+                }
             });
         }
 
