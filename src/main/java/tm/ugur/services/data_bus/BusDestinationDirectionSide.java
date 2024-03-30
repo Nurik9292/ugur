@@ -30,20 +30,15 @@ import java.util.stream.Collectors;
 public class BusDestinationDirectionSide {
 
     private final RouteService routeService;
-    private final RedisRouteService redisRouteService;
-    private final StartRouteStopService startRouteStopService;
+
     private final GeometryFactory factory;
 
     private static final Logger logger = LoggerFactory.getLogger(BusDestinationDirectionSide.class);
 
     @Autowired
     public BusDestinationDirectionSide(RouteService routeService,
-                                       RedisRouteService redisRouteService,
-                                       StartRouteStopService startRouteStopService,
                                        GeometryFactory factory) {
         this.routeService = routeService;
-        this.redisRouteService = redisRouteService;
-        this.startRouteStopService = startRouteStopService;
         this.factory = factory;
     }
 
@@ -91,13 +86,13 @@ public class BusDestinationDirectionSide {
     private boolean isAtPointA(Point pointA, PointDTO pointB){
         Point pointTarget = factory.createPoint(new Coordinate(pointB.getLat(), pointB.getLng()));
         double distance = pointA.distance(pointTarget);
-        return distance <= 100;
+        return distance <= 300;
     }
 
     private boolean isAtPointB(Point pointA, PointDTO pointB){
         Point pointTarget = factory.createPoint(new Coordinate(pointB.getLat(), pointB.getLng()));
         double distance = pointA.distance(pointTarget);
-        return distance <= 100;
+        return distance <= 300;
     }
 
 
