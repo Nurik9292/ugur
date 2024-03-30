@@ -73,14 +73,18 @@ public class SecurityConfig {
     @Order(2)
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         return http.csrf(Customizer.withDefaults())
-                .authorizeHttpRequests(auth ->
-                    auth
-                            .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/login", "/error").permitAll()
+                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/users/create", "/users", "/users/store").hasRole("SUPER")
                         .requestMatchers("/websocket-ugur", "/websocket-ugur/**").permitAll()
                         .requestMatchers("/topic", "/topic/mobile", "/topic/**").permitAll()
                         .anyRequest().authenticated())
-                .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
+                .formLogin(form -> form
+                        .loginPage("/auth/login")
+                        .loginProcessingUrl("/process_login")
+                        .defaultSuccessUrl("/", true)
+                        .failureUrl("/auth/login?error"))
                 .build();
     }
 

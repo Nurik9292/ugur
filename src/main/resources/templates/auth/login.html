@@ -4,7 +4,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <!-- Primary Meta Tags -->
-    <title>Volt Premium Bootstrap Dashboard - Sign in page</title>
+    <title>Админ панель</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="title" content="Login">
 
@@ -41,17 +41,18 @@
                         <div class="text-center text-md-center mb-4 mt-md-0">
                             <h1 class="mb-0 h3">Вход в админ панель</h1>
                         </div>
-                        <form action="" method="POST" class="mt-4">
+                        <form action="/process_login" method="POST" class="mt-4">
                             <!-- Form -->
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                             <div class="form-group mb-4">
-                                <label for="email">Login</label>
+                                <label for="username">Login</label>
                                 <div class="input-group">
                                         <span class="input-group-text" id="basic-addon1">
                                             <svg class="icon icon-xs text-gray-600" data-slot="icon" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"></path>
                                             </svg>
                                         </span>
-                                    <input type="text" class="form-control" placeholder="timur922" id="email" autofocus required>
+                                    <input type="text" class="form-control" placeholder="timur922" id="username" name="username" autofocus required>
                                 </div>
                             </div>
                             <!-- End of Form -->
@@ -63,13 +64,17 @@
                                             <span class="input-group-text" id="basic-addon2">
                                                 <svg class="icon icon-xs text-gray-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>
                                             </span>
-                                        <input type="password" placeholder="Password" class="form-control" id="password" required>
+                                        <input type="password" placeholder="Password" class="form-control" id="password" name="password" required>
                                     </div>
                                 </div>
                                 <!-- End of Form -->
                             </div>
                             <div class="d-grid">
                                 <button type="submit" class="btn btn-gray-800">Sign in</button>
+                            </div>
+
+                            <div th:if="${param.error}" style="color: red">
+                                Не правильный пароль или логин
                             </div>
                         </form>
                     </div>
@@ -103,7 +108,7 @@
 <script th:src="@{/vendor/sweetalert2/dist/sweetalert2.all.min.js}"></script>
 
 <!-- Moment JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
+<script th:src="@{/js/moment.min.js}"></script>
 
 <!-- Vanilla JS Datepicker -->
 <script th:src="@{/vendor/vanillajs-datepicker/dist/js/datepicker.min.js}"></script>
@@ -115,7 +120,7 @@
 <script th:src="@{/vendor/simplebar/dist/simplebar.min.js}"></script>
 
 <!-- Github buttons -->
-<script async defer src="https://buttons.github.io/buttons.js"></script>
+<script th:src="@{/js/button.min.js}"></script>
 
 <!-- Volt JS -->
 <script th:src="@{/assets/js/volt.js}"></script>
