@@ -47,7 +47,7 @@ public class BusDestinationDirectionSide {
 
         buses.parallelStream().forEach(bus -> {
 
-            Optional<Route> route = routeService.findByNumber(bus.getNumber());
+            Optional<Route> route = routeService.findByNumberInitRouteStops(bus.getNumber());
 
             if (route.isPresent()) {
                 List<StartRouteStop> startRouteStops = route.get().getStartRouteStops();

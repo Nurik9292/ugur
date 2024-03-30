@@ -85,10 +85,6 @@ public class RouteService {
         return routeRepository.findById(id);
     }
 
-    public Optional<Route> findByName(String name){
-        return routeRepository.findRouteByName(name);
-    }
-
     public Optional<Route> findByNumber(Integer number){
         return routeRepository.findByNumber(number);
     }
@@ -98,6 +94,16 @@ public class RouteService {
         route.ifPresent(r -> {
             Hibernate.initialize(r.getStartStops());
             Hibernate.initialize(r.getEndStops());
+        });
+
+        return route;
+    }
+
+    public Optional<Route> findByNumberInitRouteStops(int number){
+        Optional<Route> route = routeRepository.findByNumber(number);
+        route.ifPresent(r -> {
+            Hibernate.initialize(r.getStartRouteStops());
+            Hibernate.initialize(r.getEndRouteStops());
         });
 
         return route;
