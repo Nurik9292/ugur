@@ -34,11 +34,6 @@ public class PlaceCategoryService {
         return placeCategoryRepository.findAll();
     }
 
-    public Page<PlaceCategory> findAll(int pageNumber, int itemsPerPage, String sortBy)
-    {
-        return this.paginationService.createPage(placeCategoryRepository.findAll(Sort.by(sortBy)), pageNumber, itemsPerPage);
-    }
-
     public Page<PlaceCategory> findAll(int pageNumber, int itemsPerPage)
     {
         return paginationService.createPage(placeCategoryRepository.findAll(), pageNumber, itemsPerPage);
@@ -49,11 +44,21 @@ public class PlaceCategoryService {
         int pageNumber = page == null ? 1 : Integer.parseInt(page);
         int itemsPerPage = items == null ? 10 : Integer.parseInt(items);
 
-
         List<PlaceCategory> placeCategories = !sortBy.isBlank()
-                ? placeCategoryRepository.findAll(Sort.by(sortBy)) : placeCategoryRepository.findAll();;
+                ? categorySorted(sortBy) : placeCategoryRepository.findAll();
 
         return this.paginationService.createPage(placeCategories, pageNumber, itemsPerPage);
+    }
+
+    private List<PlaceCategory> categorySorted(String sortBy){
+        return placeCategoryRepository.findAll().stream()
+                .sorted(Comparator.comparing(category -> {
+                    PlaceCategoryTranslation translation = category.getTranslations().stream()
+                            .filter(trans -> trans.getLocale().equals(sortBy))
+                            .findFirst().orElse(null);
+
+                    return translation != null ? translation.getTitle() : "";
+                })).toList();
     }
 
     @Transactional

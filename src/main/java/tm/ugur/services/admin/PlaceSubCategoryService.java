@@ -10,10 +10,7 @@ import tm.ugur.models.PlaceSubCategoryTranslation;
 import tm.ugur.repo.PlaceSubCategoryRepository;
 import tm.ugur.util.pagination.PaginationService;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -35,11 +32,6 @@ public class PlaceSubCategoryService {
         return placeSubCategoryRepository.findAll();
     }
 
-    public Page<PlaceSubCategory> findAll(int pageNumber, int itemsPerPage, String sortBy)
-    {
-        return this.paginationService.createPage(placeSubCategoryRepository.findAll(Sort.by(sortBy)), pageNumber, itemsPerPage);
-    }
-
     public Page<PlaceSubCategory> findAll(int pageNumber, int itemsPerPage)
     {
         return paginationService.createPage(placeSubCategoryRepository.findAll(), pageNumber, itemsPerPage);
@@ -52,9 +44,20 @@ public class PlaceSubCategoryService {
 
 
         List<PlaceSubCategory> placeCategories = !sortBy.isBlank()
-                ? placeSubCategoryRepository.findAll(Sort.by(sortBy)) : placeSubCategoryRepository.findAll();;
+                ? subCategorySorted(sortBy) : placeSubCategoryRepository.findAll();;
 
         return this.paginationService.createPage(placeCategories, pageNumber, itemsPerPage);
+    }
+
+    private List<PlaceSubCategory> subCategorySorted(String sortBy){
+        return placeSubCategoryRepository.findAll().stream()
+                .sorted(Comparator.comparing(sub -> {
+                    PlaceSubCategoryTranslation subTranslation = sub.getTranslations().stream()
+                            .filter(trans -> trans.getLocale().equals(sortBy))
+                            .findFirst().orElse(null);
+
+                    return subTranslation != null ? subTranslation.getTitle() : "";
+                })).toList();
     }
 
     @Transactional

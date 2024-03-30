@@ -62,11 +62,6 @@ public class PlaceService {
         return placeRepository.findAll();
     }
 
-    public Page<Place> findAll(int pageNumber, int itemsPerPage, String sortBy)
-    {
-        return this.paginationService.createPage(placeRepository.findAll(Sort.by(sortBy)), pageNumber, itemsPerPage);
-    }
-
     public Page<Place> findAll(int pageNumber, int itemsPerPage)
     {
         return paginationService.createPage(placeRepository.findAll(), pageNumber, itemsPerPage);
@@ -84,11 +79,32 @@ public class PlaceService {
         int pageNumber = page == null ? 1 : Integer.parseInt(page);
         int itemsPerPage = items == null ? 10 : Integer.parseInt(items);
 
-
-        List<Place> places = !sortBy.isBlank()
-                ? placeRepository.findAll(Sort.by(sortBy)) : placeRepository.findAll();;
+        List<Place> places = sortBy.isBlank() ? placeRepository.findAll() :
+                sortBy.equals("title") ? placeSortedTitle() : placeSortedAddress();
 
         return this.paginationService.createPage(places, pageNumber, itemsPerPage);
+    }
+
+    private List<Place> placeSortedTitle(){
+        return placeRepository.findAll().stream()
+                .sorted(Comparator.comparing(place -> {
+                    PlaceTranslation russianTranslation = place.getTranslations().stream()
+                            .filter(translation -> translation.getLocale().equals("ru"))
+                            .findFirst().orElse(null);
+
+                    return russianTranslation != null ? russianTranslation.getTitle() : "";
+                })).toList();
+    }
+
+    private List<Place> placeSortedAddress(){
+        return placeRepository.findAll().stream()
+                .sorted(Comparator.comparing(place -> {
+                    PlaceTranslation russianTranslation = place.getTranslations().stream()
+                            .filter(translation -> translation.getLocale().equals("ru"))
+                            .findFirst().orElse(null);
+
+                    return russianTranslation != null ? russianTranslation.getAddress() : "";
+                })).toList();
     }
 
     @Transactional
