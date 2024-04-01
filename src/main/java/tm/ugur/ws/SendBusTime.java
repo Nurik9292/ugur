@@ -51,6 +51,7 @@ public class SendBusTime {
     public void handleWebSocketDisconnectListenerTime(SessionDisconnectEvent event){
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = accessor.getSessionId();
+        stopId = null;
         logger.info("Клиент отключен для отправки и времени, sessionId: " + sessionId);
     }
 

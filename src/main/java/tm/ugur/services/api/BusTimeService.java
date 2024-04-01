@@ -19,7 +19,6 @@ public class BusTimeService {
     private final StopService stopService;
     private final RedisBusService redisBusService;
 
-    private static final double EARTH_RADIUS = 6371.0;
 
     public BusTimeService(StopService stopService, RedisBusService redisBusService) {
         this.stopService = stopService;
@@ -27,7 +26,6 @@ public class BusTimeService {
     }
 
     public Map<Integer, String> getBusTime(Long id){
-        System.out.println(id);
         Stop stop = stopService.findOneInit(id);
 
         if (Objects.isNull(stop)) {

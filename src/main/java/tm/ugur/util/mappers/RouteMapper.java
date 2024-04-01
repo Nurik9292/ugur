@@ -65,19 +65,23 @@ public class RouteMapper extends AbstractMapper<Route, RouteDTO> {
         if (isNullLine(source, line)) {
             return null;
         }
-        List<Stop> stops = line.equals("start") ? source.getStartRouteStops()
+
+        List<Stop> stops = line.equals("start") ? Objects.requireNonNull(source.getStartRouteStops())
                 .stream()
                 .sorted(Comparator.comparing(StartRouteStop::getIndex))
                 .toList()
                 .stream()
                 .map(StartRouteStop::getStop)
-                .toList() : source.getEndRouteStops()
+                .toList() : Objects.requireNonNull(source.getEndRouteStops())
                 .stream()
                 .sorted(Comparator.comparing(EndRouteStop::getIndex))
                 .toList()
                 .stream()
                 .map(EndRouteStop::getStop)
                 .toList();
+
+        if(stops == null)
+            return Collections.emptyList();
 
         return stops.stream().map(Stop::getId).collect(Collectors.toList());
     }
