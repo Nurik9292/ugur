@@ -20,6 +20,7 @@ import tm.ugur.util.errors.route.RouteNotFoundException;
 import tm.ugur.util.mappers.RouteMapper;
 import tm.ugur.util.mappers.StopMapper;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -62,7 +63,6 @@ public class RouteApiService {
     public RouteDTO findOne(Long id){
         RouteDTO routeDTO = this.convertToRouteDTO(
                 this.routeRepository.findById(Long.valueOf(id)).orElseThrow(RouteNotFoundException::new));
-        routeDTO.setIs_favorite(isFavorite(routeDTO));
         return routeDTO;
     }
 

@@ -215,10 +215,6 @@ public class Route extends AbstractEntity implements Serializable {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", number=" + number +
-                ", startStops=" + startStops +
-                ", endStops=" + endStops +
-                ", frontLine=" + frontLine +
-                ", backLine=" + backLine +
                 '}';
     }
 

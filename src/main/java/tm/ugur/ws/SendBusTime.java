@@ -1,6 +1,7 @@
 package tm.ugur.ws;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.locationtech.jts.geom.LineString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import tm.ugur.models.Client;
 import tm.ugur.services.api.BusTimeService;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Executors;
@@ -56,7 +58,7 @@ public class SendBusTime {
     private void sendBusTime(){
         try {
             if(Objects.nonNull(stopId)){
-                Map<Integer, Double> times = busTimeService.getBusTime(stopId);
+                Map<Integer, String> times = busTimeService.getBusTime(stopId);
                 System.out.println(times);
                 ObjectMapper mapper = new ObjectMapper();
                 messagingTemplate.convertAndSend("/topic/time." + client.getPhone(),
@@ -79,4 +81,5 @@ public class SendBusTime {
     public void setClient(Client client) {
         this.client = client;
     }
+
 }

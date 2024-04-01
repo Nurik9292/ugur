@@ -5,7 +5,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import tm.ugur.dto.RouteDTO;
+import tm.ugur.models.EndRouteStop;
 import tm.ugur.models.Route;
+import tm.ugur.models.StartRouteStop;
 import tm.ugur.models.Stop;
 import tm.ugur.services.admin.StopService;
 
@@ -63,10 +65,20 @@ public class RouteMapper extends AbstractMapper<Route, RouteDTO> {
         if (isNullLine(source, line)) {
             return null;
         }
-        List<Stop> stops = line.equals("start") ? source.getStartStops() : source.getEndStops();
-            if (isNull(stops)) {
-                return null;
-        }
+        List<Stop> stops = line.equals("start") ? source.getStartRouteStops()
+                .stream()
+                .sorted(Comparator.comparing(StartRouteStop::getIndex))
+                .toList()
+                .stream()
+                .map(StartRouteStop::getStop)
+                .toList() : source.getEndRouteStops()
+                .stream()
+                .sorted(Comparator.comparing(EndRouteStop::getIndex))
+                .toList()
+                .stream()
+                .map(EndRouteStop::getStop)
+                .toList();
+
         return stops.stream().map(Stop::getId).collect(Collectors.toList());
     }
 
