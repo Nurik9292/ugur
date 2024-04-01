@@ -73,6 +73,7 @@ public class ImportBusData {
                 redisService.addBuses(String.valueOf(entry.getKey()), entry.getValue());
             }
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error("API unavailable job: " + e.getMessage());
         }finally {
             lock.unlock();

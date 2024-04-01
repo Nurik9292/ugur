@@ -73,9 +73,12 @@ public class BusDestinationDirectionSide {
 
                         if(Objects.isNull(bus.getSide()) || bus.getSide().isBlank()){
                             List<BusDTO> busList = redisBusService.getBuses(String.valueOf(bus.getNumber()));
-                            BusDTO prevBus = busList.stream().filter(b -> b.getCarNumber().equals(bus.getCarNumber())).findFirst().get();
-                            PointDTO prevPointBus = prevBus.getLocation();
-                            bus.setSide( getSide(pointA, pointB, pointBus, prevPointBus));
+                            Optional<BusDTO> prevBus = busList.stream().filter(b -> b.getCarNumber().equals(bus.getCarNumber())).findAny();
+                            if(prevBus.isPresent()){
+                                PointDTO prevPointBus = prevBus.get().getLocation();
+                                bus.setSide( getSide(pointA, pointB, pointBus, prevPointBus));
+                            }
+
                         }
 
                     }
@@ -94,6 +97,7 @@ public class BusDestinationDirectionSide {
 
         double scalarProductA = calculateDistanceSide(a.getX(), a.getY(), current.getLat(), current.getLng());
         double scalarProductB = calculateDistanceSide(a.getX(), a.getY(), prev.getLat(), prev.getLng());
+
 
         String destination;
         if (scalarProductA > scalarProductB) {
