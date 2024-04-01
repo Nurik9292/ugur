@@ -71,12 +71,11 @@ public class BusDestinationDirectionSide {
                             bus.setSide("back");
 
 
-                        System.out.println(bus);
                         if(Objects.isNull(bus.getSide()) || bus.getSide().isBlank()){
                             List<BusDTO> busList = redisBusService.getBuses(String.valueOf(bus.getNumber()));
                             BusDTO prevBus = busList.stream().filter(b -> b.getCarNumber().equals(bus.getCarNumber())).findFirst().get();
                             PointDTO prevPointBus = prevBus.getLocation();
-                            getSide(pointA, pointB, pointBus, prevPointBus);
+                            bus.setSide( getSide(pointA, pointB, pointBus, prevPointBus));
                         }
 
                     }
