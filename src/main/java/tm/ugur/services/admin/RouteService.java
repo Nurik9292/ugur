@@ -104,6 +104,8 @@ public class RouteService {
         route.ifPresent(r -> {
             Hibernate.initialize(r.getStartRouteStops());
             Hibernate.initialize(r.getEndRouteStops());
+            Hibernate.initialize(r.getStartStops());
+            Hibernate.initialize(r.getEndStops());
         });
 
         return route;
