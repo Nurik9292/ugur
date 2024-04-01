@@ -95,9 +95,6 @@ public class BusDestinationDirectionSide {
         double scalarProductA = calculateDistanceSide(a.getX(), a.getY(), current.getLat(), current.getLng());
         double scalarProductB = calculateDistanceSide(a.getX(), a.getY(), prev.getLat(), prev.getLng());
 
-        System.out.println(scalarProductA);
-        System.out.println(scalarProductB);
-
         String destination;
         if (scalarProductA > scalarProductB) {
             destination = "front";

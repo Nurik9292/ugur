@@ -25,6 +25,7 @@ public class BusTimeService {
     }
 
     public Map<Integer, Double> getBusTime(Long id){
+        System.out.println(id);
         Stop stop = stopService.findOneInit(id);
 
         if (Objects.isNull(stop)) {
