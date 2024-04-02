@@ -45,18 +45,19 @@ public class BusTimeService {
 
         Map<Integer, String> times = new HashMap<>();
 
-           nearestBuses.forEach((number, bus) -> {
-               double time =  calculateArrivalTime(calculateDistance(
-                               stop.getLocation().getX(), stop.getLocation().getY(),
-                               bus.getLocation().getLat(), bus.getLocation().getLng()),
-                       Double.parseDouble(bus.getSpeed()));
 
-               String t = Double.isInfinite(time) ? "0.0" : new DecimalFormat("#.##").format(time);
+        nearestBuses.forEach((number, bus) -> {
+            double time =  calculateArrivalTime(calculateDistance(
+                            stop.getLocation().getX(), stop.getLocation().getY(),
+                            bus.getLocation().getLat(), bus.getLocation().getLng()),
+                    Double.parseDouble(bus.getSpeed()));
+            System.out.println(time);
+            String t = Double.isInfinite(time) ? "0.0" : new DecimalFormat("#.##").format(time);
 
-               times.put(number,  t);
-           });
+            times.put(number,  t);
+        });
 
-           return times;
+        return times;
     }
 
     private Map<Integer, BusDTO> filterBus(Map<Integer, Integer> indexes){
@@ -69,18 +70,21 @@ public class BusTimeService {
                 List<BusDTO> busDTOList = redisBusService.getBuses(String.valueOf(key));
                 List<BusDTO> filterBus = new ArrayList<>();
 
-                for (BusDTO busDTO : busDTOList) {
-                    if (busDTO.getIndex()!= null && value % 2 == busDTO.getIndex() % 2) {
-                        filterBus.add(busDTO);
+                if(busDTOList != null){
+                    for (BusDTO busDTO : busDTOList) {
+                        if (busDTO.getIndex() != null && value % 2 == busDTO.getIndex() % 2) {
+                            filterBus.add(busDTO);
+                        }
                     }
-                }
 
-                filterBus.sort(Comparator.comparing(BusDTO::getIndex).reversed());
 
-                for (BusDTO busDTO : filterBus) {
-                    if (value > busDTO.getIndex()) {
-                        nearestBuses.put(key, busDTO);
-                        break;
+                    filterBus.sort(Comparator.comparing(BusDTO::getIndex).reversed());
+
+                    for (BusDTO busDTO : filterBus) {
+                        if (value > busDTO.getIndex()) {
+                            nearestBuses.put(key, busDTO);
+                            break;
+                        }
                     }
                 }
             }
@@ -125,6 +129,7 @@ public class BusTimeService {
     }
 
     private static double calculateArrivalTime(double distance, double busSpeed) {
+        busSpeed = busSpeed < 1.0 ? 20.0 : busSpeed;
         double timeInHours = distance / busSpeed;
         return timeInHours * 60;
     }
