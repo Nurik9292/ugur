@@ -25,7 +25,7 @@ public class BusTimeService {
         this.redisBusService = redisBusService;
     }
 
-    public Map<Integer, Double> getBusTime(Long id){
+    public Map<Integer, String> getBusTime(Long id){
         Stop stop = stopService.findOneInit(id);
 
         if (Objects.isNull(stop)) {
@@ -43,16 +43,17 @@ public class BusTimeService {
 
         Map<Integer, BusDTO> nearestBuses = filterBus(indexes);
 
-        Map<Integer, Double> times = new HashMap<>();
+        Map<Integer, String> times = new HashMap<>();
 
            nearestBuses.forEach((number, bus) -> {
-              double time = Double.parseDouble(new DecimalFormat("#.##")
-                       .format(calculateArrivalTime(calculateDistance(
-                                       stop.getLocation().getX(), stop.getLocation().getY(),
-                                       bus.getLocation().getLat(), bus.getLocation().getLng()),
-                               Double.parseDouble(bus.getSpeed()))));
+               double time =  calculateArrivalTime(calculateDistance(
+                               stop.getLocation().getX(), stop.getLocation().getY(),
+                               bus.getLocation().getLat(), bus.getLocation().getLng()),
+                       Double.parseDouble(bus.getSpeed()));
 
-                times.put(number,   Double.isInfinite(time) ? 0.0 : time);
+               String t = Double.isInfinite(time) ? "0.0" : new DecimalFormat("#.##").format(time);
+
+               times.put(number,  t);
            });
 
            return times;
@@ -69,7 +70,7 @@ public class BusTimeService {
                 List<BusDTO> filterBus = new ArrayList<>();
 
                 for (BusDTO busDTO : busDTOList) {
-                    if (value % 2 == busDTO.getIndex() % 2) {
+                    if (busDTO.getIndex()!= null && value % 2 == busDTO.getIndex() % 2) {
                         filterBus.add(busDTO);
                     }
                 }
