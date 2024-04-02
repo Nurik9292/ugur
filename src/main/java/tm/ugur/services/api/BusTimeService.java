@@ -25,7 +25,7 @@ public class BusTimeService {
         this.redisBusService = redisBusService;
     }
 
-    public Map<Integer, String> getBusTime(Long id){
+    public Map<Integer, Double> getBusTime(Long id){
         Stop stop = stopService.findOneInit(id);
 
         if (Objects.isNull(stop)) {
@@ -43,14 +43,16 @@ public class BusTimeService {
 
         Map<Integer, BusDTO> nearestBuses = filterBus(indexes);
 
-        Map<Integer, String> times = new HashMap<>();
+        Map<Integer, Double> times = new HashMap<>();
 
            nearestBuses.forEach((number, bus) -> {
-                times.put(number,  new DecimalFormat("#.##")
-                        .format(calculateArrivalTime(calculateDistance(
-                                        stop.getLocation().getX(), stop.getLocation().getY(),
-                                        bus.getLocation().getLat(), bus.getLocation().getLng()),
-                                Double.parseDouble(bus.getSpeed()))));
+              double time = Double.parseDouble(new DecimalFormat("#.##")
+                       .format(calculateArrivalTime(calculateDistance(
+                                       stop.getLocation().getX(), stop.getLocation().getY(),
+                                       bus.getLocation().getLat(), bus.getLocation().getLng()),
+                               Double.parseDouble(bus.getSpeed()))));
+
+                times.put(number,   Double.isInfinite(time) ? 0.0 : time);
            });
 
            return times;
@@ -59,24 +61,26 @@ public class BusTimeService {
     private Map<Integer, BusDTO> filterBus(Map<Integer, Integer> indexes){
         Map<Integer, BusDTO> nearestBuses = new HashMap<>();
         for (Map.Entry<Integer, Integer> entry : indexes.entrySet()) {
-            int key = entry.getKey();
-            int value = entry.getValue();
+            if(entry.getValue() != null) {
+                int key = entry.getKey();
+                int value = entry.getValue();
 
-            List<BusDTO> busDTOList = redisBusService.getBuses(String.valueOf(key));
-            List<BusDTO> filterBus = new ArrayList<>();
+                List<BusDTO> busDTOList = redisBusService.getBuses(String.valueOf(key));
+                List<BusDTO> filterBus = new ArrayList<>();
 
-            for (BusDTO busDTO : busDTOList) {
-                if (value % 2 == busDTO.getIndex() % 2) {
-                    filterBus.add(busDTO);
+                for (BusDTO busDTO : busDTOList) {
+                    if (value % 2 == busDTO.getIndex() % 2) {
+                        filterBus.add(busDTO);
+                    }
                 }
-            }
 
-            filterBus.sort(Comparator.comparing(BusDTO::getIndex).reversed());
+                filterBus.sort(Comparator.comparing(BusDTO::getIndex).reversed());
 
-            for (BusDTO busDTO : filterBus) {
-                if (value > busDTO.getIndex()) {
-                    nearestBuses.put(key, busDTO);
-                    break;
+                for (BusDTO busDTO : filterBus) {
+                    if (value > busDTO.getIndex()) {
+                        nearestBuses.put(key, busDTO);
+                        break;
+                    }
                 }
             }
         }

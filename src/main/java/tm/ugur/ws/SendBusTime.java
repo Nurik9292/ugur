@@ -59,7 +59,7 @@ public class SendBusTime {
     private void sendBusTime(){
         try {
             if(Objects.nonNull(stopId)){
-                Map<Integer, String> times = busTimeService.getBusTime(stopId);
+                Map<Integer, Double> times = busTimeService.getBusTime(stopId);
                 System.out.println(times);
                 ObjectMapper mapper = new ObjectMapper();
                 messagingTemplate.convertAndSend("/topic/time." + client.getPhone(),
