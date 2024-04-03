@@ -43,6 +43,7 @@ public class BusTimeService {
             indexes.put(stopRoute.getRoute().getNumber(), stopRoute.getIndex());
         });
 
+
         Map<Integer, BusDTO> nearestBuses = filterBus(indexes);
 
         Map<Integer, String> times = new HashMap<>();
@@ -55,7 +56,7 @@ public class BusTimeService {
                     Double.parseDouble(bus.getSpeed()));
 
             String t = Double.isInfinite(time) ? "0.0" : new DecimalFormat("#.##").format(time);
-
+            System.out.println(bus.getNumber() + " " + bus.getCarNumber());
             times.put(number,  t);
         });
 
@@ -70,8 +71,10 @@ public class BusTimeService {
                 int value = entry.getValue();
 
                 List<BusDTO> busDTOList = redisBusService.getBuses(String.valueOf(key));
-                List<BusDTO> filterBus = new ArrayList<>();
+                System.out.println(value);
                 System.out.println(busDTOList);
+                List<BusDTO> filterBus = new ArrayList<>();
+
                 if(busDTOList != null){
                     for (BusDTO busDTO : busDTOList) {
                         if (busDTO.getIndex() != null && value % 2 == busDTO.getIndex() % 2) {

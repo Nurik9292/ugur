@@ -24,17 +24,14 @@ import java.util.*;
 public class BusDestinationDirectionSide {
 
     private final RouteService routeService;
-    private final RedisBusService redisBusService;
-    private final GeometryFactory factory;
+
 
     private static final Logger logger = LoggerFactory.getLogger(BusDestinationDirectionSide.class);
 
     @Autowired
-    public BusDestinationDirectionSide(RouteService routeService, RedisBusService redisBusService,
-                                       GeometryFactory factory) {
+    public BusDestinationDirectionSide(RouteService routeService) {
         this.routeService = routeService;
-        this.redisBusService = redisBusService;
-        this.factory = factory;
+
     }
 
     @Transactional
@@ -60,29 +57,22 @@ public class BusDestinationDirectionSide {
 
                         Point pointA = stops.getFirst().getLocation();
                         Point pointB = stops.getLast().getLocation();
-                        PointDTO pointBus = bus.getLocation();
 
+
+
+                        PointDTO pointBus = bus.getLocation();
 
                         boolean distanceABus = calculateDistance(pointA.getX(), pointA.getY(), pointBus.getLat(), pointBus.getLng());
                         boolean distanceBBus = calculateDistance(pointB.getX(), pointB.getY(), pointBus.getLat(), pointBus.getLng());
 
+                        System.out.println(bus.getNumber() + " " + bus.getCarNumber());
+                        System.out.println(distanceABus);
+                        System.out.println(distanceBBus);
                         if (distanceABus)
                             bus.setSide("front");
 
                         if (distanceBBus)
                             bus.setSide("back");
-
-
-                        if (Objects.isNull(bus.getSide()) || bus.getSide().isBlank()) {
-                            List<BusDTO> busList = redisBusService.getBuses(String.valueOf(bus.getNumber()));
-                            Optional<BusDTO> prevBus = busList.stream().filter(b -> b.getCarNumber().equals(bus.getCarNumber())).findAny();
-                            if (prevBus.isPresent()) {
-                                PointDTO prevPointBus = prevBus.get().getLocation();
-                                bus.setSide(getSide(pointA, pointBus, prevPointBus));
-                            }
-
-                        }
-
                     }
                 }
             }
@@ -90,6 +80,7 @@ public class BusDestinationDirectionSide {
 
         return buses;
     }
+
 
     private boolean busOnRoute(Route route, BusDTO bus){
         if(checkCoordinate(route.getFrontLine(), bus))
@@ -113,26 +104,6 @@ public class BusDestinationDirectionSide {
     private boolean calculateDistance(double pointX, double pointY, double busX, double busY){
         double distance = Math.sqrt(Math.pow(busX - pointX, 2) + Math.pow(busY - pointY, 2));
         return distance < 0.002;
-    }
-
-    private String getSide(Point a, PointDTO current, PointDTO prev){
-
-        double scalarProductA = calculateDistanceSide(a.getX(), a.getY(), current.getLat(), current.getLng());
-        double scalarProductB = calculateDistanceSide(a.getX(), a.getY(), prev.getLat(), prev.getLng());
-
-
-        String destination;
-        if (scalarProductA > scalarProductB) {
-            destination = "front";
-        } else {
-            destination = "back";
-        }
-
-        return destination;
-    }
-
-    private double calculateDistanceSide(double pointX, double pointY, double busX, double busY){
-        return Math.sqrt(Math.pow(busX - pointX, 2) + Math.pow(busY - pointY, 2));
     }
 
 }
