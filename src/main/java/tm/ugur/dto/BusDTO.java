@@ -14,6 +14,7 @@ public class BusDTO extends AbstractDTO implements Serializable {
     private PointDTO location;
     private Integer index;
     private String side;
+    private boolean status;
 
     public BusDTO(){}
 
@@ -110,6 +111,14 @@ public class BusDTO extends AbstractDTO implements Serializable {
         this.side = side;
     }
 
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "BusDAO{" +
@@ -119,8 +128,10 @@ public class BusDTO extends AbstractDTO implements Serializable {
                 ", dir='" + dir + '\'' +
                 ", side='" + side + '\'' +
                 ", index='" + index + '\'' +
+                ", status='" + status + '\'' +
                 '}';
     }
+
 
 
 }

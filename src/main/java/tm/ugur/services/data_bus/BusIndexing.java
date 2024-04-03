@@ -55,17 +55,18 @@ public class BusIndexing {
 
             Optional<Route> route = routeService.findByNumberInitStops(bus.getNumber());
 
-            List<Stop> stops = Objects.nonNull(bus.getSide()) && bus.getSide().equals("front") ?
-                    findNearestStops(route.get().getStartStops(), point) : findNearestStops(route.get().getEndStops(), point) ;
+            Stop stop = Objects.nonNull(bus.getSide()) && bus.getSide().equals("front") ?
+                    findNearestStopIndex(route.get().getStartStops(), point) : findNearestStopIndex(route.get().getEndStops(), point) ;
 
             if (Objects.isNull(bus.getSide())) {
                 return;
             }
 
+
             if (Objects.nonNull(bus.getSide()) && bus.getSide().equals("front")) {
-                processStopsForSide(stops, route, bus, this::processStartRouteStop);
+                processStopsForSide(stop, route, bus, this::processStartRouteStop);
             } else if (bus.getSide().equals("back")) {
-                processStopsForSide(stops, route, bus, this::processEndRouteStop);
+                processStopsForSide(stop, route, bus, this::processEndRouteStop);
             }
         });
 
@@ -73,26 +74,48 @@ public class BusIndexing {
         return buses;
     }
 
-    private List<Stop> findNearestStops(List<Stop> stops, PointDTO point){
-        Point pointTarget = factory.createPoint(new Coordinate(point.getLat(), point.getLng()));
-        return stops.parallelStream()
-                .map(stop -> new AbstractMap.SimpleEntry<>(stop, stop.getLocation().distance(pointTarget)))
-                .sorted(Comparator.comparingDouble(AbstractMap.SimpleEntry::getValue))
-                .limit(1)
-                .map(AbstractMap.SimpleEntry::getKey)
-                .collect(Collectors.toList());
+
+    private  Stop findNearestStopIndex(List<Stop> stops, PointDTO point) {
+        Stop nearestStopIndex = null;
+        double minDistance = Double.MAX_VALUE;
+
+        for(Stop stop : stops){
+            double distance = calculateDistance(stop.getLocation().getX(), stop.getLocation().getY(), point.getLat(),point.getLng());
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearestStopIndex = stop;
+            }
+        }
+        return nearestStopIndex;
+    }
+    private static double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        double R = 6371;
+
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        return R * c;
     }
 
-    private void processStopsForSide(List<Stop> stops, Optional<Route> route, BusDTO bus,
+
+
+    private void processStopsForSide(Stop stop, Optional<Route> route, BusDTO bus,
                                      BiConsumer<Optional<?>, BusDTO> routeStopProcessor) {
         if (route.isPresent()) {
-            stops.parallelStream().forEach(stop -> {
-                Optional<?> routeStop = bus.getSide().equals("front")
-                        ? startRouteStopService.findByStopAndRoute(stop, route.get())
-                        : endRouteStopService.findByStopAdnRoute(stop, route.get());
 
+            Optional<StartRouteStop> routeStop = startRouteStopService.findByStopAndRoute(stop, route.get());
+
+            if(routeStop.isPresent())
                 routeStopProcessor.accept(routeStop, bus);
-            });
+            else
+                routeStopProcessor.accept(endRouteStopService.findByStopAdnRoute(stop, route.get()), bus);
+
         }
     }
 

@@ -49,7 +49,9 @@ public class BusDestinationDirectionSide {
             if (route.isPresent()) {
                 List<StartRouteStop> startRouteStops = route.get().getStartRouteStops();
 
-                    if(!startRouteStops.isEmpty()) {
+                if (!startRouteStops.isEmpty()) {
+                    if (busOnRoute(route.get(), bus)) {
+                        bus.setStatus(true);
 
                         List<Stop> stops = startRouteStops.stream()
                                 .sorted(Comparator.comparing(StartRouteStop::getIndex))
@@ -67,25 +69,45 @@ public class BusDestinationDirectionSide {
                         if (distanceABus)
                             bus.setSide("front");
 
-                        if(distanceBBus)
+                        if (distanceBBus)
                             bus.setSide("back");
 
 
-                        if(Objects.isNull(bus.getSide()) || bus.getSide().isBlank()){
+                        if (Objects.isNull(bus.getSide()) || bus.getSide().isBlank()) {
                             List<BusDTO> busList = redisBusService.getBuses(String.valueOf(bus.getNumber()));
                             Optional<BusDTO> prevBus = busList.stream().filter(b -> b.getCarNumber().equals(bus.getCarNumber())).findAny();
-                            if(prevBus.isPresent()){
+                            if (prevBus.isPresent()) {
                                 PointDTO prevPointBus = prevBus.get().getLocation();
-                                bus.setSide( getSide(pointA, pointB, pointBus, prevPointBus));
+                                bus.setSide(getSide(pointA, pointBus, prevPointBus));
                             }
 
                         }
 
                     }
+                }
             }
         });
 
         return buses;
+    }
+
+    private boolean busOnRoute(Route route, BusDTO bus){
+        if(checkCoordinate(route.getFrontLine(), bus))
+            return true;
+        if(checkCoordinate(route.getBackLine(), bus))
+            return true;
+
+        return false;
+    }
+
+    private boolean checkCoordinate(LineString line, BusDTO bus){
+        for(Coordinate coordinate : line.getCoordinates()){
+            if (calculateDistance(coordinate.getX(), coordinate.getY(),
+                    bus.getLocation().getLat(), bus.getLocation().getLng())){
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean calculateDistance(double pointX, double pointY, double busX, double busY){
@@ -93,7 +115,7 @@ public class BusDestinationDirectionSide {
         return distance < 0.002;
     }
 
-    private String getSide(Point a, Point b, PointDTO current, PointDTO prev){
+    private String getSide(Point a, PointDTO current, PointDTO prev){
 
         double scalarProductA = calculateDistanceSide(a.getX(), a.getY(), current.getLat(), current.getLng());
         double scalarProductB = calculateDistanceSide(a.getX(), a.getY(), prev.getLat(), prev.getLng());

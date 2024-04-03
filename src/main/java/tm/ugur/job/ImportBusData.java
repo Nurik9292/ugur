@@ -68,7 +68,6 @@ public class ImportBusData {
             Map<Integer, List<BusDTO>> aggregatedBuses = busDataAggregator.aggregateBusData(
                     busIndexing.indexing(busSide.define(busDataFetcher.fetchBusDataFromAllSources()))
             );
-
             for(Map.Entry<Integer, List<BusDTO>> entry : aggregatedBuses.entrySet()){
                 redisService.addBuses(String.valueOf(entry.getKey()), entry.getValue());
             }
