@@ -61,12 +61,26 @@ public class PlaceCategorySeed implements CommandLineRunner {
 
             categories.keySet().forEach(category -> {
                 List<PlaceCategoryTranslation> translations = new ArrayList<>(categories.get(category));
-                PlaceCategory placeCategory = placeCategoryService.store(new PlaceCategory(translations));
+                PlaceCategory placeCategory = placeCategoryService.store(new PlaceCategory(translations, getImagePath(category)));
                 translations.forEach(translation -> {
                     translation.setPlaceCategory(placeCategory);
                     translationService.store(translation);
                 });
             });
         }
+    }
+
+    private String getImagePath(String category){
+        return switch (category){
+            default -> "";
+            case "cafe" -> "/api/images/place/category/cafe.svg";
+            case "journey" -> "/api/images/place/category/shopping-bag.svg";
+            case "health" -> "/api/images/place/category/hospital.svh";
+            case "services" -> "/api/images/place/category/service.png";
+            case "events" -> "/api/images/place/category/event.svg";
+            case "education" -> "/api/images/place/category/education.svg";
+            case "sports and recreation" -> "/api/images/place/category/sport.svg";
+            case "outlets" -> "/api/images/place/category/shop.svg";
+        };
     }
 }
