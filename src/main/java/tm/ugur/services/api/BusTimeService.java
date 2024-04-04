@@ -37,7 +37,9 @@ public class BusTimeService {
         }
         Map<Integer, BusDTO> nearestBuses = filterBus(getRouteIndexes(stop));
 
+        logger.info("All bus");
         logger.info(nearestBuses.toString());
+        logger.info("End all bus");
 
         return nearestBuses.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> formatTime(stop, entry.getValue())));
@@ -54,6 +56,10 @@ public class BusTimeService {
                         .filter(busDTO -> busDTO.getIndex() != null && value % 2 == busDTO.getIndex() % 2)
                         .sorted(Comparator.comparing(BusDTO::getIndex).reversed())
                         .toList();
+
+                logger.info("Filter bus list");
+                logger.info(busDTOList.toString());
+                logger.info("End filter bus list");
 
               filterBus.forEach(bus -> {
                   if(value > bus.getIndex())
