@@ -5,9 +5,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import tm.ugur.models.PlaceCategory;
 import tm.ugur.models.PlaceCategoryTranslation;
+import tm.ugur.models.PlaceImage;
 import tm.ugur.repo.PlaceCategoryRepository;
+import tm.ugur.storage.FileSystemStorageService;
 import tm.ugur.util.pagination.PaginationService;
 
 import java.util.*;
@@ -19,14 +22,17 @@ public class PlaceCategoryService {
     private final PlaceCategoryRepository placeCategoryRepository;
     private final PaginationService paginationService;
     private final PlaceCategoryTranslationService translationService;
+    private final FileSystemStorageService storageService;
 
     @Autowired
     public PlaceCategoryService(PlaceCategoryRepository placeCategoryRepository,
                                 PaginationService paginationService,
-                                PlaceCategoryTranslationService translationService) {
+                                PlaceCategoryTranslationService translationService,
+                                FileSystemStorageService storageService) {
         this.placeCategoryRepository = placeCategoryRepository;
         this.paginationService = paginationService;
         this.translationService = translationService;
+        this.storageService = storageService;
     }
 
 
@@ -62,7 +68,11 @@ public class PlaceCategoryService {
     }
 
     @Transactional
-    public void store(PlaceCategory placeCategory, String title_tm, String title_ru, String title_en){
+    public void store(PlaceCategory placeCategory, MultipartFile file, String title_tm, String title_ru, String title_en){
+        String pathImage = storageService.store(file, "place/category");
+        if (!pathImage.isBlank())
+            placeCategory.setImage(pathImage);
+
         placeCategory.setUpdatedAt(new Date());
         placeCategory.setCreatedAt(new Date());
         List<PlaceCategoryTranslation> pct =
@@ -87,10 +97,15 @@ public class PlaceCategoryService {
 
 
     @Transactional
-    public void update(long id, PlaceCategory placeCategory, String title_tm, String title_ru, String title_en){
+    public void update(long id, PlaceCategory placeCategory, MultipartFile file, String title_tm, String title_ru, String title_en){
         Optional<PlaceCategory> existingPlaceCategory = findOne(id);
 
         existingPlaceCategory.ifPresent(category -> {
+            String pathImage = storageService.store(file, "place/category");
+            if (!pathImage.isBlank()){
+                storageService.delete(category.getImage());
+                placeCategory.setImage(pathImage);
+            }
 
             PlaceCategoryTranslation existingTranslationTm = getTranslation(category.getTranslations(),"tm");
             PlaceCategoryTranslation existingTranslationRu = getTranslation(category.getTranslations(),"ru");

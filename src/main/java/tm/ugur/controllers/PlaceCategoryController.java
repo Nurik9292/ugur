@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import tm.ugur.dto.PlaceSubCategoryDTO;
 import tm.ugur.models.PlaceCategory;
 import tm.ugur.models.PlaceCategoryTranslation;
@@ -78,6 +79,7 @@ public class PlaceCategoryController {
     public String store(@RequestParam("title_tm") String title_tm,
                         @RequestParam("title_ru") String title_ru,
                         @RequestParam("title_en") String title_en,
+                        @RequestParam(value = "file", required = false) MultipartFile file,
                         @ModelAttribute("placeCategory") @Valid PlaceCategory placeCategory, BindingResult result, Model model){
         if(result.hasErrors()){
             model.addAttribute("page", "place-category-create");
@@ -85,7 +87,7 @@ public class PlaceCategoryController {
             return "layouts/place_categories/create";
         }
 
-        placeCategoryService.store(placeCategory, title_tm, title_ru, title_en);
+        placeCategoryService.store(placeCategory, file, title_tm, title_ru, title_en);
 
         return "redirect:/place-categories";
     }
@@ -112,6 +114,7 @@ public class PlaceCategoryController {
 
     @PatchMapping("/{id}")
     public String update(@PathVariable("id") long id,
+                         @RequestParam(value = "file", required = false) MultipartFile file,
                          @RequestParam("title_tm") String title_tm,
                          @RequestParam("title_ru") String title_ru,
                          @RequestParam("title_en") String title_en,
@@ -124,7 +127,7 @@ public class PlaceCategoryController {
             return "layouts/place_categories/edit";
         }
 
-        this.placeCategoryService.update(id, placeCategory, title_tm, title_ru, title_en);
+        this.placeCategoryService.update(id, placeCategory, file, title_tm, title_ru, title_en);
 
         return "redirect:/place-categories";
     }

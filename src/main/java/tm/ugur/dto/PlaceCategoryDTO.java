@@ -12,6 +12,8 @@ public class PlaceCategoryDTO extends AbstractDTO{
 
    private Map<String, String> titles;
 
+   private String image;
+
     private List<PlaceSubCategoryDTO> subCategories;
 
 
@@ -45,6 +47,14 @@ public class PlaceCategoryDTO extends AbstractDTO{
         this.titles = titles;
     }
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
@@ -66,4 +76,6 @@ public class PlaceCategoryDTO extends AbstractDTO{
                 ", id=" + id +
                 '}';
     }
+
+
 }

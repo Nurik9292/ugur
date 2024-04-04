@@ -25,16 +25,14 @@ public class PlaceCategoryMapper extends AbstractMapper<PlaceCategory, PlaceCate
 
     private final ModelMapper modelMapper;
     private final PlaceSubCategoriesMapper placeSubCategoriesMapper;
-    private final TranslationPlaceCategoryMapper translationCategoryMapper;
+
 
     @Autowired
     public PlaceCategoryMapper(ModelMapper modelMapper,
-                               PlaceSubCategoriesMapper placeSubCategoriesMapper,
-                               TranslationPlaceCategoryMapper translationCategoryMapper) {
+                               PlaceSubCategoriesMapper placeSubCategoriesMapper) {
         super(PlaceCategory.class, PlaceCategoryDTO.class);
         this.modelMapper = modelMapper;
         this.placeSubCategoriesMapper = placeSubCategoriesMapper;
-        this.translationCategoryMapper = translationCategoryMapper;
     }
 
 
@@ -50,6 +48,7 @@ public class PlaceCategoryMapper extends AbstractMapper<PlaceCategory, PlaceCate
     @Override
     public void mapSpecificFields(PlaceCategory source, PlaceCategoryDTO destination) {
             destination.setId(source.getId());
+            destination.setImage(source.getImage());
             destination.setTitles(getTitleTranslations(source.getTranslations()));
             destination.setSubCategories(source.getSubCategories().stream().map(this::convertToDTO).toList());
     }

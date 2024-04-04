@@ -15,6 +15,9 @@ public class PlaceCategory extends AbstractEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(name = "image")
+    private String image;
+
     @OneToMany(mappedBy = "placeCategory")
     private List<PlaceCategoryTranslation> translations;
 
@@ -88,6 +91,14 @@ public class PlaceCategory extends AbstractEntity{
 
     public void setPlaces(List<Place> places) {
         this.places = places;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     @Override

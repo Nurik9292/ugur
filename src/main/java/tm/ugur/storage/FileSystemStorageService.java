@@ -22,6 +22,7 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Date;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -116,6 +117,41 @@ public class FileSystemStorageService implements StorageService{
         } catch (IOException e) {
             logger.error("Failed to store file from api" + e.getMessage());
             throw new StorageException("Failed to store file from api.", e);
+        }
+
+    }
+
+    public String store(MultipartFile file, String folder) {
+        try {
+            if (Objects.isNull(file) || file.isEmpty()) {
+                logger.warn("Failed to store empty file.");
+                return "";
+            }
+
+            String originalName = file.getOriginalFilename();
+
+            Path destinationFile = rootLocation.resolve(Paths.get(originalName))
+                    .normalize().toAbsolutePath();
+
+
+            if (!destinationFile.getParent().equals(rootLocation.toAbsolutePath())) {
+                throw new StorageException("Cannot store file outside current directory.");
+            }
+
+            Date date = new Date();
+            String imageName = folder + "/" + date.getTime() + "-" + originalName;
+
+            Files.createDirectories(Path.of(destinationFile.getParent() + "/" + folder));
+
+            String newDestinationFile = destinationFile.getParent() + "/" + imageName;
+
+            Files.copy(file.getInputStream(),  Path.of(newDestinationFile), StandardCopyOption.REPLACE_EXISTING);
+
+            return "/api/images/" + imageName;
+
+        } catch (IOException e) {
+            logger.error("Failed to store file " + e.getMessage());
+            throw new StorageException("Failed to store file.", e);
         }
 
     }
