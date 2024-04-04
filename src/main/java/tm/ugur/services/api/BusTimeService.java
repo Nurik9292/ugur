@@ -1,5 +1,7 @@
 package tm.ugur.services.api;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import tm.ugur.dto.BusDTO;
 import tm.ugur.models.Stop;
@@ -18,6 +20,8 @@ public class BusTimeService {
     private final RedisBusService redisBusService;
     private final Distance distance;
 
+    private static final Logger logger = LoggerFactory.getLogger(BusTimeService.class);
+
 
     public BusTimeService(StopService stopService, RedisBusService redisBusService, Distance distance) {
         this.stopService = stopService;
@@ -32,6 +36,8 @@ public class BusTimeService {
             return Collections.emptyMap();
         }
         Map<Integer, BusDTO> nearestBuses = filterBus(getRouteIndexes(stop));
+
+        logger.info(nearestBuses.toString());
 
         return nearestBuses.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> formatTime(stop, entry.getValue())));
