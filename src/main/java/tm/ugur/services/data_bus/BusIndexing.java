@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 @Component
 public class BusIndexing {
 
-    private final GeometryFactory factory;
     private final RouteService routeService;
     private final StartRouteStopService startRouteStopService;
     private final EndRouteStopService endRouteStopService;
@@ -36,11 +35,9 @@ public class BusIndexing {
     private final static Logger logger = LoggerFactory.getLogger(BusIndexing.class);
 
     @Autowired
-    public BusIndexing(GeometryFactory factory,
-                       RouteService routeService,
+    public BusIndexing(RouteService routeService,
                        StartRouteStopService startRouteStopService,
                        EndRouteStopService endRouteStopService) {
-        this.factory = factory;
         this.routeService = routeService;
         this.startRouteStopService = startRouteStopService;
         this.endRouteStopService = endRouteStopService;

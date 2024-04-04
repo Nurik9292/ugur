@@ -66,7 +66,7 @@ public class SendBusTime {
                         mapper.writeValueAsString(times));
             }
         } catch (Exception e) {
-
+            e.printStackTrace();
             logger.error("Send bus time: " + e.getMessage());
         }
     }

@@ -50,12 +50,11 @@ public class BusDestinationDirectionSide {
 
             route.ifPresent(r -> {
                 List<Stop> sortedStops = getSortedStops(r.getStartRouteStops());
-
                 PointDTO busLocation = bus.getLocation();
-
                 if (isOnRoute(r, busLocation)) {
                     bus.setStatus(true);
-                    bus.setSide(determineSide(sortedStops, bus));
+                    if(!sortedStops.isEmpty())
+                        bus.setSide(determineSide(sortedStops, bus));
                 }
             });
 
