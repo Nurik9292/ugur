@@ -17,93 +17,93 @@ import tm.ugur.models.StartRouteStop;
 import tm.ugur.models.Stop;
 import tm.ugur.services.admin.RouteService;
 import tm.ugur.services.redis.RedisBusService;
+import tm.ugur.util.Distance;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class BusDestinationDirectionSide {
 
     private final RouteService routeService;
+    private final RedisBusService redisBusService;
+    private final Distance distance;
 
 
     private static final Logger logger = LoggerFactory.getLogger(BusDestinationDirectionSide.class);
 
     @Autowired
-    public BusDestinationDirectionSide(RouteService routeService) {
+    public BusDestinationDirectionSide(RouteService routeService,
+                                       RedisBusService redisBusService,
+                                       Distance distance) {
         this.routeService = routeService;
-
+        this.redisBusService = redisBusService;
+        this.distance = distance;
     }
 
     @Transactional
-    public List<BusDTO> define(List<BusDTO> buses){
-
+    public List<BusDTO> defineBusSides(List<BusDTO> buses){
 
         buses.parallelStream().forEach(bus -> {
 
             Optional<Route> route = routeService.findByNumberInitRouteStops(bus.getNumber());
 
+            route.ifPresent(r -> {
+                List<Stop> sortedStops = getSortedStops(r.getStartRouteStops());
 
-            if (route.isPresent()) {
-                List<StartRouteStop> startRouteStops = route.get().getStartRouteStops();
+                PointDTO busLocation = bus.getLocation();
 
-                if (!startRouteStops.isEmpty()) {
-                    if (busOnRoute(route.get(), bus)) {
-                        bus.setStatus(true);
-
-                        List<Stop> stops = startRouteStops.stream()
-                                .sorted(Comparator.comparing(StartRouteStop::getIndex))
-                                .map(StartRouteStop::getStop).toList();
-
-
-                        Point pointA = stops.getFirst().getLocation();
-                        Point pointB = stops.getLast().getLocation();
-
-
-
-                        PointDTO pointBus = bus.getLocation();
-
-                        boolean distanceABus = calculateDistance(pointA.getX(), pointA.getY(), pointBus.getLat(), pointBus.getLng());
-                        boolean distanceBBus = calculateDistance(pointB.getX(), pointB.getY(), pointBus.getLat(), pointBus.getLng());
-
-                        System.out.println(bus.getNumber() + " " + bus.getCarNumber());
-                        System.out.println(distanceABus);
-                        System.out.println(distanceBBus);
-                        if (distanceABus)
-                            bus.setSide("front");
-
-                        if (distanceBBus)
-                            bus.setSide("back");
-                    }
+                if (isOnRoute(r, busLocation)) {
+                    bus.setStatus(true);
+                    bus.setSide(determineSide(sortedStops, bus));
                 }
-            }
+            });
+
         });
 
         return buses;
     }
 
+    private String determineSide(List<Stop> stops, BusDTO bus) {
+        Point firstStop = stops.getFirst().getLocation();
+        Point lastStop = stops.getLast().getLocation();
+        PointDTO busLocation = bus.getLocation();
 
-    private boolean busOnRoute(Route route, BusDTO bus){
-        if(checkCoordinate(route.getFrontLine(), bus))
-            return true;
-        if(checkCoordinate(route.getBackLine(), bus))
-            return true;
-
-        return false;
+        if (distance.calculate(firstStop.getX(), firstStop.getY(), busLocation.getLat(), busLocation.getLng())) {
+            return "front";
+        } else if (distance.calculate(lastStop.getX(), lastStop.getY(), busLocation.getLat(), busLocation.getLng())) {
+            return "back";
+        } else {
+            Optional<BusDTO> oldBus = redisBusService.getBuses(String.valueOf(bus.getNumber()))
+                    .stream().filter(b -> b.getCarNumber().equals(bus.getCarNumber())).findFirst();
+            return oldBus.map(BusDTO::getSide).orElse(null);
+        }
     }
 
-    private boolean checkCoordinate(LineString line, BusDTO bus){
+    private List<Stop> getSortedStops(List<StartRouteStop> startRouteStops) {
+        return startRouteStops.stream()
+                .sorted(Comparator.comparing(StartRouteStop::getIndex))
+                .map(StartRouteStop::getStop)
+                .collect(Collectors.toList());
+    }
+
+
+    private boolean isOnRoute(Route route, PointDTO busLocation){
+        return checkCoordinate(route.getFrontLine(), busLocation) || checkCoordinate(route.getBackLine(), busLocation);
+    }
+
+
+    private boolean checkCoordinate(LineString line, PointDTO busLocation){
         for(Coordinate coordinate : line.getCoordinates()){
-            if (calculateDistance(coordinate.getX(), coordinate.getY(),
-                    bus.getLocation().getLat(), bus.getLocation().getLng())){
+            if (distance.calculate(coordinate.getX(), coordinate.getY(),
+                    busLocation.getLat(), busLocation.getLng())){
                 return true;
             }
         }
         return false;
     }
 
-    private boolean calculateDistance(double pointX, double pointY, double busX, double busY){
-        double distance = Math.sqrt(Math.pow(busX - pointX, 2) + Math.pow(busY - pointY, 2));
-        return distance < 0.002;
-    }
+
+
 
 }

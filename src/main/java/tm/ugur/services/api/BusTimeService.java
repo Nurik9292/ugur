@@ -7,6 +7,7 @@ import tm.ugur.models.StartRouteStop;
 import tm.ugur.models.Stop;
 import tm.ugur.services.admin.StopService;
 import tm.ugur.services.redis.RedisBusService;
+import tm.ugur.util.Distance;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -17,11 +18,13 @@ public class BusTimeService {
 
     private final StopService stopService;
     private final RedisBusService redisBusService;
+    private final Distance distance;
 
 
-    public BusTimeService(StopService stopService, RedisBusService redisBusService) {
+    public BusTimeService(StopService stopService, RedisBusService redisBusService, Distance distance) {
         this.stopService = stopService;
         this.redisBusService = redisBusService;
+        this.distance = distance;
     }
 
     public Map<Integer, String> getBusTime(Long id){
@@ -50,7 +53,7 @@ public class BusTimeService {
 
         nearestBuses.forEach((number, bus) -> {
 
-            double time =  calculateArrivalTime(calculateDistance(
+            double time =  calculateArrivalTime(distance.calculateRadius(
                             stop.getLocation().getX(), stop.getLocation().getY(),
                             bus.getLocation().getLat(), bus.getLocation().getLng()),
                     Double.parseDouble(bus.getSpeed()));
@@ -71,8 +74,7 @@ public class BusTimeService {
                 int value = entry.getValue();
 
                 List<BusDTO> busDTOList = redisBusService.getBuses(String.valueOf(key));
-                System.out.println(value);
-                System.out.println(busDTOList);
+
                 List<BusDTO> filterBus = new ArrayList<>();
 
                 if(busDTOList != null){
@@ -107,7 +109,7 @@ public class BusTimeService {
         BusDTO bus =  redisBusService.getBuses(number)
                 .stream().filter(b -> b.getCarNumber().equals(carNumber)).findAny().orElseThrow();
 
-        double distance = calculateDistance(bus.getLocation().getLat(),
+        double distance = this.distance.calculateRadius(bus.getLocation().getLat(),
                 bus.getLocation().getLng(),
                 stop.getLocation().getX(),
                 stop.getLocation().getY());
@@ -117,24 +119,8 @@ public class BusTimeService {
     }
 
 
-
-    private static double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-        double R = 6371;
-
-        double latDistance = Math.toRadians(lat2 - lat1);
-        double lonDistance = Math.toRadians(lon2 - lon1);
-
-        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
-                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
-
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-        return R * c;
-    }
-
     private static double calculateArrivalTime(double distance, double busSpeed) {
-        busSpeed = busSpeed < 10.0 ? 20.0 : busSpeed;
+        busSpeed = busSpeed < 10.0 ? 30.0 : busSpeed;
         double timeInHours = distance / busSpeed;
         return timeInHours * 60;
     }
