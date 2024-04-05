@@ -12,6 +12,7 @@ import tm.ugur.services.data_bus.BusDestinationDirectionSide;
 import tm.ugur.services.data_bus.BusIndexing;
 import tm.ugur.services.data_bus.import_data.ImdataImport;
 import tm.ugur.services.redis.RedisBusService;
+import tm.ugur.services.redis.RedisRouteService;
 
 import java.util.*;
 import java.util.concurrent.locks.Lock;
@@ -32,7 +33,7 @@ public class ImportBusData {
     @Autowired
     public ImportBusData(BusDataFetcher busDataFetcher,
                          BusDataAggregator busDataAggregator,
-                         RedisBusService redisService,
+                         RedisBusService redisService, RedisRouteService redisRouteService,
                          BusDestinationDirectionSide busSide, BusIndexing busIndexing, Lock lock) {
         this.busDataFetcher = busDataFetcher;
         this.busDataAggregator = busDataAggregator;
@@ -68,6 +69,7 @@ public class ImportBusData {
             Map<Integer, List<BusDTO>> aggregatedBuses = busDataAggregator.aggregateBusData(
                     busIndexing.indexing(busSide.defineBusSides(busDataFetcher.fetchBusDataFromAllSources()))
             );
+
             for(Map.Entry<Integer, List<BusDTO>> entry : aggregatedBuses.entrySet()){
                 redisService.addBuses(String.valueOf(entry.getKey()), entry.getValue());
             }

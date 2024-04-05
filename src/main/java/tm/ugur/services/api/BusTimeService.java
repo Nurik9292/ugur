@@ -58,13 +58,15 @@ public class BusTimeService {
                         .toList();
 
                 logger.info("Filter bus list");
-                logger.info(busDTOList.toString());
+                logger.info(filterBus.toString());
                 logger.info("End filter bus list");
 
-              filterBus.forEach(bus -> {
-                  if(value > bus.getIndex())
+              for(BusDTO bus: filterBus){
+                  if(value > bus.getIndex()){
                       nearestBuses.put(number, bus);
-              });
+                      break;
+                  }
+              }
             }
         });
 
@@ -112,7 +114,7 @@ public class BusTimeService {
 
 
     private static double calculateArrivalTime(double distance, double busSpeed) {
-        busSpeed = busSpeed < 10.0 ? 30.0 : busSpeed;
+        busSpeed = busSpeed < 25.0 ? 40.0 : busSpeed;
         double timeInHours = distance / busSpeed;
         return timeInHours * 60;
     }

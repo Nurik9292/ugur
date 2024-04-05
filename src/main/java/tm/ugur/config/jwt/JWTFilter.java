@@ -42,6 +42,7 @@ public class JWTFilter extends OncePerRequestFilter {
             }else{
                 try{
                     String userPhone = jwtUtil.validateTokenAndRetrieveClaim(jwt);
+
                     UserDetails userDetails = clientDetailService.loadUserByUsername(userPhone);
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities());
@@ -49,7 +50,8 @@ public class JWTFilter extends OncePerRequestFilter {
                         SecurityContextHolder.getContext().setAuthentication(authToken);
                     }
                 }catch (JWTVerificationException e){
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid JWT Toketn");
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid JWT Token");
+                    logger.error("JWT filter error: " + e.getMessage());
                 }
             }
         }

@@ -88,6 +88,15 @@ public class Route extends AbstractEntity implements Serializable {
         this.city = city;
     }
 
+    public Route(long id, String name, String interval, int number, int routingTime, City city) {
+        this.id = id;
+        this.name = name;
+        this.interval = interval;
+        this.number = number;
+        this.city = city;
+        this.routingTime = routingTime;
+    }
+
     public Long getId() {
         return id;
     }

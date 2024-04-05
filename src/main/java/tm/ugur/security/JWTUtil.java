@@ -22,7 +22,7 @@ public class JWTUtil {
     private final static Logger logger = LoggerFactory.getLogger(JWTUtil.class);
 
     public String generateToken(String userPhone) throws JWTVerificationException {
-        Date expirationDate = Date.from(ZonedDateTime.now().plusDays(1).toInstant());
+        Date expirationDate = Date.from(ZonedDateTime.now().plusDays(30).toInstant());
 
         return JWT.create()
                 .withSubject("Client details")

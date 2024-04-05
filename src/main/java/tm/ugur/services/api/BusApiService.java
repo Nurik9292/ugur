@@ -47,13 +47,18 @@ public class BusApiService {
 
     public String getNextStop(long id, String carNumber){
         Route route = routeRepository.findById(id).orElseThrow(RouteNotFoundException::new);
-        System.out.println(route.getNumber() + " " + carNumber);
+
         BusDTO bus =  redisBusService.getBuses(
                 String.valueOf(route.getNumber()))
                 .stream().filter(b -> b.getCarNumber().equals(carNumber))
                 .findAny().orElseThrow(BusNotFoundException::new);
 
         Stop stop;
+
+        if(bus.getSide() == null)
+            return "Stop not found";
+
+
         if (bus.getSide().equals("front")) {
            stop =  route.getStartRouteStops()
                     .stream()

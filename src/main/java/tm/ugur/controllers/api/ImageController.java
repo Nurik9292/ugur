@@ -40,4 +40,13 @@ public class ImageController {
                 .contentType(MediaType.IMAGE_JPEG)
                 .body(image);
     }
+
+    @GetMapping("place/category/{imageName}")
+    public ResponseEntity<Resource> getPlaceCategoryImage(@PathVariable("imageName") String imageName){
+        Resource image = storageService.loadAsResource("place/category/" + imageName);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(image);
+    }
 }

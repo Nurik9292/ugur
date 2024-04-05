@@ -45,6 +45,8 @@ public class RouteMapper extends AbstractMapper<Route, RouteDTO> {
 
     @Override
     public void mapSpecificFields(Route source, RouteDTO destination) {
+        System.out.println(source.getRoutingTime() + " rrrrrrrr");
+        destination.setRoutingTime(source.getRoutingTime());
         destination.setStartStopIds(getStopIds(source, "start"));
         destination.setEndStopIds(getStopIds(source, "end"));
         destination.setFrontLine(lineStringMapper.getLineDto(source, "front"));
@@ -53,6 +55,7 @@ public class RouteMapper extends AbstractMapper<Route, RouteDTO> {
 
     @Override
     public void mapSpecificFields(RouteDTO source, Route destination) {
+        destination.setRoutingTime(source.getRoutingTime());
         destination.setStartStops(getStops(source, "start"));
         destination.setEndStops(getStops(source, "end"));
         destination.setFrontLine(lineStringMapper.getLine(source, "front"));

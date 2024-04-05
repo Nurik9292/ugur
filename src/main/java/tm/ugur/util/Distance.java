@@ -7,7 +7,7 @@ public class Distance {
 
     public boolean calculate(double pointX, double pointY, double busX, double busY){
         double distance = Math.sqrt(Math.pow(busX - pointX, 2) + Math.pow(busY - pointY, 2));
-        return distance < 0.002;
+        return distance < 0.004;
     }
 
 

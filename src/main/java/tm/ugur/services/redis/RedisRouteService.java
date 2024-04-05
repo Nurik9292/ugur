@@ -28,16 +28,28 @@ public class RedisRouteService {
         redisTemplate.opsForValue().set(Constant.ROUTE_NUMBER + route.getNumber(), convertToDto(route));
     }
 
+    public void addRoute(RouteDTO route){
+        redisTemplate.opsForValue().set(Constant.ROUTE_NUMBER + route.getNumber(), route);
+    }
+
     public Route getRoute(String key){
         return convertToEntity(redisTemplate.opsForValue().get(Constant.ROUTE_NUMBER + key));
     }
 
-    public List<Route> getRoutes() {
+    public List<Route> getEntityRoutes() {
         return redisTemplate.opsForValue()
                 .multiGet(Objects.requireNonNull(redisTemplate.keys(Constant.ROUTE_NUMBER + "*")))
                 .stream().map(this::convertToEntity).collect(Collectors.toList());
 
     }
+
+    public List<RouteDTO> getRoutes() {
+        return redisTemplate.opsForValue()
+                .multiGet(Objects.requireNonNull(redisTemplate.keys(Constant.ROUTE_NUMBER + "*")));
+
+    }
+
+
 
     public void deleteRoute(String key){
         redisTemplate.delete(Constant.ROUTE_NUMBER + key);

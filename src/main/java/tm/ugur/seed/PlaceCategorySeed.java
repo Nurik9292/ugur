@@ -75,7 +75,7 @@ public class PlaceCategorySeed implements CommandLineRunner {
             default -> "";
             case "cafe" -> "/api/images/place/category/cafe.svg";
             case "journey" -> "/api/images/place/category/shopping-bag.svg";
-            case "health" -> "/api/images/place/category/hospital.svh";
+            case "health" -> "/api/images/place/category/hospital.svg";
             case "services" -> "/api/images/place/category/service.png";
             case "events" -> "/api/images/place/category/event.svg";
             case "education" -> "/api/images/place/category/education.svg";

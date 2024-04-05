@@ -50,13 +50,6 @@ public class PlaceFavoritesApiController {
         return ResponseEntity.ok(Map.of("message", message));
     }
 
-
-    private boolean isFavorite(PlaceDTO placeDTO){
-        Client client = getAuthClient();
-        return client.getStops().stream().anyMatch(stop ->  stop.getId().equals(placeDTO.getId()));
-    }
-
-
     private Client getAuthClient(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         ClientDetails clientDetails = (ClientDetails) authentication.getPrincipal();
