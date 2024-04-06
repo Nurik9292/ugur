@@ -65,11 +65,11 @@ public class ParserService {
             JsonNode jsonNode = objectMapper.readTree(apiService.fetchDataFromApi());
             List<PlaceUgur> places = new ArrayList<>();
             for(JsonNode node : jsonNode.get("data").get("banners")){
-                System.out.println(node.get("title_ru").asText());
+            
                 if(node.get("businesses") != null && !node.get("businesses").isEmpty()){
                     node.get("businesses").forEach(place -> {
 
-                        System.out.println(place);
+                       
                         List<Category> categories = new ArrayList<>();
                         place.get("categories").forEach(category -> {
                             categories.add(new Category(

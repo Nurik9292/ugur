@@ -116,7 +116,8 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="mob_phone">Мобильный телефон</label>
-                            <input th:each="number : ${mobNumbers}" th:value="${number}" class="form-control mob_phone_place" id="mob_phone" name="mob_phone" type="text" placeholder="Введите моб телефон" required=""> <br>
+                            <input th:each="number : ${mobNumbers}" th:value="${number}" class="form-control mob_phone_place" id="mob_phone" name="mob_phone" type="text" placeholder="Введите моб телефон"> <br>
+                            <div id="notPhone"></div>
                             <a href="#" class="btn btn-primary ml-3" id="add-input" onclick="addInputMobPhone()">Добавить поле</a>
                         </div>
                     </div>

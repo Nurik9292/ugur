@@ -115,9 +115,6 @@ public class RouteApiService {
         if(buses == null)
             return 0;
 
-        System.out.println(buses);
-        System.out.println(routeDTO.getRoutingTime());
-
         return routeDTO.getRoutingTime() / buses.size();
     }
 

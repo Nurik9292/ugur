@@ -203,7 +203,7 @@ public class PlaceService {
         if(!existingPlace.getImages().isEmpty())
             existingPlace.getImages().forEach(placeImageService::delete);
 
-        List<PlaceImage> savedImages = storeImages(images);
+        List<PlaceImage> savedImages = Objects.nonNull(images) ? storeImages(images) : Collections.emptyList();
         place.setImages(savedImages);
 
         if(Objects.nonNull(existingPlace.getThumbs()))
@@ -219,20 +219,22 @@ public class PlaceService {
         place.addSocialNetworks(savedNetworks);
 
         placePhoneRepository.deleteAll(existingPlace.getPhones());
+
         Set<PlacePhone> savedPhones = savePlacePhones(phones, cityPhone);
         place.addPhones(savedPhones);
 
         Set<PlaceTranslation> savedTranslations = updatePlaceTranslations(existingPlace.getTranslations(), titles, address);
         place.setTranslations(savedTranslations);
 
-        place.addPhones(savedPhones);
+
         place.setId(id);
         place.setCreatedAt(existingPlace.getCreatedAt());
         place.setUpdatedAt(new Date());
         Place finalPlace = placeRepository.save(place);
         savedNetworks.forEach(network -> network.setPlace(finalPlace));
         savedPhones.forEach(phone -> phone.setPlace(finalPlace));
-        savedImages.forEach(image -> image.setPlace(finalPlace));
+        if(!savedImages.isEmpty())
+            savedImages.forEach(image -> image.setPlace(finalPlace));
         savedTranslations.forEach(translation -> translation.setPlace(finalPlace));
         if (Objects.nonNull(savedThumb))
             savedThumb.setPlace(finalPlace);
@@ -277,9 +279,11 @@ public class PlaceService {
     }
 
     private Set<PlacePhone> savePlacePhones(List<String> phones, String cityPhone){
-        Set<PlacePhone> savedPhones = phones.stream()
+
+        Set<PlacePhone> savedPhones = Objects.nonNull(phones) ? phones.stream()
                 .map(phone -> placePhoneRepository.save(new PlacePhone(phone, "mob")))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet()) : new HashSet<>();
+
         savedPhones.add(placePhoneRepository.save(new PlacePhone(cityPhone, "city")));
 
         return savedPhones;
@@ -295,7 +299,6 @@ public class PlaceService {
 
     private Set<PlaceTranslation> updatePlaceTranslations(Set<PlaceTranslation> existTranslation,
                                                           Map<String, String> titles, Map<String, String> address){
-        System.out.println(existTranslation);
         Map<String, PlaceTranslation> existingTranslations = existTranslation.stream()
                 .collect(Collectors.toMap(PlaceTranslation::getLocale, translation -> translation));
 

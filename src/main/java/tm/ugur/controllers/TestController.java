@@ -47,7 +47,7 @@ public class TestController {
                 .sorted(Comparator.comparing(StartRouteStop::getIndex))
                 .map(rs -> rs.getStop()).toList();
 
-        System.out.println(stops);
+    
 
         return "null";
     }

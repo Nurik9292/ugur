@@ -79,6 +79,10 @@ public class BusTimeService {
                         bus.getLocation().getLat(), bus.getLocation().getLng()),
                 Double.parseDouble(bus.getSpeed()));
 
+        int wholeNumber = (int) time;
+        double fractionalPart = time % wholeNumber;
+        time = fractionalPart > 0.6 ? Math.ceil(time) : time;
+
         return Double.isInfinite(time) ? "0.0" : new DecimalFormat("#.##").format(time);
     }
 

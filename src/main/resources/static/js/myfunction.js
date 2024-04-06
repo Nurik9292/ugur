@@ -111,9 +111,13 @@ function data() {
 
 function addInputMobPhone() {
     const addInputButton = document.getElementById("add-input");
-    const mobPhoneInput = document.getElementById("mob_phone");
+    let mobPhoneInput = document.getElementById("mob_phone");
     const newInput = document.createElement("input");
     const newBr = document.createElement("br");
+
+    if(mobPhoneInput == null)
+        mobPhoneInput = document.getElementById("notPhone");
+
     newInput.classList.add("form-control");
     newInput.classList.add("mob_phone_place");
     newInput.type = "text";
@@ -251,3 +255,4 @@ if (placeCategorySelect) {
         loadSubcategories(categoryId);
     });
 }
+

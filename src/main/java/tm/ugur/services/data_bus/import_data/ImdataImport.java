@@ -33,7 +33,7 @@ public class ImdataImport extends BusDataImplImport {
                     "turkmenportal", "turkmenportal");
             Map<String, BusDTO> buses = new TreeMap<>();
             json.forEach(object -> {
-                String carNumber = split(object.get("car_number").asText());
+                String carNumber = stringProcessing(object.get("car_number").asText());
                   buses.put(carNumber, new BusDTO(
                           carNumber,
                           Integer.parseInt(object.get("number").asText())));
@@ -45,11 +45,12 @@ public class ImdataImport extends BusDataImplImport {
         }
     }
 
-    private String split(String carNumber){
+    private String stringProcessing(String carNumber){
         builder.setLength(0);
         builder.append(carNumber);
         builder.insert(2, "-");
-
+        if(builder.indexOf(" ") == 5)
+            builder.insert(5, " ");
         return builder.toString();
     }
 }
