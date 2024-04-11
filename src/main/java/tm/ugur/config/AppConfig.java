@@ -30,6 +30,7 @@ public class AppConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/api/images/**")
                 .addResourceLocations("file:" + uploadPath);
+
     }
 
 

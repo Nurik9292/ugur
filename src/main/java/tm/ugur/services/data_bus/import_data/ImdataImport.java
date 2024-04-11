@@ -49,7 +49,7 @@ public class ImdataImport extends BusDataImplImport {
         builder.setLength(0);
         builder.append(carNumber);
         builder.insert(2, "-");
-        if(builder.indexOf(" ") == 5)
+        if(builder.indexOf(" ") != 5)
             builder.insert(5, " ");
         return builder.toString();
     }

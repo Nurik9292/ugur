@@ -60,7 +60,8 @@ public class PlaceMapper extends AbstractMapper<Place, PlaceDTO> {
             destination.setTitles(getTitleTranslations(source.getTranslations()));
             destination.setAddress(getAddressTranslations(source.getTranslations()));
             destination.setImages(getImages(source.getImages()));
-            destination.setThumb(new PlaceThumbDTO(source.getThumbs().getPath()));
+            if(source.getThumbs() != null)
+                destination.setThumb(new PlaceThumbDTO(source.getThumbs().getPath()));
     }
 
     private List<PlaceImageDTO> getImages(List<PlaceImage> images){

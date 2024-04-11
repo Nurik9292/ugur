@@ -118,7 +118,7 @@ public class PlaceService {
                       Map<String, String> titles,
                       Map<String, String> address) {
 
-        List<PlaceImage> savedImages = storeImages(images);
+        List<PlaceImage> savedImages = Objects.nonNull(images) ? storeImages(images) : Collections.emptyList();;
         place.setImages(savedImages);
 
         PlaceThumb savedThumb =  storeThumb(prev);
@@ -141,7 +141,8 @@ public class PlaceService {
         Place finalPlace = placeRepository.save(place);
         savedNetworks.forEach(network -> network.setPlace(finalPlace));
         savedPhones.forEach(phone -> phone.setPlace(finalPlace));
-        savedImages.forEach(image -> image.setPlace(finalPlace));
+        if(!savedImages.isEmpty())
+            savedImages.forEach(image -> image.setPlace(finalPlace));
         savedTranslations.forEach(translation -> translation.setPlace(finalPlace));
         if (Objects.nonNull(savedThumb))
             savedThumb.setPlace(finalPlace);
@@ -196,20 +197,20 @@ public class PlaceService {
                        MultipartFile[] images,
                        MultipartFile prev,
                        Map<String, String> titles,
-                       Map<String, String> address){
+                       Map<String, String> address,
+                       Long[] removeImageIds){
+
 
         Place existingPlace = findOne(id).orElseThrow();
 
-        if(!existingPlace.getImages().isEmpty())
-            existingPlace.getImages().forEach(placeImageService::delete);
+        if(Objects.nonNull(removeImageIds) && removeImageIds.length > 0)
+            deleteImageIds(existingPlace, removeImageIds);
 
         List<PlaceImage> savedImages = Objects.nonNull(images) ? storeImages(images) : Collections.emptyList();
         place.setImages(savedImages);
 
-        if(Objects.nonNull(existingPlace.getThumbs()))
-            thumbService.delete(existingPlace.getThumbs());
 
-        PlaceThumb savedThumb =  storeThumb(prev);
+        PlaceThumb savedThumb = Objects.nonNull(prev) ? storeThumb(prev, existingPlace) : null;
         place.setThumbs(savedThumb);
 
         place.setLocation(geometryFactory.createPoint(new Coordinate(place.getLat(), place.getLng())));
@@ -264,6 +265,16 @@ public class PlaceService {
     }
 
     private PlaceThumb storeThumb(MultipartFile image){
+
+        String thumbPath = storageService.store(image,  "place/thumb",64, 64);
+        return thumbPath.isBlank() ? null
+                : thumbService.store(new PlaceThumb(thumbPath));
+    }
+
+    private PlaceThumb storeThumb(MultipartFile image, Place existingPlace){
+        if(Objects.nonNull(existingPlace.getThumbs()))
+            thumbService.delete(existingPlace.getThumbs());
+
         String thumbPath = storageService.store(image,  "place/thumb",64, 64);
         return thumbPath.isBlank() ? null
                 : thumbService.store(new PlaceThumb(thumbPath));
@@ -327,13 +338,27 @@ public class PlaceService {
         return translations;
     }
 
+    private void deleteImageIds(Place existingPlace, Long[] removeImageIds){
+        List<PlaceImage> placeImages = existingPlace.getImages();
+
+        for(int i = 0; i < placeImages.size(); i++){
+            for(int j = 0; j < removeImageIds.length; j++){
+                if(placeImages.get(i).getId() == removeImageIds[j]){
+                    placeImageService.delete(placeImages.get(i));
+                    placeImages.remove(i);
+                }
+            }
+        }
+        existingPlace.setImages(placeImages);
+    }
+
     private void setLatLng(Place place){
         Point point = place.getLocation();
         place.setLat(point.getX());
         place.setLng(point.getY());
     }
 
-    private String pruningPath(String path){
+    public String pruningPath(String path){
         return path.substring(path.lastIndexOf("/") + 1);
     }
 }

@@ -2,6 +2,9 @@ package tm.ugur.controllers;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.PathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +17,13 @@ import tm.ugur.models.*;
 import tm.ugur.services.admin.PlaceCategoryService;
 import tm.ugur.services.admin.PlaceService;
 import tm.ugur.services.admin.PlaceSubCategoryService;
+import tm.ugur.storage.FileSystemStorageService;
 import tm.ugur.util.pagination.PaginationService;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -23,20 +31,27 @@ import java.util.stream.IntStream;
 @RequestMapping("/places")
 public class PlaceController {
 
+    @Value("${upload.image}")
+    String uploadPth;
+
     private final PlaceService placeService;
     private final PlaceCategoryService placeCategoryService;
     private final PaginationService paginationService;
+    private final FileSystemStorageService storageService;
+
 
     private static String sortByStatic = "";
 
     @Autowired
     public PlaceController(PlaceService placeService,
                            PlaceCategoryService placeCategoryService,
-                           PaginationService paginationService) {
+                           PaginationService paginationService,
+                           FileSystemStorageService storageService) {
         this.placeService = placeService;
         this.placeCategoryService = placeCategoryService;
         this.paginationService = paginationService;
 
+        this.storageService = storageService;
     }
 
     @GetMapping
@@ -98,7 +113,7 @@ public class PlaceController {
             @RequestParam(value = "prev", required = false) MultipartFile prev,
             @ModelAttribute("place") @Valid Place place, BindingResult result){
 
-
+        System.out.println(files);
         Map<String, String> titles = new HashMap<>(Map.of("tm", title_tm, "ru", title_ru, "en", title_en));
         Map<String, String> address = new HashMap<>(Map.of("tm", address_tm, "ru", address_ru, "en", address_en));
 
@@ -146,6 +161,7 @@ public class PlaceController {
         model.addAttribute("mobNumbers", phones.stream().filter(phone ->
                 phone.getType().equalsIgnoreCase("mob")).map(PlacePhone::getNumber).toList());
 
+
         model.addAttribute("title", "Изменить заведение");
         model.addAttribute("page", "place-main-edit");
         model.addAttribute("placeCategories", placeCategoryService.findAll());
@@ -153,6 +169,9 @@ public class PlaceController {
         model.addAttribute("categoryTitles", placeCategoryService.getCategoryTitles(placeCategoryService.findAll()));
         model.addAttribute("titles", titles);
         model.addAttribute("address", address);
+        PlaceThumb thumb = place.getThumbs();
+        if(thumb != null)
+            model.addAttribute("thumb", placeService.pruningPath(thumb.getPath()));
 
         return "layouts/places/edit";
     }
@@ -171,7 +190,9 @@ public class PlaceController {
                          @RequestParam(value = "cityPhone", required = false) String cityPhone,
                          @RequestParam(value = "files", required = false) MultipartFile[] files,
                          @RequestParam(value = "prev", required = false) MultipartFile prev,
+                         @RequestParam(value = "removeImageIds", required = false) Long[] removedImageIds,
                          @ModelAttribute("place") @Valid Place place, BindingResult result){
+
 
         Map<String, String> titles = new HashMap<>(Map.of("tm", title_tm, "ru", title_ru, "en", title_en));
         Map<String, String> address = new HashMap<>(Map.of("tm", address_tm, "ru", address_ru, "en", address_en));
@@ -182,7 +203,7 @@ public class PlaceController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        this.placeService.update(id, place, instagram, tiktok, telephones, cityPhone, files, prev, titles, address);
+        this.placeService.update(id, place, instagram, tiktok, telephones, cityPhone, files, prev, titles, address, removedImageIds);
 
         return ResponseEntity.ok("Заведение успешно измененно");
     }
@@ -193,4 +214,27 @@ public class PlaceController {
         return "redirect:/places";
     }
 
+    @GetMapping("/images/{id}")
+    @ResponseBody
+    public ResponseEntity< Map<Long, Map<String,Long>>>  getImages(@PathVariable("id") Long id){
+
+        Optional<Place> place = placeService.findOne(id);
+        Map<Long, Map<String,Long>>  images = new HashMap<>();
+        place.ifPresent(pl -> {
+            pl.getImages().forEach(image -> {
+                String imageName = placeService.pruningPath(image.getPath());
+                images.put(image.getId(), new HashMap<>(Map.of(imageName, getImageSize(Paths.get(uploadPth + "/place/", imageName)))));
+            });
+
+        });
+        return ResponseEntity.ok().body(images);
+    }
+
+    private long getImageSize(Path path){
+        try {
+            return new PathResource(path).contentLength();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

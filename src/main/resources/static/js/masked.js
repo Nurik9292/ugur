@@ -1,5 +1,5 @@
 jQuery(function($){
-    $("#city_phone").mask("+993(12) 99-99-99");
+ $("#city_phone").mask("+993(99) 99-99-99");
 });
 
 jQuery(function($) {

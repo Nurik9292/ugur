@@ -3,7 +3,7 @@ package tm.ugur.dto;
 import tm.ugur.dto.geo.PointDTO;
 
 import java.io.Serializable;
-import java.util.List;
+
 
 public class BusDTO extends AbstractDTO implements Serializable {
 

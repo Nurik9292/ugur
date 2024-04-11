@@ -12,12 +12,12 @@ import tm.ugur.storage.FileSystemStorageService;
 
 @RestController
 @RequestMapping("/api/images")
-public class ImageController {
+public class ImageApiController {
 
     private final FileSystemStorageService storageService;
 
     @Autowired
-    public ImageController(FileSystemStorageService storageService) {
+    public ImageApiController(FileSystemStorageService storageService) {
         this.storageService = storageService;
     }
 

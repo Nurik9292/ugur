@@ -162,17 +162,22 @@ function sendFormData(method, url, formData) {
 
 function sendForm(method, url) {
     const formData = new FormData();
-    const images = document.getElementById("image").files;
+    const images = myDropzone.getAcceptedFiles();
     const prev = document.getElementById("prev").files[0];
     const instagram = document.getElementById("instagram").value;
     const tiktok = document.getElementById("tiktok").value;
     const cityPhone = document.getElementById("city_phone").value;
     const mobPhones = document.getElementsByClassName("mob_phone_place");
     const phones = Array.from(mobPhones).map(phone => phone.value);
+    const lat = document.getElementById("lat").value;
+    const lng = document.getElementById("lng").value;
 
-    for (let i = 0; i < images.length; i++) {
-        formData.append('files', images[i]);
+    console.log(removedImageIds)
+
+    if(removedImageIds.length !== 0){
+        addToFormData(formData, "removeImageIds",removedImageIds);
     }
+
 
     addToFormData(formData, "_csrf", document.getElementById("csrf").value);
     addToFormData(formData, "title_tm", document.getElementById("title_tm").value);
@@ -183,17 +188,19 @@ function sendForm(method, url) {
     addToFormData(formData, "address_en", document.getElementById("address_en").value);
     addToFormData(formData, "email", document.getElementById("email").value);
     addToFormData(formData, "website", document.getElementById("site").value);
-    addToFormData(formData, "lat", document.getElementById("lat").value);
-    addToFormData(formData, "lng", document.getElementById("lng").value);
+    addToFormData(formData, "lat", lat);
+    addToFormData(formData, "lng", lng);
     addToFormData(formData, "placeCategory", document.getElementById("placeCategory").value);
     addToFormData(formData, "placeSubCategory", document.getElementById("placeSubCategory").value);
     addToFormData(formData, "instagram", instagram);
     addToFormData(formData, "tiktok", tiktok);
     addToFormData(formData, "telephones", phones);
+    addToFormData(formData, "files", images)
     addToFormData(formData, "cityPhone", cityPhone);
     addToFormData(formData, "prev", prev);
 
-    sendFormData(method, url, formData);
+    if(lat && lng)
+      sendFormData(method, url, formData);
 }
 
 function sendCreatePlace() {
@@ -208,7 +215,6 @@ function sendUpdatePlace() {
 function displayValidationErrors(errors) {
     Object.keys(errors).forEach(fieldName => {
         const errorMessage = errors[fieldName];
-        // const errorMessage = errors[fieldName].join(', ');
         const errorElement =  document.getElementById(fieldName + "-error");
         if (errorElement) {
             errorElement.textContent = errorMessage;
@@ -240,12 +246,37 @@ function loadSubcategories(categoryId) {
     });
 }
 
+function getImage() {
+
+    if(document.getElementById("placeId")){
+        const placeId = document.getElementById("placeId").value;
+        let images = [];
+
+        axios.get(host + "/places/images/" + placeId)
+            .then(res => {
+                const images = res.data;
+
+               for(const id in images){
+                   const inner = images[id];
+                   for(const image in inner){
+                       let mockFile = {id: id, name: image, size: inner[image] };
+                       myDropzone.displayExistingFile(mockFile, host + "/images/places/" + image);
+                   }
+
+               }
+
+            });
+    }
+
+}
+
 
 const placeCategorySelect = document.getElementById("placeCategory");
 
 if(placeCategorySelect && placeCategorySelect.value){
     const categoryId = placeCategorySelect.value;
     loadSubcategories(categoryId);
+    getImage();
 }
 
 
@@ -255,4 +286,7 @@ if (placeCategorySelect) {
         loadSubcategories(categoryId);
     });
 }
+
+
+
 
