@@ -194,6 +194,7 @@ if(document.getElementById("map-route-front")){
                 arrCoordinates =[...arrCoordinates, ...ls.getLatLngs()];
             })
             coordinatesFront = arrCoordinates;
+           x
             inputFrontCoordinates.value = coordinatesFront.join(",");
         });
     });
@@ -212,6 +213,7 @@ if(document.getElementById("map-route-front")){
            arrCoordinates =[...arrCoordinates, ...ls.getLatLngs()];
         })
         coordinatesFront = arrCoordinates;
+        console.log(coordinatesFront);
         inputFrontCoordinates.value = coordinatesFront.join(",");
     })
 
@@ -263,7 +265,7 @@ if(document.getElementById("map-route-back")){
         },
         {
             polyline: {
-                simplifyFactor: 0, // Устанавливаем фактор упрощения в 0
+                simplifyFactor: 0,
             },
         }
     );

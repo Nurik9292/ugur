@@ -16,6 +16,7 @@ import tm.ugur.repo.PlaceCategoryRepository;
 import tm.ugur.repo.PlaceRepository;
 import tm.ugur.repo.PlaceSubCategoryRepository;
 import tm.ugur.security.ClientDetails;
+import tm.ugur.util.errors.places.PlaceNotFoundException;
 import tm.ugur.util.mappers.PlaceMapper;
 
 import java.util.Collections;
@@ -59,16 +60,14 @@ public class PlaceApiService {
 
     public List<PlaceDTO> fetchPlacesForSubCategory(long id){
         Optional<PlaceSubCategory> placeSubCategory = placeSubCategoryRepository.findById(id);
-        if(placeSubCategory.isEmpty())
-            return Collections.emptyList();
-        return placeRepository.findByPlaceSubCategory(placeSubCategory.get()).stream().map(this::convertToDTO).toList();
+        return placeSubCategory.map(subCategory -> placeRepository.findByPlaceSubCategory(subCategory)
+                .stream().map(this::convertToDTO).toList()).orElseThrow(PlaceNotFoundException::new);
     }
 
     public List<PlaceDTO> fetchPlacesForCategory(long id){
         Optional<PlaceCategory> placeCategory = placeCategoryRepository.findById(id);
-        if(placeCategory.isEmpty())
-            return Collections.emptyList();
-        return placeRepository.findByPlaceCategory(placeCategory.get()).stream().map(this::convertToDTO).toList();
+        return placeCategory.map(category -> placeRepository.findByPlaceCategory(category)
+                .stream().map(this::convertToDTO).toList()).orElseThrow(PlaceNotFoundException::new);
     }
 
     private boolean isFavorite(PlaceDTO placeDTO){
@@ -76,11 +75,6 @@ public class PlaceApiService {
         return client.getPlaces().stream().anyMatch(place ->  place.getId()  == placeDTO.getId());
     }
 
-    private Client getAuthClient(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        ClientDetails clientDetails = (ClientDetails) authentication.getPrincipal();
-        return clientDetails.getClient();
-    }
 
     @Transactional
     public void store(Place place){
@@ -92,6 +86,10 @@ public class PlaceApiService {
     }
 
 
-
+    private Client getAuthClient(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        ClientDetails clientDetails = (ClientDetails) authentication.getPrincipal();
+        return clientDetails.getClient();
+    }
 
 }
