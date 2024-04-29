@@ -1,5 +1,6 @@
+const host = "http:/95.85.127.25:8083";
 // const host = "http://192.168.37.61:8083";
-const host = "http://localhost:8080";
+// const host = "http://localhost:8080";
 let sortByStop = "";
 let sortByRoute = "";
 
@@ -287,6 +288,38 @@ if (placeCategorySelect) {
     });
 }
 
+
+document.getElementById('nav-image-tab').addEventListener('click', function(event) {
+    event.preventDefault();
+    const rows = document.querySelectorAll('.dis');
+    for (const row of rows) {
+        row.classList.add('d-none');
+    }
+});
+
+document.getElementById('nav-tm-tab').addEventListener('click', function(event) {
+    event.preventDefault();
+    const rows = document.querySelectorAll('.dis');
+    for (const row of rows) {
+        row.classList.remove('d-none');
+    }
+});
+
+document.getElementById('nav-ru-tab').addEventListener('click', function(event) {
+    event.preventDefault();
+    const rows = document.querySelectorAll('.dis');
+    for (const row of rows) {
+        row.classList.remove('d-none');
+    }
+});
+
+document.getElementById('nav-en-tab').addEventListener('click', function(event) {
+    event.preventDefault();
+    const rows = document.querySelectorAll('.dis');
+    for (const row of rows) {
+        row.classList.remove('d-none');
+    }
+});
 
 
 
