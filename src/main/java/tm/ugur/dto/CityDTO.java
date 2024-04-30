@@ -7,4 +7,6 @@ public class CityDTO extends AbstractDTO{
                 "id=" + id +
                 '}';
     }
+
+
 }

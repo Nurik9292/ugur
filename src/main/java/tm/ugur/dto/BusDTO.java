@@ -3,6 +3,7 @@ package tm.ugur.dto;
 import tm.ugur.dto.geo.PointDTO;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 
 public class BusDTO extends AbstractDTO implements Serializable {
@@ -133,5 +134,16 @@ public class BusDTO extends AbstractDTO implements Serializable {
     }
 
 
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        BusDTO busDTO = (BusDTO) object;
+        return status == busDTO.status && Objects.equals(carNumber, busDTO.carNumber) && Objects.equals(number, busDTO.number) && Objects.equals(speed, busDTO.speed) && Objects.equals(dir, busDTO.dir) && Objects.equals(index, busDTO.index) && Objects.equals(side, busDTO.side);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(carNumber, number, speed, dir, index, side, status);
+    }
 }

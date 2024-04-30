@@ -1,6 +1,7 @@
 package tm.ugur.dto;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class EndRouteStopDTO extends AbstractDTO implements Serializable {
 
@@ -43,5 +44,18 @@ public class EndRouteStopDTO extends AbstractDTO implements Serializable {
 
     public void setIndex(int index) {
         this.index = index;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        EndRouteStopDTO that = (EndRouteStopDTO) object;
+        return index == that.index;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(index);
     }
 }

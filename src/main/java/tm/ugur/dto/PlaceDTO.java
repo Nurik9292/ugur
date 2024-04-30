@@ -151,4 +151,17 @@ public class PlaceDTO extends AbstractDTO{
     public void setThumb(PlaceThumbDTO thumb) {
         this.thumb = thumb;
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        PlaceDTO placeDTO = (PlaceDTO) object;
+        return Objects.equals(website, placeDTO.website) && Objects.equals(email, placeDTO.email) && Objects.equals(isFavorite, placeDTO.isFavorite);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(website, email, isFavorite);
+    }
 }

@@ -6,6 +6,7 @@ import tm.ugur.dto.geo.PointDTO;
 import tm.ugur.dto.views.Views;
 
 import java.util.List;
+import java.util.Objects;
 
 
 public class StopDTO extends AbstractDTO{
@@ -87,5 +88,16 @@ public class StopDTO extends AbstractDTO{
                 '}';
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        StopDTO stopDTO = (StopDTO) object;
+        return Objects.equals(name, stopDTO.name) && Objects.equals(isFavorite, stopDTO.isFavorite);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, isFavorite);
+    }
 }

@@ -6,6 +6,7 @@ import tm.ugur.dto.geo.LineStringDTO;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 public class RouteDTO extends AbstractDTO implements Serializable {
 
@@ -134,5 +135,16 @@ public class RouteDTO extends AbstractDTO implements Serializable {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        RouteDTO routeDTO = (RouteDTO) object;
+        return number == routeDTO.number && routingTime == routeDTO.routingTime && Objects.equals(name, routeDTO.name) && Objects.equals(interval, routeDTO.interval) && Objects.equals(is_favorite, routeDTO.is_favorite);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, interval, number, routingTime, is_favorite);
+    }
 }

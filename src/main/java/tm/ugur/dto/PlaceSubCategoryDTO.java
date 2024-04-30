@@ -30,12 +30,12 @@ public class PlaceSubCategoryDTO extends AbstractDTO{
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         PlaceSubCategoryDTO that = (PlaceSubCategoryDTO) object;
-        return Objects.equals(titles, that.titles);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(titles);
+        return Objects.hash(id);
     }
 
     @Override
