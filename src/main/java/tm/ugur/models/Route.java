@@ -232,7 +232,7 @@ public class Route extends AbstractEntity implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Route route = (Route) o;
-        return id == route.id && number == route.number && Objects.equals(name, route.name);
+        return Objects.equals(id, route.id) && number == route.number && Objects.equals(name, route.name);
     }
 
     @Override

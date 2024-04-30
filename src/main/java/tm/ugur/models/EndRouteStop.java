@@ -2,6 +2,8 @@ package tm.ugur.models;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "end_route_stop")
 public class EndRouteStop {
@@ -74,5 +76,18 @@ public class EndRouteStop {
                 "id=" + id +
                 ", index=" + index +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        EndRouteStop that = (EndRouteStop) object;
+        return id == that.id && Objects.equals(index, that.index);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, index);
     }
 }

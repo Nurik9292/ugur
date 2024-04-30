@@ -163,18 +163,17 @@ public class Client {
                 '}';
     }
 
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         Client client = (Client) object;
-        return id == client.id && Objects.equals(phone, client.phone);
+        return id == client.id && Objects.equals(name, client.name) && Objects.equals(email, client.email) && Objects.equals(phone, client.phone);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, phone);
+        return Objects.hash(id, name, email, phone);
     }
-
-
 }

@@ -105,7 +105,8 @@ public class PlaceTranslation extends AbstractEntity{
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         PlaceTranslation that = (PlaceTranslation) object;
-        return id == that.id && Objects.equals(locale, that.locale) && Objects.equals(title, that.title) && Objects.equals(address, that.address);
+        return id == that.id && Objects.equals(locale, that.locale)
+                && Objects.equals(title, that.title) && Objects.equals(address, that.address);
     }
 
     @Override

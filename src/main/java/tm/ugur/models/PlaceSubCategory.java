@@ -99,16 +99,12 @@ public class PlaceSubCategory extends AbstractEntity{
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         PlaceSubCategory that = (PlaceSubCategory) object;
-        return id == that.id && Objects.equals(placeCategory, that.placeCategory)
-                && Objects.equals(places, that.places)
-                && Objects.equals(translations, that.translations)
-                && Objects.equals(createdAt, that.createdAt)
-                && Objects.equals(updatedAt, that.updatedAt);
+        return id == that.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, placeCategory, places, translations, createdAt, updatedAt);
+        return Objects.hash(id);
     }
 
     @Override

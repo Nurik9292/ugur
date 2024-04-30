@@ -92,8 +92,7 @@ public class PlaceSubCategoryTranslation extends AbstractEntity{
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         PlaceSubCategoryTranslation that = (PlaceSubCategoryTranslation) object;
-        return id == that.id && Objects.equals(locale, that.locale)
-                && Objects.equals(title, that.title);
+        return id == that.id && Objects.equals(locale, that.locale) && Objects.equals(title, that.title);
     }
 
     @Override

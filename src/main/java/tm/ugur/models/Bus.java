@@ -6,6 +6,8 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "buses")
 public class Bus extends AbstractEntity{
@@ -117,4 +119,16 @@ public class Bus extends AbstractEntity{
                 '}';
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Bus bus = (Bus) object;
+        return id == bus.id && Objects.equals(carNumber, bus.carNumber) && Objects.equals(speed, bus.speed) && Objects.equals(imei, bus.imei) && Objects.equals(number, bus.number) && Objects.equals(dir, bus.dir);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, carNumber, speed, imei, number, dir);
+    }
 }
