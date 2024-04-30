@@ -37,6 +37,7 @@
                                     <a class="nav-item nav-link active" id="nav-tm-tab" data-bs-toggle="tab" href="#nav-tm" role="tab" aria-controls="nav-tm" aria-selected="true">TM</a>
                                     <a class="nav-item nav-link" id="nav-ru-tab" data-bs-toggle="tab" href="#nav-ru" role="tab" aria-controls="nav-ru" aria-selected="false">RU</a>
                                     <a class="nav-item nav-link" id="nav-en-tab" data-bs-toggle="tab" href="#nav-en" role="tab" aria-controls="nav-en" aria-selected="false">EN</a>
+                                    <a class="nav-item nav-link" id="nav-image-tab" data-bs-toggle="tab" href="#nav-image" role="tab" aria-controls="nav-image" aria-selected="false">Image</a>
                                 </div>
                             </nav>
                             <div class="tab-content" id="nav-tabContent-nav">
@@ -82,12 +83,33 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="tab-pane fade" id="nav-image" role="tabpanel" aria-labelledby="nav-en-tab">
+                                    <div class="row">
+                                        <div class="col-md-12 mb-3">
+                                            <label for="drop">Изображение</label>
+                                            <div class="mydrop">
+                                                <p>Upload</p>
+                                                <div id="drop">
+                                                </div>
+                                            </div>
+                                            <div style="color: red;" id="file-error"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="prev">Превью</label>
+                                            <input class="form-control" type="file" id="prev" name="prev" multiple accept="image/jpeg, image/jpg, image/png">
+                                            <div style="color: red;" id="prev-error"></div>
+
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <!-- End of tab -->
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row dis">
                         <div class="col-md-6 mb-3">
                             <label for="email">Почта</label>
                             <input class="form-control" id="email" name="email" th:value="${place.getEmail()}" type="text" placeholder="Введите почту заведения">
@@ -99,7 +121,7 @@
                             <div style="color: red;" id="website-error"></div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row dis">
                         <div class="col-md-6 mb-3">
                             <label for="instagram">Инстаграм</label>
                             <input class="form-control" id="instagram" name="instagram" th:value="${instagram}" type="text" placeholder="Введите сылку на инстаграм">
@@ -109,7 +131,7 @@
                             <input class="form-control" id="tiktok" name="tiktok" th:value="${tiktok}" type="text" placeholder="Введите сылку на тик ток">
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row dis">
                         <div class="col-md-6 mb-3">
                             <label for="city_phone">Городской телефон</label>
                             <input class="form-control" id="city_phone" th:value="${cityNumber}" name="city_phone" type="text" placeholder="Введите городской номер">
@@ -121,7 +143,7 @@
                             <a href="#" class="btn btn-primary ml-3" id="add-input" onclick="addInputMobPhone()">Добавить поле</a>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row dis">
                         <div class="col-md-6 mb-3">
                             <label for="placeCategory">Категория</label>
                             <select class="form-select mb-0" id="placeCategory" name="placeCategory" aria-label="Category select example">
@@ -139,27 +161,7 @@
                             <div style="color: red;" id="placeSubCategory-error"></div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="drop">Изображение</label>
-                            <div class="mydrop">
-                                <p>Upload</p>
-                                <div id="drop">
-                                </div>
-                            </div>
-                            <div style="color: red;" id="file-error"></div>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="prev">Превью</label>
-                            <input class="form-control" type="file" id="prev" name="prev" multiple accept="image/jpeg, image/jpg, image/png">
-                            <div class="mb-3" style="color: red;" id="prev-error"></div>
-                            <div class="col-md-6 mb-3">
-                                <img th:if="${thumb}" th:src="'/images/place/thumb/' + ${thumb}">
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
+                    <div class="row dis">
                         <div class="col-md-6 mb-3">
                             <label for="lat">Широта</label>
                             <input class="form-control" id="lat" name="lat" th:value="${place.getLat()}" type="text" placeholder="Введите широту" required="">
@@ -172,7 +174,7 @@
                             <a href="#" class="btn btn-info mt-2 animate-up-2" onclick="showOnMap()">Отобразить на карте</a>
                         </div>
                     </div>
-                    <div class="row align-items-center">
+                    <div class="row dis align-items-center">
                         <div id="map-place"></div>
                     </div>
                 </div>
