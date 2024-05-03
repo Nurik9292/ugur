@@ -73,19 +73,18 @@ public class FileSystemStorageService implements StorageService{
                     .normalize().toAbsolutePath();
 
 
-            if (!destinationFile.getParent().equals(rootLocation.toAbsolutePath())) {
-                throw new StorageException("Cannot store file outside current directory.");
-            }
-
             File tempFile = File.createTempFile("temp", null);
             file.transferTo(tempFile);
 
-            Date date = new Date();
-            String imageName = folder + "/" + date.getTime() + "-" + originalName;
+            String imageName = generateUniqueFilename(folder, originalName);
 
             Files.createDirectories(Path.of(destinationFile.getParent() + "/" + folder));
 
             String newDestinationFile = destinationFile.getParent() + "/" + imageName;
+
+            System.out.println(tempFile);
+            System.out.println(newDestinationFile);
+
             fileResize.resize(tempFile, new File(newDestinationFile), width, height);
 
 
@@ -105,10 +104,7 @@ public class FileSystemStorageService implements StorageService{
         try(InputStream inputStream = new ByteArrayInputStream(imageBytes);) {
             Files.createDirectories(Path.of( rootLocation + "/" + folder));
 
-            Date date = new Date();
-
-            String imageName = folder + "/" + date.getTime() + ".jpg";
-
+            String imageName = generateUniqueFilename(folder, "image.jpg");
             String filePath = rootLocation + "/" + imageName;
 
             fileResize.resize(inputStream, filePath, width, height);
@@ -134,12 +130,7 @@ public class FileSystemStorageService implements StorageService{
                     .normalize().toAbsolutePath();
 
 
-            if (!destinationFile.getParent().equals(rootLocation.toAbsolutePath())) {
-                throw new StorageException("Cannot store file outside current directory.");
-            }
-
-            Date date = new Date();
-            String imageName = folder + "/" + date.getTime() + "-" + originalName;
+            String imageName = generateUniqueFilename(folder, originalName);
 
             Files.createDirectories(Path.of(destinationFile.getParent() + "/" + folder));
 
@@ -154,6 +145,11 @@ public class FileSystemStorageService implements StorageService{
             throw new StorageException("Failed to store file.", e);
         }
 
+    }
+
+    private String generateUniqueFilename(String folder, String originalName) {
+        String timestamp = String.valueOf(new Date().getTime());
+        return folder + "/" + timestamp + "-" + originalName;
     }
 
     @Override

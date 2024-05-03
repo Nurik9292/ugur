@@ -3,11 +3,9 @@ package tm.ugur.util.files;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.stereotype.Component;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
 
 @Component
 public class FileResize {
