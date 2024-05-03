@@ -31,7 +31,7 @@ public class PlaceApiController {
 
     @GetMapping("/{id}")
     public ResponseEntity<PlaceDTO> getPlace(@PathVariable("id") Long id){
-        return ResponseEntity.ok(this.placeApiService.fetchPlace(id).orElseThrow(PlaceNotFoundException::new));
+        return ResponseEntity.ok(this.placeApiService.fetchPlace(id));
     }
 
     @GetMapping("/sub-categories/{id}")
