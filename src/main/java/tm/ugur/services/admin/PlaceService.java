@@ -15,6 +15,7 @@ import tm.ugur.repo.PlaceRepository;
 import tm.ugur.repo.SocialNetworkRepository;
 import tm.ugur.storage.FileSystemStorageService;
 import tm.ugur.util.ImageDownload;
+import tm.ugur.util.errors.places.PlaceNotFoundException;
 import tm.ugur.util.pagination.PaginationService;
 
 import java.util.*;
@@ -67,11 +68,11 @@ public class PlaceService {
         return paginationService.createPage(placeRepository.findAll(), pageNumber, itemsPerPage);
     }
 
-    public Optional<Place> findOne(long id){
+    public Place findOne(long id){
         return placeRepository.findById(id).map(place -> {
             setLatLng(place);
             return place;
-        });
+        }).orElseThrow(PlaceNotFoundException::new);
     }
 
 
@@ -201,7 +202,7 @@ public class PlaceService {
                        Long[] removeImageIds){
 
 
-        Place existingPlace = findOne(id).orElseThrow();
+        Place existingPlace = findOne(id);
 
         if(Objects.nonNull(removeImageIds) && removeImageIds.length > 0)
             deleteImageIds(existingPlace, removeImageIds);

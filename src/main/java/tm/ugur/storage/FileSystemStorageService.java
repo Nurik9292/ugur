@@ -1,5 +1,6 @@
 package tm.ugur.storage;
 
+import ch.qos.logback.core.rolling.helper.FileNamePattern;
 import jakarta.annotation.PostConstruct;
 import net.coobird.thumbnailator.Thumbnails;
 import org.slf4j.Logger;
@@ -13,11 +14,10 @@ import tm.ugur.util.errors.storage.StorageException;
 import tm.ugur.util.errors.storage.StorageFileNotFoundException;
 import tm.ugur.util.files.FileResize;
 
+import javax.imageio.ImageIO;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -68,6 +68,7 @@ public class FileSystemStorageService implements StorageService{
             }
 
             String originalName = file.getOriginalFilename();
+            String extension = originalName.endsWith("webp") ? originalName.substring(originalName.indexOf("webp")) : "";
 
             Path destinationFile = rootLocation.resolve(Paths.get(originalName))
                     .normalize().toAbsolutePath();
@@ -79,14 +80,12 @@ public class FileSystemStorageService implements StorageService{
             String imageName = generateUniqueFilename(folder, originalName);
 
             Files.createDirectories(Path.of(destinationFile.getParent() + "/" + folder));
-
             String newDestinationFile = destinationFile.getParent() + "/" + imageName;
 
-            System.out.println(tempFile);
-            System.out.println(newDestinationFile);
-
-            fileResize.resize(tempFile, new File(newDestinationFile), width, height);
-
+            if("webp".equals(extension))
+                Files.copy(tempFile.toPath(), Paths.get(newDestinationFile), StandardCopyOption.REPLACE_EXISTING);
+            else
+                fileResize.resize(tempFile, new File(newDestinationFile), width, height);
 
             tempFile.delete();
 

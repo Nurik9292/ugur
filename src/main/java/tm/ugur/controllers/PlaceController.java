@@ -133,7 +133,7 @@ public class PlaceController {
     public String edit(@PathVariable("id") long id, Model model){
         sortByStatic = "";
 
-        Place place = placeService.findOne(id).orElse(new Place());
+        Place place = placeService.findOne(id);
         List<SocialNetwork> socialNetworks = new ArrayList<>(place.getSocialNetworks());
 
         if(!socialNetworks.isEmpty() && socialNetworks.  getFirst().getName().equalsIgnoreCase("instagram")){
@@ -217,16 +217,15 @@ public class PlaceController {
     @GetMapping("/images/{id}")
     @ResponseBody
     public ResponseEntity< Map<Long, Map<String,Long>>>  getImages(@PathVariable("id") Long id){
-
-        Optional<Place> place = placeService.findOne(id);
+        System.out.println(id);
+        Place place = placeService.findOne(id);
         Map<Long, Map<String,Long>>  images = new HashMap<>();
-        place.ifPresent(pl -> {
-            pl.getImages().forEach(image -> {
+        place.getImages().forEach(image -> {
                 String imageName = placeService.pruningPath(image.getPath());
                 images.put(image.getId(), new HashMap<>(Map.of(imageName, getImageSize(Paths.get(uploadPth + "/place/", imageName)))));
             });
 
-        });
+
         return ResponseEntity.ok().body(images);
     }
 
