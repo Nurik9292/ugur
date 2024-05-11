@@ -178,7 +178,7 @@ public class PlaceController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable("id") long id,
-                         @RequestParam(value = "title_tm", required = false)  String title_tm,
+                         @RequestParam(value = "title_tm")  String title_tm,
                          @RequestParam(value = "title_ru", required = false)  String title_ru,
                          @RequestParam(value = "title_en", required = false)  String title_en,
                          @RequestParam(value = "address_tm", required = false) String address_tm,
@@ -193,15 +193,14 @@ public class PlaceController {
                          @RequestParam(value = "removeImageIds", required = false) Long[] removedImageIds,
                          @ModelAttribute("place") @Valid Place place, BindingResult result){
 
-
-        Map<String, String> titles = new HashMap<>(Map.of("tm", title_tm, "ru", title_ru, "en", title_en));
-        Map<String, String> address = new HashMap<>(Map.of("tm", address_tm, "ru", address_ru, "en", address_en));
-
-        if(result.hasErrors()){
+        if(result.hasErrors() || Objects.isNull(title_tm)){
             Map<String, String> errors = new HashMap<>();
             result.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
             return ResponseEntity.badRequest().body(errors);
         }
+
+        Map<String, String> titles = new HashMap<>(Map.of("tm", title_tm, "ru", title_ru, "en", title_en));
+        Map<String, String> address = new HashMap<>(Map.of("tm", address_tm, "ru", address_ru, "en", address_en));
 
         this.placeService.update(id, place, instagram, tiktok, telephones, cityPhone, files, prev, titles, address, removedImageIds);
 

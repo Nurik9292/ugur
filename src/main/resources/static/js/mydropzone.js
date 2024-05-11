@@ -8,6 +8,10 @@ let myDropzone = new Dropzone("#drop", {
 
 let removedImageIds = [];
 
+myDropzone.on("addedfile", file => {
+    console.log("A file has been added");
+});
+
 myDropzone.on("removedfile", (file) => {
     removedImageIds.push(file.id);
 })

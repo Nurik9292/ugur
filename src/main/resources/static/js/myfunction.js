@@ -124,9 +124,6 @@ function addInputMobPhone() {
     newInput.type = "text";
     newInput.placeholder = "Введите другую моб телефон";
     newInput.required = true;
-    jQuery(function($){
-        $(".mob_phone_place").mask("+993(69) 99-99-99");
-    });
 
     mobPhoneInput.parentNode.insertBefore(newInput, mobPhoneInput.nextSibling);
 }
@@ -194,6 +191,12 @@ function sendForm(method, url) {
     const phones = Array.from(mobPhones).map(phone => phone.value);
     const lat = document.getElementById("lat").value;
     const lng = document.getElementById("lng").value;
+    const titleTm = document.getElementById("title_tm").value;
+    const titleRu = document.getElementById("title_ru").value;
+    const titleEn = document.getElementById("title_en").value;
+    const addressTm = document.getElementById("address_tm").value;
+    const addressRu = document.getElementById("address_ru").value;
+    const addressEn = document.getElementById("title_en").value;
 
     if(removedImageIds.length !== 0){
         addToFormData(formData, "removeImageIds",removedImageIds);
@@ -201,12 +204,12 @@ function sendForm(method, url) {
 
 
     addToFormData(formData, "_csrf", document.getElementById("csrf").value);
-    addToFormData(formData, "title_tm", document.getElementById("title_tm").value);
-    addToFormData(formData, "title_ru", document.getElementById("title_ru").value);
-    addToFormData(formData, "title_en", document.getElementById("title_en").value);
-    addToFormData(formData, "address_tm", document.getElementById("address_tm").value);
-    addToFormData(formData, "address_ru", document.getElementById("address_ru").value);
-    addToFormData(formData, "address_en", document.getElementById("address_en").value);
+    addToFormData(formData, "title_tm", titleTm);
+    addToFormData(formData, "title_ru", titleRu);
+    addToFormData(formData, "title_en", titleEn);
+    addToFormData(formData, "address_tm", addressTm);
+    addToFormData(formData, "address_ru", addressRu);
+    addToFormData(formData, "address_en", addressEn);
     addToFormData(formData, "email", document.getElementById("email").value);
     addToFormData(formData, "website", document.getElementById("site").value);
     addToFormData(formData, "lat", lat);
@@ -220,8 +223,56 @@ function sendForm(method, url) {
     addToFormData(formData, "cityPhone", cityPhone);
     addToFormData(formData, "prev", prev);
 
-    if(lat && lng)
+    let isCityPhone = true;
+    let isMobPhone = true;
+   if(cityPhone)
+       isCityPhone = checkPhone(cityPhone);
+   if(phones)
+        isMobPhone = checkPhone(phones);
+
+    if(lat && lng && addressEn && addressRu && addressTm && titleEn && titleRu && titleTm && cityPhone && isCityPhone && isMobPhone)
       sendFormData(method, url, formData, "/places");
+    else {
+        if(!lat || !lng) {
+            showNotification("Заполните координаты", 'red');
+        }
+        checkAndShowNotification(titleTm, "Заполните Заголовок на туркменском");
+        checkAndShowNotification(titleRu, "Заполните Заголовок на русском");
+        checkAndShowNotification(titleEn, "Заполните Заголовок на английском");
+        checkAndShowNotification(addressTm, "Заполните адрес на туркменском");
+        checkAndShowNotification(addressRu, "Заполните адрес на русском");
+        checkAndShowNotification(addressEn, "Заполните адрес на английском");
+        checkAndShowNotificationString("city_phone", "Заполните поле правильно +993!");
+        checkAndShowNotificationString("mob_phone", "Заполните поле правильно +993!");
+
+    }
+}
+
+function checkPhone(phone) {
+    let isPhone = false;
+    if(Array.isArray(phone)){
+        phone.forEach(val => {
+            console.log(val)
+            isPhone = val.startsWith("+993") && val.length === 12;
+        });
+    }else
+        isPhone = phone.startsWith("+993") && phone.length === 12;
+
+    return isPhone;
+}
+
+function checkAndShowNotification(field, message) {
+    if (!field) {
+        displayValidationErrors({ [field]: 'Заполните поле' });
+        showNotification(message, 'red');
+    }
+}
+
+function checkAndShowNotificationString(field, message) {
+
+        displayValidationErrors({ [field]: 'Заполните поле правильно +993' });
+        showNotification(message, 'red');
+
 }
 
 function addToFormData(formData, key, value) {
@@ -266,6 +317,7 @@ function displayValidationErrors(errors) {
     const errorElements = [];
 
     Object.keys(errors).forEach(fieldName => {
+        console.log(fieldName)
         const errorMessage = errors[fieldName];
         const errorElement =  document.getElementById(fieldName + "-error");
         errorElements.push(errorElement);
@@ -281,6 +333,7 @@ function displayValidationErrors(errors) {
             error.textContent = "";
     });
 }
+
 
 function showNotification(message, color){
     const notyf = new Notyf({
@@ -306,6 +359,7 @@ function showNotification(message, color){
         message: message
     });
 }
+
 
 
 function loadSubcategories(categoryId) {
