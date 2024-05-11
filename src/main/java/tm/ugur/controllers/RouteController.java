@@ -83,22 +83,20 @@ public class RouteController {
     }
 
     @PostMapping
-    public String store(@RequestParam(name = "selectedStart") String selectedStart,
-                        @RequestParam(name = "selectedEnd") String selectedEnd,
-                        @RequestParam(name = "frontCoordinates", required = false) String frontCoordinates,
-                        @RequestParam(name = "backCoordinates", required = false) String backCoordinates,
-            @ModelAttribute("route") @Valid Route route, BindingResult result, Model model){
+    public ResponseEntity<?> store(
+            @RequestParam(name = "frontCoordinates", required = false) String frontCoordinates,
+            @RequestParam(name = "backCoordinates", required = false) String backCoordinates,
+            @ModelAttribute("route") @Valid Route route, BindingResult result){
 
-        if(result.hasErrors() || selectedStart.isEmpty() || selectedEnd.isEmpty()){
-                this.modalAttributesForCreate(model);
-            return "layouts/routes/create";
+        if(result.hasErrors()){
+            Map<String, String> errors = new HashMap<>();
+            result.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+            return ResponseEntity.badRequest().body(errors);
         }
 
         this.routeService.store(route, frontCoordinates, backCoordinates);
-        this.startRouteStopService.updateIndexes(selectedStart, route);
-        this.endRouteStopService.updateIndexes(selectedEnd, route);
 
-        return  "redirect:/routes";
+        return  ResponseEntity.ok("Маршрут успешно добавленно!");
     }
 
 
@@ -107,36 +105,26 @@ public class RouteController {
         sortByStatic = "";
         Route route = this.routeService.findOne(id).orElse(null);
         model.addAttribute("route", route);
-        model.addAttribute("existStartStops", Objects.requireNonNull(route).getStartRouteStops()
-                .stream()
-                .sorted(Comparator.comparing(StartRouteStop::getIndex))
-                .map(StartRouteStop::getStop).toList());
-        model.addAttribute("existEndStops", Objects.requireNonNull(route).getEndRouteStops()
-                .stream()
-                .sorted(Comparator.comparing(EndRouteStop::getIndex))
-                .map(EndRouteStop::getStop).toList());
         this.modalAttributesForEdit(model);
         return "layouts/routes/edit";
     }
 
-    @PatchMapping("/{id}")
-    public String update(@PathVariable("id") Long id,
-                        @RequestParam(name = "selectedStart") String selectedStart,
-                        @RequestParam(name = "selectedEnd") String selectedEnd,
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable("id") Long id,
                          @RequestParam(name = "frontCoordinates", required = false) String frontCoordinates,
                          @RequestParam(name = "backCoordinates", required = false) String backCoordinates,
                         @ModelAttribute("route") @Valid Route route, BindingResult result, Model model){
 
         if(result.hasErrors()){
-            this.modalAttributesForCreate(model);
-            return "layouts/routes/edit";
+            Map<String, String> errors = new HashMap<>();
+            result.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+            return ResponseEntity.badRequest().body(errors);
         }
 
+//        route.getEndStops().contains()
         this.routeService.update(id, route, frontCoordinates, backCoordinates);
-        this.startRouteStopService.updateIndexes(selectedStart, route);
-        this.endRouteStopService.updateIndexes(selectedEnd, route);
 
-        return  "redirect:/routes";
+        return  ResponseEntity.ok("Маршрут успешно обновленно!");
     }
 
 

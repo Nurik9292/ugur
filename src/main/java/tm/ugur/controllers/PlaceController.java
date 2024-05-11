@@ -113,7 +113,7 @@ public class PlaceController {
             @RequestParam(value = "prev", required = false) MultipartFile prev,
             @ModelAttribute("place") @Valid Place place, BindingResult result){
 
-        System.out.println(files);
+
         Map<String, String> titles = new HashMap<>(Map.of("tm", title_tm, "ru", title_ru, "en", title_en));
         Map<String, String> address = new HashMap<>(Map.of("tm", address_tm, "ru", address_ru, "en", address_en));
 

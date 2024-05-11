@@ -1,10 +1,13 @@
 package tm.ugur.services.admin;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tm.ugur.models.EndRouteStop;
 import tm.ugur.models.Route;
+import tm.ugur.models.StartRouteStop;
 import tm.ugur.models.Stop;
 import tm.ugur.repo.EndRouteStopRepository;
 
@@ -17,6 +20,8 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class EndRouteStopService {
 
+    @PersistenceContext
+    private EntityManager entityManager;
 
     private final EndRouteStopRepository endRouteStopRepository;
 
@@ -44,19 +49,30 @@ public class EndRouteStopService {
 
 
     @Transactional
-    public void updateIndexes(String ids, Route route) {
-        Map<Long, Stop> stopMap = route.getStartStops().stream()
-                .collect(Collectors.toMap(Stop::getId, Function.identity()));
+    public void updateIndexes(Route route) {
 
         AtomicInteger count = new AtomicInteger(1);
-        Arrays.stream(ids.split(","))
-                .map(Long::parseLong)
-                .map(stopMap::get)
-                .filter(Objects::nonNull)
-                .flatMap(stop -> this.endRouteStopRepository.findByStopAndRoute(stop, route).stream())
-                .forEach(startRouteStop -> {
-                    startRouteStop.setIndex(count.getAndAdd(2));
-                    this.endRouteStopRepository.save(startRouteStop);
-                });
+
+        List<EndRouteStop> endRouteStops = route.getEndStops().stream()
+                .map(stop -> endRouteStopRepository.findByStopAndRoute(stop, route)
+                        .get())
+                .peek(endRouteStop -> endRouteStop.setIndex(count.getAndAdd(2)))
+                .toList();
+
+        updateInBatch(endRouteStops);
+    }
+
+    @Transactional
+    public void updateInBatch(List<EndRouteStop> endRouteStops) {
+        int batchSize = 50;
+
+        for (int i = 0; i < endRouteStops.size(); i++) {
+            entityManager.persist(endRouteStops.get(i));
+
+            if (i % batchSize == 0 && i > 0) {
+                entityManager.flush();
+                entityManager.clear();
+            }
+        }
     }
 }

@@ -1,6 +1,6 @@
-const host = "http://95.85.127.56:8083";
+// const host = "http://95.85.127.56:8083";
 // const host = "http://192.168.37.61:8083";
-// const host = "http://localhost:8080";
+const host = "http://localhost:8080";
 let sortByStop = "";
 let sortByRoute = "";
 
@@ -131,34 +131,56 @@ function addInputMobPhone() {
     mobPhoneInput.parentNode.insertBefore(newInput, mobPhoneInput.nextSibling);
 }
 
-function addToFormData(formData, key, value) {
-    if (Array.isArray(value)) {
-        value.forEach(val => formData.append(key, val));
-    } else {
-        formData.append(key, value);
-    }
+
+function sendCreateRoute() {
+    sendFromRoute("post", host + "/routes");
 }
 
-function sendFormData(method, url, formData) {
-    axios({
-        method: method,
-        url: url,
-        data: formData,
-        headers: {
-            "Content-Type": "multipart/form-data",
-        },
-    })
-        .then(res => {
-            window.location.href = host + "/places";
-        })
-        .catch(error => {
-            if (error.response && error.response.status === 400) {
-                console.error('Validation error:', error.response.data);
-                displayValidationErrors(error.response.data);
-            } else {
-                console.error("Error sending request:", error);
-            }
-        });
+function sendUpdateRoute() {
+    const id = document.getElementById("id").value;
+    sendFromRoute("put", host + "/routes/" + id);
+}
+
+function sendFromRoute(method, url) {
+    const frontStartStops = document.getElementById('front_id_target_list')
+        .querySelectorAll('li.p-picklist-item');
+    const backStartStops = document.getElementById('back_id_target_list')
+        .querySelectorAll('li.p-picklist-item');
+    const city = document.getElementById("city");
+
+    let frontStartStopIds = [];
+    let backStartStopIds = [];
+
+    frontStartStops.forEach(startStop => {
+        frontStartStopIds.push(startStop.id);
+    });
+
+    backStartStops.forEach(startStop => {
+        backStartStopIds.push(startStop.id);
+    });
+
+    const formData = new FormData();
+    addToFormData(formData, "_csrf", document.getElementById("csrf").value);
+    addToFormData(formData, 'name', document.getElementById('name').value);
+    addToFormData(formData, 'number', document.getElementById("number").value);
+    addToFormData(formData, 'frontCoordinates', document.getElementById('frontCoordinates').value);
+    addToFormData(formData, 'backCoordinates', document.getElementById('backCoordinates').value);
+    addToFormData(formData, 'startStops', frontStartStopIds);
+    addToFormData(formData, 'endStops', backStartStopIds);
+    addToFormData(formData, "city", city.options[city.selectedIndex].value);
+
+    sendFormData(method, url, formData, "/routes");
+}
+
+
+
+function sendCreatePlace() {
+    sendForm("post", host + "/places");
+}
+
+function sendUpdatePlace() {
+    const id = document.getElementById("id").value;
+    sendForm('put', host + "/places/" + id);
 }
 
 function sendForm(method, url) {
@@ -172,8 +194,6 @@ function sendForm(method, url) {
     const phones = Array.from(mobPhones).map(phone => phone.value);
     const lat = document.getElementById("lat").value;
     const lng = document.getElementById("lng").value;
-
-    console.log(removedImageIds)
 
     if(removedImageIds.length !== 0){
         addToFormData(formData, "removeImageIds",removedImageIds);
@@ -201,25 +221,89 @@ function sendForm(method, url) {
     addToFormData(formData, "prev", prev);
 
     if(lat && lng)
-      sendFormData(method, url, formData);
+      sendFormData(method, url, formData, "/places");
 }
 
-function sendCreatePlace() {
-    sendForm('post', host + "/places");
+function addToFormData(formData, key, value) {
+    if (Array.isArray(value)) {
+        value.forEach(val => formData.append(key, val));
+    } else {
+        formData.append(key, value);
+    }
 }
 
-function sendUpdatePlace() {
-    const id = document.getElementById("id").value;
-    sendForm('put', host + "/places/" + id);
+
+function sendFormData(method, url, formData, indexPage) {
+    return axios({
+        method: method,
+        url: url,
+        data: formData,
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    })
+        .then(res => {
+            showNotification(res.data, "blue");
+
+            setTimeout(function() {
+                window.location.href = host + indexPage;
+            }, 2000);
+
+        })
+        .catch(error => {
+            if (error.response && error.response.status === 400) {
+                console.error('Validation error:', error.response.data);
+                displayValidationErrors(error.response.data);
+            } else {
+                console.error("Error sending request:", error);
+            }
+        });
 }
+
+
 
 function displayValidationErrors(errors) {
+    const errorElements = [];
+
     Object.keys(errors).forEach(fieldName => {
         const errorMessage = errors[fieldName];
         const errorElement =  document.getElementById(fieldName + "-error");
-        if (errorElement) {
-            errorElement.textContent = errorMessage;
-        }
+        errorElements.push(errorElement);
+            if (errorElement) {
+                errorElement.textContent = errorMessage;
+                showNotification(errorMessage, 'red');
+            }
+    });
+
+    const errs = document.querySelectorAll('.error');
+    errs.forEach(error => {
+        if(!errorElements.includes(error))
+            error.textContent = "";
+    });
+}
+
+function showNotification(message, color){
+    const notyf = new Notyf({
+        position: {
+            x: 'right',
+            y: 'top',
+        },
+        types: [
+            {
+                type: 'info',
+                background: color,
+                icon: {
+                    className: 'fas fa-info-circle',
+                    tagName: 'span',
+                    color: '#fff'
+                },
+                dismissible: false
+            }
+        ]
+    });
+    notyf.open({
+        type: 'info',
+        message: message
     });
 }
 
@@ -289,37 +373,54 @@ if (placeCategorySelect) {
 }
 
 
-document.getElementById('nav-image-tab').addEventListener('click', function(event) {
-    event.preventDefault();
-    const rows = document.querySelectorAll('.dis');
-    for (const row of rows) {
-        row.classList.add('d-none');
-    }
-});
+const navImageTab = document.getElementById('nav-image-tab');
 
-document.getElementById('nav-tm-tab').addEventListener('click', function(event) {
-    event.preventDefault();
-    const rows = document.querySelectorAll('.dis');
-    for (const row of rows) {
-        row.classList.remove('d-none');
-    }
-});
+if(navImageTab){
+    navImageTab.addEventListener('click', function(event) {
+        event.preventDefault();
+        const rows = document.querySelectorAll('.dis');
+        for (const row of rows) {
+            row.classList.add('d-none');
+        }
+    });
+}
 
-document.getElementById('nav-ru-tab').addEventListener('click', function(event) {
-    event.preventDefault();
-    const rows = document.querySelectorAll('.dis');
-    for (const row of rows) {
-        row.classList.remove('d-none');
-    }
-});
 
-document.getElementById('nav-en-tab').addEventListener('click', function(event) {
-    event.preventDefault();
-    const rows = document.querySelectorAll('.dis');
-    for (const row of rows) {
-        row.classList.remove('d-none');
-    }
-});
+const navTmTab = document.getElementById('nav-tm-tab');
 
+if(navTmTab) {
+    navTmTab.addEventListener('click', function(event) {
+        event.preventDefault();
+        const rows = document.querySelectorAll('.dis');
+        for (const row of rows) {
+            row.classList.remove('d-none');
+        }
+    });
+}
+
+
+const navRuTab = document.getElementById('nav-ru-tab');
+
+if(navRuTab) {
+    navRuTab.addEventListener('click', function (event) {
+        event.preventDefault();
+        const rows = document.querySelectorAll('.dis');
+        for (const row of rows) {
+            row.classList.remove('d-none');
+        }
+    });
+}
+
+const navEnTab = document.getElementById('nav-en-tab');
+
+if(navEnTab) {
+    navEnTab.addEventListener('click', function (event) {
+        event.preventDefault();
+        const rows = document.querySelectorAll('.dis');
+        for (const row of rows) {
+            row.classList.remove('d-none');
+        }
+    });
+}
 
 

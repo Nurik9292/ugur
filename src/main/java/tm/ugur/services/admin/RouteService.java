@@ -8,16 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.thymeleaf.expression.Numbers;
 import tm.ugur.dto.RouteDTO;
-import tm.ugur.models.Client;
 import tm.ugur.models.Route;
 import tm.ugur.repo.RouteRepository;
 import tm.ugur.util.pagination.PaginationService;
 import tm.ugur.util.mappers.RouteMapper;
 
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 @Service
 @Transactional(readOnly = true)
@@ -25,13 +23,22 @@ public class RouteService {
 
 
     private final RouteRepository routeRepository;
+    private final EndRouteStopService endRouteStopService;
+    private final StartRouteStopService startRouteStopService;
     private final PaginationService paginationService;
     private final RouteMapper routeMapper;
     private final GeometryFactory factory;
 
     @Autowired
-    public RouteService(RouteRepository routeRepository, PaginationService paginationService, RouteMapper routeMapper, GeometryFactory factory) {
+    public RouteService(RouteRepository routeRepository,
+                        EndRouteStopService endRouteStopService,
+                        StartRouteStopService startRouteStopService,
+                        PaginationService paginationService,
+                        RouteMapper routeMapper,
+                        GeometryFactory factory) {
         this.routeRepository = routeRepository;
+        this.endRouteStopService = endRouteStopService;
+        this.startRouteStopService = startRouteStopService;
         this.paginationService = paginationService;
         this.routeMapper = routeMapper;
         this.factory = factory;
@@ -114,7 +121,11 @@ public class RouteService {
     @Transactional
     public void store(Route route, String frontCoordinates, String backCoordinates){
         initializeRoute(route, frontCoordinates, backCoordinates);
-        routeRepository.save(route);
+        Route newRoute = routeRepository.save(route);
+        if(Objects.nonNull(newRoute.getStartStops()))
+            startRouteStopService.updateIndexes(newRoute);
+        if(Objects.nonNull(route.getEndStops()))
+            endRouteStopService.updateIndexes(newRoute);
     }
 
     @Transactional
@@ -129,6 +140,7 @@ public class RouteService {
         route.setCreatedAt(new Date());
         route.setUpdatedAt(new Date());
         this.routeRepository.save(route);
+
     }
 
 
@@ -137,7 +149,11 @@ public class RouteService {
         route.setId(id);
         route.setUpdatedAt(new Date());
         initializeRoute(route, frontCoordinates, backCoordinates);
-        routeRepository.save(route);
+        Route newRoute = routeRepository.save(route);
+        if(Objects.nonNull(newRoute.getStartStops()))
+            startRouteStopService.updateIndexes(newRoute);
+        if(Objects.nonNull(route.getEndStops()))
+            endRouteStopService.updateIndexes(newRoute);
     }
 
     @Transactional
@@ -171,10 +187,6 @@ public class RouteService {
 
     private Route converToRoute(RouteDTO routeDTO){
         return routeMapper.toEntity(routeDTO);
-    }
-
-    private RouteDTO convertToRouteDTO(Route route){
-        return routeMapper.toDto(route);
     }
 
 }

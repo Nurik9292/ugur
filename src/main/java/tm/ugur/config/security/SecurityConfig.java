@@ -77,7 +77,7 @@ public class SecurityConfig {
         return http.csrf(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .requestMatchers("/auth/login", "/error").permitAll()
+                        .requestMatchers("/auth/login", "/error", "/process_login").permitAll()
                         .requestMatchers("/users/create", "/users", "/users/store").hasRole("SUPER")
                         .requestMatchers("/websocket-ugur", "/websocket-ugur/**").permitAll()
                         .requestMatchers("/topic", "/topic/mobile", "/topic/**").permitAll()
@@ -87,7 +87,6 @@ public class SecurityConfig {
                         .loginProcessingUrl("/process_login")
                         .defaultSuccessUrl("/", true)
                         .failureUrl("/auth/login?error"))
-                .sessionManagement(sm -> sm.maximumSessions(1).maxSessionsPreventsLogin(true))
                 .build();
     }
 

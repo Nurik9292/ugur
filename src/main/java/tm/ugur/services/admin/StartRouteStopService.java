@@ -1,5 +1,7 @@
 package tm.ugur.services.admin;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +21,10 @@ import java.util.stream.Collectors;
 public class StartRouteStopService {
 
     private final StartRouteStopRepository startRouteStopRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
 
 
     @Autowired
@@ -48,19 +54,28 @@ public class StartRouteStopService {
     }
 
     @Transactional
-    public void updateIndexes(String ids, Route route) {
-        Map<Long, Stop> stopMap = route.getStartStops().stream()
-                .collect(Collectors.toMap(Stop::getId, Function.identity()));
-
+    public void updateIndexes(Route route) {
         AtomicInteger count = new AtomicInteger(2);
-        Arrays.stream(ids.split(","))
-                .map(Long::parseLong)
-                .map(stopMap::get)
-                .filter(Objects::nonNull)
-                .flatMap(stop -> this.startRouteStopRepository.findByStopAndRoute(stop, route).stream())
-                .forEach(startRouteStop -> {
-                    startRouteStop.setIndex(count.getAndAdd(2));
-                    this.startRouteStopRepository.save(startRouteStop);
-                });
+        List<StartRouteStop> startRouteStops = route.getStartStops().stream()
+                .map(stop -> startRouteStopRepository.findByStopAndRoute(stop, route)
+                        .get())
+                .peek(startRouteStop -> startRouteStop.setIndex(count.getAndAdd(2)))
+                .toList();
+
+        updateInBatch(startRouteStops);
+    }
+
+    @Transactional
+    public void updateInBatch(List<StartRouteStop> startRouteStops) {
+        int batchSize = 50;
+
+        for (int i = 0; i < startRouteStops.size(); i++) {
+            entityManager.persist(startRouteStops.get(i));
+
+            if (i % batchSize == 0 && i > 0) {
+                entityManager.flush();
+                entityManager.clear();
+            }
+        }
     }
 }
