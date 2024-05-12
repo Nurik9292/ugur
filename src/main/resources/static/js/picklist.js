@@ -250,7 +250,7 @@ if(sourceFrontWrapper) {
     updateButtonState(buttonFrontMoveAllRight, sourceFront.length === 0);
     updateButtonState(buttonFrontMoveAllLeft, targetFront.length === 0);
     updateButtonState(buttonBackMoveAllRight, sourceBack.length === 0);
-    updateButtonState(buttonBackMoveAllLeft, targetBakc.length === 0);
+    updateButtonState(buttonBackMoveAllLeft, targetBack.length === 0);
 
     attachItemEvent(sourceFront);
     attachItemEvent(targetFront);
@@ -260,8 +260,24 @@ if(sourceFrontWrapper) {
 
 /////////////////////// snap ////////////////
 
-function moveUp(side) {
-    const list = side == 'source' ? document.getElementById('front_id_source_list') : document.getElementById('front_id_target_list');
+function moveUpFront(side) {
+    const list = side === 'source' ?
+        document.getElementById('front_id_source_list') :
+        document.getElementById('front_id_target_list');
+
+    moveUp(side, list);
+}
+
+function moveUpBack(side) {
+    const list = side === 'source' ?
+        document.getElementById('back_id_source_list') :
+        document.getElementById('back_id_target_list');
+
+    moveUp(side, list);
+}
+
+
+    function moveUp(side, list) {
     const selectedItem = list.querySelector('.p-focus'); 
 
     if (!selectedItem) return; 
@@ -271,9 +287,25 @@ function moveUp(side) {
   
     list.insertBefore(selectedItem, previousItem); 
   }
+
+function moveDownFront(side) {
+    const list = side === 'source' ?
+        document.getElementById('front_id_source_list') :
+        document.getElementById('front_id_target_list');
+
+    moveDown(side, list);
+}
+
+function moveDownBack(side) {
+    const list = side === 'source' ?
+        document.getElementById('back_id_source_list') :
+        document.getElementById('back_id_target_list');
+
+    moveDown(side, list);
+}
+
   
-  function moveDown(side) {
-    const list = side == 'source' ? wrapper.getElementById('front_id_source_list') : wrapper.getElementById('front_id_target_list');
+  function moveDown(side, list) {
     const selectedItem = list.querySelector('.p-focus'); 
 
     if (!selectedItem) return; 
@@ -285,15 +317,42 @@ function moveUp(side) {
      
   }
 
-  function moveToTop(side) {
-    const list = side == 'source' ? document.getElementById('front_id_source_list') : document.getElementById('front_id_target_list');
+function moveToTopFront(side) {
+    const list = side === 'source' ? document.getElementById('front_id_source_list') :
+        document.getElementById('front_id_target_list');
+
+    moveToTop(side, list);
+}
+
+function moveToTopBack(side) {
+    const list = side === 'source' ? document.getElementById('back_id_source_list') :
+        document.getElementById('back_id_target_list');
+
+    moveToTop(side, list);
+}
+
+  function moveToTop(side, list) {
+
     const selectedItem = list.querySelector('.p-focus'); 
 
     list.insertBefore(selectedItem, list.firstChild);
   }
 
-  function moveToBottom(side) {
-    const list = side == 'source' ? document.getElementById('front_id_source_list') : document.getElementById('front_id_target_list');
+function moveToBottomFront(side) {
+    const list = side === 'source' ? document.getElementById('front_id_source_list') :
+        document.getElementById('front_id_target_list');
+
+    moveToBottom(side, list);
+}
+
+function moveToBottomBack(side) {
+    const list = side === 'source' ? document.getElementById('back_id_source_list') :
+        document.getElementById('back_id_target_list');
+
+    moveToBottom(side, list);
+}
+
+  function moveToBottom(side, list) {
     const selectedItem = list.querySelector('.p-focus'); 
 
     list.insertBefore(selectedItem, list.lastChild);

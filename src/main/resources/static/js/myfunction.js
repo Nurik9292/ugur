@@ -478,3 +478,9 @@ if(navEnTab) {
 }
 
 
+const searchStopFront = document.getElementById('search-stop-front');
+
+if(searchStopFront) {
+
+}
+
