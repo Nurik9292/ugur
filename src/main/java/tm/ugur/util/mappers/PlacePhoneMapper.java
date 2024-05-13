@@ -35,4 +35,10 @@ public class PlacePhoneMapper extends AbstractMapper<PlacePhone, PlacePhoneDTO>{
         destination.setNumber(source.getNumber());
         destination.setType(source.getType());
     }
+
+    @Override
+    public void mapSpecificFields(PlacePhoneDTO source, PlacePhone destination){
+        destination.setNumber(source.getNumber());
+        destination.setType(source.getType());
+    }
 }

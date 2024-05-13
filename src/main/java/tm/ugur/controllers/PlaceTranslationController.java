@@ -38,8 +38,6 @@ public class PlaceTranslationController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        System.out.println(translation);
-
         if (translation.getLocale().equals("tm"))
             redisTranslationService.addTm(translation);
         if (translation.getLocale().equals("ru"))

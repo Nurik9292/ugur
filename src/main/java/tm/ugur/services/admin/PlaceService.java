@@ -9,15 +9,18 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import tm.ugur.dto.PlacePhoneDTO;
 import tm.ugur.dto.TranslationDTO;
 import tm.ugur.models.*;
 import tm.ugur.repo.PlacePhoneRepository;
 import tm.ugur.repo.PlaceRepository;
 import tm.ugur.repo.SocialNetworkRepository;
+import tm.ugur.services.redis.RedisPlacePhoneService;
 import tm.ugur.services.redis.RedisPlaceTranslationService;
 import tm.ugur.storage.FileSystemStorageService;
 import tm.ugur.util.ImageDownload;
 import tm.ugur.util.errors.places.PlaceNotFoundException;
+import tm.ugur.util.mappers.PlacePhoneMapper;
 import tm.ugur.util.mappers.TranslationPlaceMapper;
 import tm.ugur.util.pagination.PaginationService;
 
@@ -40,6 +43,8 @@ public class PlaceService {
     private final ImageDownload imageDownload;
     private final RedisPlaceTranslationService redisTranslationService;
     private final TranslationPlaceMapper translationPlaceMapper;
+    private final RedisPlacePhoneService placePhoneService;
+    private final PlacePhoneMapper placePhoneMapper;
 
     @Autowired
     public PlaceService(PlaceRepository placeRepository,
@@ -53,7 +58,9 @@ public class PlaceService {
                         PlaceThumbService thumbService,
                         ImageDownload imageDownload,
                         RedisPlaceTranslationService redisTranslationService,
-                        TranslationPlaceMapper translationPlaceMapper) {
+                        TranslationPlaceMapper translationPlaceMapper,
+                        RedisPlacePhoneService placePhoneService,
+                        PlacePhoneMapper placePhoneMapper) {
         this.placeRepository = placeRepository;
         this.placePhoneRepository = placePhoneRepository;
         this.socialNetworkRepository = socialNetworkRepository;
@@ -66,6 +73,8 @@ public class PlaceService {
         this.imageDownload = imageDownload;
         this.redisTranslationService = redisTranslationService;
         this.translationPlaceMapper = translationPlaceMapper;
+        this.placePhoneService = placePhoneService;
+        this.placePhoneMapper = placePhoneMapper;
     }
 
     public List<Place> findAll(){
@@ -121,10 +130,9 @@ public class PlaceService {
     public void store(Place place,
                       String instagram,
                       String tiktok,
-                      List<String> phones,
-                      String cityPhone,
                       MultipartFile[] images,
                       MultipartFile prev) {
+        ;
 
         List<PlaceImage> savedImages = Objects.nonNull(images) ? storeImages(images) : Collections.emptyList();;
         place.setImages(savedImages);
@@ -137,8 +145,9 @@ public class PlaceService {
 //        Set<SocialNetwork> savedNetworks = saveSocialNetworks(instagram, tiktok);
 //        place.addSocialNetworks(savedNetworks);
 //
-//        Set<PlacePhone> savedPhones = savePlacePhones(phones, cityPhone);
-//        place.addPhones(savedPhones);
+        Set<PlacePhone> savedPhones = getPlacePhones();
+        place.addPhones(savedPhones);
+        System.out.println(savedPhones);
 
         Set<PlaceTranslation> savedTranslations = getPlaceTranslations();
         place.setTranslations(savedTranslations);
@@ -148,7 +157,7 @@ public class PlaceService {
 
         Place finalPlace = placeRepository.save(place);
 //        savedNetworks.forEach(network -> network.setPlace(finalPlace));
-//        savedPhones.forEach(phone -> phone.setPlace(finalPlace));
+        savedPhones.forEach(phone -> phone.setPlace(finalPlace));
         if(!savedImages.isEmpty())
             savedImages.forEach(image -> image.setPlace(finalPlace));
         savedTranslations.forEach(translation -> translation.setPlace(finalPlace));
@@ -229,7 +238,7 @@ public class PlaceService {
 
         placePhoneRepository.deleteAll(existingPlace.getPhones());
 
-        Set<PlacePhone> savedPhones = savePlacePhones(phones, cityPhone);
+        Set<PlacePhone> savedPhones = getPlacePhones();
         place.addPhones(savedPhones);
 
         Set<PlaceTranslation> savedTranslations = updatePlaceTranslations(existingPlace.getTranslations(), titles, address);
@@ -297,13 +306,12 @@ public class PlaceService {
         return savedNetworks;
     }
 
-    private Set<PlacePhone> savePlacePhones(List<String> phones, String cityPhone){
+    private Set<PlacePhone> getPlacePhones(){
+        List<PlacePhoneDTO> phones = placePhoneService.getAll();
 
         Set<PlacePhone> savedPhones = Objects.nonNull(phones) ? phones.stream()
-                .map(phone -> placePhoneRepository.save(new PlacePhone(phone, "mob")))
+                .map(phone -> placePhoneRepository.save(convertDtoToEntity(phone)))
                 .collect(Collectors.toSet()) : new HashSet<>();
-
-        savedPhones.add(placePhoneRepository.save(new PlacePhone(cityPhone, "city")));
 
         return savedPhones;
     }
@@ -373,5 +381,9 @@ public class PlaceService {
 
     private PlaceTranslation convertDtoToEntity(TranslationDTO translation) {
         return translationPlaceMapper.toEntity(translation);
+    }
+
+    private PlacePhone convertDtoToEntity(PlacePhoneDTO placePhone) {
+        return placePhoneMapper.toEntity(placePhone);
     }
 }

@@ -93,8 +93,6 @@ public class PlaceController {
     public ResponseEntity<?> store(
             @RequestParam(value = "instagram", required = false) String instagram,
             @RequestParam(value = "tiktok", required = false) String tiktok,
-            @RequestParam(value = "telephones", required = false) List<String> telephones,
-            @RequestParam(value = "cityPhone", required = false) String cityPhone,
             @RequestParam(value = "files", required = false) MultipartFile[] files,
             @RequestParam(value = "prev", required = false) MultipartFile prev,
             @ModelAttribute("place") @Valid Place place, BindingResult result){
@@ -105,7 +103,7 @@ public class PlaceController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        placeService.store(place, instagram, tiktok, telephones, cityPhone, files, prev);
+        placeService.store(place, instagram, tiktok, files, prev);
 
         return ResponseEntity.ok("Заведение успешно добавленно");
     }

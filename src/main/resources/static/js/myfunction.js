@@ -215,9 +215,12 @@ async function sendForm(method, url) {
     const isStoreEn = await storeTranslation(csrf, "en", document.getElementById("title_en").value,
         document.getElementById("address_en").value);
 
-    const cityPhone = document.getElementById("city_phone").value;
     const mobPhones = document.getElementsByClassName("mob_phone_place");
-    const phones = Array.from(mobPhones).map(phone => phone.value);
+
+    for (const phone of Array.from(mobPhones)) {
+        await storePhone(csrf, phone.value, "mob")
+    }
+    await storePhone(csrf, document.getElementById("city_phone").value, "city");
 
 
 
@@ -252,31 +255,27 @@ async function sendForm(method, url) {
 
 }
 
-function checkPhone(phone) {
-    let isPhone = false;
-    if(Array.isArray(phone)){
-        phone.forEach(val => {
-            console.log(val)
-            isPhone = val.startsWith("+993") && val.length === 12;
-        });
-    }else
-        isPhone = phone.startsWith("+993") && phone.length === 12;
+async function storePhone(csrf, phone, type) {
+    const formData = new FormData();
 
-    return isPhone;
+    addToFormData(formData, '_csrf', csrf);
+    addToFormData(formData, "number", phone);
+    addToFormData(formData, "type", type);
+
+
+    return await sendPhone(formData);
 }
 
-function checkAndShowNotification(field, message) {
-    if (!field) {
-        displayValidationErrors({ [field]: 'Заполните поле' });
-        showNotification(message, 'red');
-    }
-}
+async function sendPhone(formData) {
+    let isStore = false;
+    await sendFormData("post", host + "/place-phones", formData).then(res => {
+        isStore = true;
+    }).catch(err => {
+        isStore = false;
+        displayValidationErrors(err.response.data, true);
+    });
 
-function checkAndShowNotificationString(field, message) {
-
-        displayValidationErrors({ [field]: 'Заполните поле правильно +993' });
-        showNotification(message, 'red');
-
+    return isStore;
 }
 
 async function storeTranslation(csrf, locale, title, address) {
