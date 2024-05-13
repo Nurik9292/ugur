@@ -120,7 +120,7 @@ public class PlaceCategoryController {
                          @RequestParam("title_en") String title_en,
                          @ModelAttribute("placeCategory") @Valid PlaceCategory placeCategory, BindingResult result,
                          Model model){
-
+        System.out.println(file);
         if(result.hasErrors()){
             model.addAttribute("page", "place-category-edit");
             model.addAttribute("title", "Изменить категорию заведения");

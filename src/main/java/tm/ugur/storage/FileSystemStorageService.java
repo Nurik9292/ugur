@@ -1,8 +1,6 @@
 package tm.ugur.storage;
 
-import ch.qos.logback.core.rolling.helper.FileNamePattern;
 import jakarta.annotation.PostConstruct;
-import net.coobird.thumbnailator.Thumbnails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -14,9 +12,6 @@ import tm.ugur.util.errors.storage.StorageException;
 import tm.ugur.util.errors.storage.StorageFileNotFoundException;
 import tm.ugur.util.files.FileResize;
 
-import javax.imageio.ImageIO;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -187,7 +182,7 @@ public class FileSystemStorageService implements StorageService{
 
     @Override
     public void delete(String path){
-    
+
         FileSystemUtils.deleteRecursively(new File(rootLocation + "/" + path.substring(12)));
     }
 }

@@ -240,8 +240,8 @@ public class PlaceService {
         Set<PlacePhone> savedPhones = getPlacePhones();
         place.addPhones(savedPhones);
 
-//        Set<PlaceTranslation> savedTranslations = updatePlaceTranslations(existingPlace.getTranslations(), titles, address);
-//        place.setTranslations(savedTranslations);
+        Set<PlaceTranslation> savedTranslations = updatePlaceTranslations(existingPlace.getTranslations());
+        place.setTranslations(savedTranslations);
 
 
         place.setId(id);
@@ -263,7 +263,8 @@ public class PlaceService {
 
         placeOptional.ifPresent(place -> {
           place.getImages().forEach(placeImageService::delete);
-          thumbService.delete(place.getThumbs());
+          if(Objects.nonNull(place.getThumbs()))
+            thumbService.delete(place.getThumbs());
         });
 
         this.placeRepository.deleteById(id);
@@ -328,39 +329,36 @@ public class PlaceService {
 
     private Set<PlaceTranslation> getPlaceTranslations(){
         Set<PlaceTranslation> translations = new HashSet<>();
-        System.out.println(redisTranslationService.getTm());
         translations.add(translationService.store(convertDtoToEntity(redisTranslationService.getTm())));
         translations.add(translationService.store(convertDtoToEntity(redisTranslationService.getRu())));
         translations.add(translationService.store(convertDtoToEntity(redisTranslationService.getEn())));
         return translations;
     }
 
-    private Set<PlaceTranslation> updatePlaceTranslations(Set<PlaceTranslation> existTranslation,
-                                                          Map<String, String> titles, Map<String, String> address){
-        Map<String, PlaceTranslation> existingTranslations = existTranslation.stream()
-                .collect(Collectors.toMap(PlaceTranslation::getLocale, translation -> translation));
-
-
-        return updateTranslations(existingTranslations, titles, address);
-    }
-
-    private Set<PlaceTranslation> updateTranslations(Map<String, PlaceTranslation> existingTranslations,
-                                         Map<String, String> titles, Map<String, String> address) {
+    private Set<PlaceTranslation> updatePlaceTranslations(Set<PlaceTranslation> existTranslation){
         Set<PlaceTranslation> translations = new HashSet<>();
-        for (String locale : Arrays.asList("tm", "ru", "en")) {
-            String title = titles.get(locale);
-            String addressText = address.get(locale);
-            PlaceTranslation translation = existingTranslations.get(locale);
-            if (title != null) {
-                if (translation != null) {
-                    translation.setTitle(title);
-                    translation.setAddress(addressText);
-                    translations.add(translationService.update(translation));
-                } else {
-                    translations.add(translationService.store(new PlaceTranslation(locale, title, addressText)));
-                }
+        existTranslation.forEach(translation -> {
+            if(translation.getLocale().equals("tm")) {
+                TranslationDTO translationDTO = redisTranslationService.getTm();
+                translation.setTitle(translationDTO.getTitle());
+                translation.setAddress(translationDTO.getAddress());
+                translations.add(translationService.update(translation));
             }
-        }
+            if(translation.getLocale().equals("ru")) {
+                TranslationDTO translationDTO = redisTranslationService.getRu();
+                translation.setTitle(translationDTO.getTitle());
+                translation.setAddress(translationDTO.getAddress());
+                translations.add(translationService.update(translation));
+            }
+            if(translation.getLocale().equals("en")) {
+                TranslationDTO translationDTO = redisTranslationService.getEn();
+                translation.setTitle(translationDTO.getTitle());
+                translation.setAddress(translationDTO.getAddress());
+                translations.add(translationService.update(translation));
+            }
+
+        });
+
 
         return translations;
     }

@@ -23,7 +23,7 @@
     </div>
     <div class="card card-body border-0 shadow mb-4">
         <h2 class="h5 mb-4">Создать под категорию заведения</h2>
-        <form action="/place-sub-categories" method="POST" th:onject="${placeSubCategory}">
+        <form action="/place-sub-categories" method="POST" th:object="${placeSubCategory}">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
             <div class="row">
                 <div class="col-md-6 mb-3">

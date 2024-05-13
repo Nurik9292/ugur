@@ -1,41 +1,65 @@
-.mydrop{
+
+
+.dropzon {
     width: 100%;
     min-height: 300px;
     text-align: center;
-    display: flex;
-    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     background: white;
     border-radius: 5px;
     border: 2px dashed rgb(0, 135, 247);
-    border-image: none;
     margin-left: auto;
     margin-right: auto;
+    position: relative;
 }
 
-
-#drop{
+#drop {
     width: 100%;
-    min-height: 300px;
+    min-height: 250px;
     display: flex;
-    justify-content: center;
     flex-wrap: wrap;
+    justify-content: center;
+    justify-items: center;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
-.dz-preview{
+.text {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+ .plus {
+     width: 100%;
+    display: block;
+    font-size: 70px;
+    line-height: 110px;
+    font-weight: bold;
+    color: rgb(0, 135, 247);
+}
+
+.dz-preview {
     margin-right: 30px;
 }
 
-.dz-success-mark{
-    display: none;
-}
-.dz-error-mark{
+.dz-success-mark {
     display: none;
 }
 
-.dz-remove{
+.dz-error-mark {
+    display: none;
+}
+
+.dz-remove {
     color: red;
 }
 
-.dz-image{
-    border-radius: 20px ;
+.dz-image {
+    border-radius: 20px;
+}
+
+.dz-started .text {
+    display: none;
 }

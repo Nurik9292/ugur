@@ -26,6 +26,7 @@
         <form onsubmit="return false;" th:object="${place}">
             <input type="hidden" id="csrf" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
             <input type="hidden" id="id"  th:value="${place.getId()}">
+            <input type="hidden" id="subCategoryId"  th:value="${place.getPlaceSubCategory().getId()}">
             <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="nav-data-route" role="tabpanel" aria-labelledby="nav-data-route-tab">
 
@@ -86,14 +87,16 @@
                                 <div class="tab-pane fade" id="nav-image" role="tabpanel" aria-labelledby="nav-en-tab">
                                     <div class="row">
                                         <div class="col-md-12 mb-3">
-                                            <label for="drop">Изображение</label>
-                                            <div class="mydrop">
-                                                <p>Upload</p>
+                                            <label>Изображение</label>
+                                            <div class="dropzon">
                                                 <div id="drop">
+                                                    <span class="text">Upload</span>
                                                 </div>
+                                                <span class="plus fileinput-button">+</span>
                                             </div>
-                                            <div style="color: red;" id="file-error"></div>
+                                            <div id="template-container"></div>
                                         </div>
+                                        <div style="color: red;" id="file-error"></div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
@@ -116,8 +119,8 @@
                             <div style="color: red;" id="email-error"></div>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="site">Сайт</label>
-                            <input class="form-control" id="site" name="website" th:value="${place.getWebsite()}" type="text" placeholder="Введите сайт заведения">
+                            <label for="website">Сайт</label>
+                            <input class="form-control" id="website" name="website" th:value="${place.getWebsite()}" type="text" placeholder="Введите сайт заведения">
                             <div style="color: red;" id="website-error"></div>
                         </div>
                     </div>
@@ -135,14 +138,14 @@
                         <div class="col-md-6 mb-3">
                             <label for="city_phone">Городской телефон</label>
                             <input class="form-control" id="city_phone" th:value="${cityNumber}" name="city_phone" type="text" placeholder="Введите городской номер">
-                            <div style="color: red;" id="city_phone-error"></div>
+                            <div style="color: red;" id="city-error"></div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="mob_phone">Мобильный телефон</label>
                             <input th:each="number : ${mobNumbers}" th:value="${number}" class="form-control mob_phone_place" id="mob_phone" name="mob_phone" type="text" placeholder="Введите моб телефон"> <br>
                             <div id="notPhone"></div>
                             <a href="#" class="btn btn-primary ml-3" id="add-input" onclick="addInputMobPhone()">Добавить поле</a>
-                            <div style="color: red;" id="mob_phone-error"></div>
+                            <div style="color: red;" id="mob-error"></div>
                         </div>
                     </div>
                     <div class="row dis">
@@ -151,6 +154,7 @@
                             <select class="form-select mb-0" id="placeCategory" name="placeCategory" aria-label="Category select example">
                                 <option th:each="placeCategory : ${placeCategories}"
                                         th:value="${placeCategory.getId()}"
+                                        th:selected="${placeCategory.getId() == place.getPlaceCategory().getId()}"
                                         th:text="${categoryTitles.get(placeCategory.getId())}"></option>
                             </select>
                             <div style="color: red;" id="placeCategory-error"></div>

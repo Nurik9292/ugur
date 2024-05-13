@@ -70,6 +70,7 @@ public class PlaceCategoryService {
     @Transactional
     public void store(PlaceCategory placeCategory, MultipartFile file, String title_tm, String title_ru, String title_en){
         String pathImage = storageService.store(file, "place/category");
+        System.out.println(pathImage);
         if (!pathImage.isBlank())
             placeCategory.setImage(pathImage);
 
@@ -102,8 +103,10 @@ public class PlaceCategoryService {
 
         existingPlaceCategory.ifPresent(category -> {
             String pathImage = storageService.store(file, "place/category");
+            System.out.println(pathImage);
             if (!pathImage.isBlank()){
-                storageService.delete(category.getImage());
+                if(Objects.nonNull(category.getImage()))
+                    storageService.delete(category.getImage());
                 placeCategory.setImage(pathImage);
             }
 

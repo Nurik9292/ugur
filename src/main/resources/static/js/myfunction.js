@@ -254,12 +254,20 @@ async function sendForm(method, url) {
     if(tiktok)
         await storeSocial(csrf, tiktok, "tiktok");
 
+    const email = document.getElementById("email").value;
+    const website = document.getElementById("website").value;
+
+    console.log(document.getElementById("placeCategory").value)
 
     addToFormData(formData, "_csrf", document.getElementById("csrf").value);
     addToFormData(formData, "lat", lat);
     addToFormData(formData, "lng", lng);
     addToFormData(formData, "placeCategory", document.getElementById("placeCategory").value);
     addToFormData(formData, "placeSubCategory", document.getElementById("placeSubCategory").value);
+    if(email)
+        addToFormData(formData, "email", email);
+    if(website)
+        addToFormData(formData, "website", website);
     addToFormData(formData, "files", images);
     addToFormData(formData, "prev", prev);
 
@@ -285,14 +293,6 @@ async function sendForm(method, url) {
 
 
 }
-
-// async function storeSocial(csrf, social, what) {
-//     const formData = new FormData();
-//
-//     addToFormData(formData, '_csrf', csrf);
-//     addToFormData(formData, "number", phone);
-//     addToFormData(formData, "type", type);
-// }
 
 async function deleteMobPhone(csrf) {
     const  formData = new FormData();
@@ -487,11 +487,20 @@ function loadSubcategories(categoryId) {
 
 
             const placeSubCategorySelect = document.getElementById("placeSubCategory");
+            const subCategoryTag = document.getElementById("subCategoryId");
+            let subCategoryId= 0;
+
+            console.log(subCategoryId)
+
+            if(subCategoryTag)
+                subCategoryId = subCategoryTag.value;
+
             placeSubCategorySelect.innerHTML = "";
             response.forEach(function (subCategory) {
                 let option = document.createElement("option");
                 option.value = subCategory.id;
                 option.textContent = subCategory.title;
+                option.selected = subCategoryId == subCategory.id;
                 placeSubCategorySelect.appendChild(option);
             })
         }).catch(err => {
