@@ -31,12 +31,21 @@ public class RedisPlacePhoneService {
         return redisTemplate.opsForValue().get(Constant.PLACE_CITY_PHONE);
     }
 
-    public List<PlacePhoneDTO> getAll() {
+    public List<PlacePhoneDTO> getMob() {
         return  redisTemplate.opsForValue()
                 .multiGet(Objects.requireNonNull(redisTemplate.keys(Constant.PLACE_MOB_PHONE + "*")));
     }
 
-    public void delete(){
+    public void deleteAll() {
+        deleteCity();
+        deleteMob();
+    }
+
+    public void deleteCity() {
+        redisTemplate.delete(Constant.PLACE_CITY_PHONE);
+    }
+
+    public void deleteMob(){
         redisTemplate.delete(Objects.requireNonNull(redisTemplate.keys(Constant.PLACE_MOB_PHONE + "*")));
     }
 }

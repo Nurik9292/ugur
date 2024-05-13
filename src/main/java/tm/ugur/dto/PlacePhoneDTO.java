@@ -1,9 +1,14 @@
 package tm.ugur.dto;
 
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
 import java.util.Objects;
 
 public class PlacePhoneDTO extends AbstractDTO{
 
+    @Size(min = 12, max = 12, message = "Номер должен быть ровно в 12 символов")
+    @Pattern(regexp = "^\\+993.*$", message = "Номер должен начинаться +993")
     private String number;
 
     private String type;

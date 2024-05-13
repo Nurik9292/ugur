@@ -1,12 +1,10 @@
 package tm.ugur.util.mappers;
 
 import jakarta.annotation.PostConstruct;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import tm.ugur.dto.SocialNetworkDTO;
-import tm.ugur.dto.geo.PointDTO;
 import tm.ugur.models.SocialNetwork;
 
 @Component
@@ -34,6 +32,13 @@ public class SocialNetworkMapper extends AbstractMapper<SocialNetwork, SocialNet
     public void mapSpecificFields(SocialNetwork source, SocialNetworkDTO destination) {
         destination.setId(source.getId());
         destination.setLink(source.getLink());
+        destination.setName(source.getName());
+    }
+
+    @Override
+    public void mapSpecificFields(SocialNetworkDTO source, SocialNetwork destination) {
+        destination.setLink(source.getLink());
+        destination.setName(source.getName());
     }
 
 }

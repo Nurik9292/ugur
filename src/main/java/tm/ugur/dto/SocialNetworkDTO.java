@@ -7,6 +7,8 @@ public class SocialNetworkDTO extends AbstractDTO{
 
     private String link;
 
+    private String name;
+
     public SocialNetworkDTO() {
     }
 
@@ -39,7 +41,16 @@ public class SocialNetworkDTO extends AbstractDTO{
     public String toString() {
         return "SocialNetworkDTO{" +
                 "link='" + link + '\'' +
+                "name='" + name + '\'' +
                 ", id=" + id +
                 '}';
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 }

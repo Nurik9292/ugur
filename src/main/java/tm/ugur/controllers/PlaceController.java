@@ -91,8 +91,6 @@ public class PlaceController {
 
     @PostMapping
     public ResponseEntity<?> store(
-            @RequestParam(value = "instagram", required = false) String instagram,
-            @RequestParam(value = "tiktok", required = false) String tiktok,
             @RequestParam(value = "files", required = false) MultipartFile[] files,
             @RequestParam(value = "prev", required = false) MultipartFile prev,
             @ModelAttribute("place") @Valid Place place, BindingResult result){
@@ -103,7 +101,7 @@ public class PlaceController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        placeService.store(place, instagram, tiktok, files, prev);
+        placeService.store(place, files, prev);
 
         return ResponseEntity.ok("Заведение успешно добавленно");
     }
@@ -158,31 +156,19 @@ public class PlaceController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable("id") long id,
-                         @RequestParam(value = "title_tm")  String title_tm,
-                         @RequestParam(value = "title_ru", required = false)  String title_ru,
-                         @RequestParam(value = "title_en", required = false)  String title_en,
-                         @RequestParam(value = "address_tm", required = false) String address_tm,
-                         @RequestParam(value = "address_ru", required = false) String address_ru,
-                         @RequestParam(value = "address_en", required = false) String address_en,
-                         @RequestParam(value = "instagram", required = false) String instagram,
-                         @RequestParam(value = "tiktok", required = false) String tiktok,
-                         @RequestParam(value = "telephones", required = false) List<String> telephones,
-                         @RequestParam(value = "cityPhone", required = false) String cityPhone,
                          @RequestParam(value = "files", required = false) MultipartFile[] files,
                          @RequestParam(value = "prev", required = false) MultipartFile prev,
                          @RequestParam(value = "removeImageIds", required = false) Long[] removedImageIds,
                          @ModelAttribute("place") @Valid Place place, BindingResult result){
 
-        if(result.hasErrors() || Objects.isNull(title_tm)){
+        if(result.hasErrors()){
             Map<String, String> errors = new HashMap<>();
             result.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
             return ResponseEntity.badRequest().body(errors);
         }
 
-        Map<String, String> titles = new HashMap<>(Map.of("tm", title_tm, "ru", title_ru, "en", title_en));
-        Map<String, String> address = new HashMap<>(Map.of("tm", address_tm, "ru", address_ru, "en", address_en));
 
-        this.placeService.update(id, place, instagram, tiktok, telephones, cityPhone, files, prev, titles, address, removedImageIds);
+        this.placeService.update(id, place, files, prev, removedImageIds);
 
         return ResponseEntity.ok("Заведение успешно измененно");
     }

@@ -8,5 +8,7 @@ public class Constant {
     public static final String PLACE_RU = "ugur:place:ru:";
     public static final String PLACE_EN = "ugur:place:en:";
     public static final String PLACE_CITY_PHONE = "ugur:place:city:";
-    public static final String PLACE_MOB_PHONE = "ugur:place:city:";
+    public static final String PLACE_MOB_PHONE = "ugur:place:mob:";
+    public static final String PLACE_INSTAGRAM_SOCIAL = "ugur:place:social:instagram:";
+    public static final String PLACE_TIKTOK_SOCIAL = "ugur:place:social:tiktok:";
 }

@@ -216,12 +216,43 @@ async function sendForm(method, url) {
         document.getElementById("address_en").value);
 
     const mobPhones = document.getElementsByClassName("mob_phone_place");
+    let phones = [];
+    const city = document.getElementById("city_phone").value;
+
+    let isMob = true;
+    let isCity = true;
 
     for (const phone of Array.from(mobPhones)) {
-        await storePhone(csrf, phone.value, "mob")
+        if(phone.value)
+            phones.push(phone.value);
     }
-    await storePhone(csrf, document.getElementById("city_phone").value, "city");
 
+    await deleteMobPhone(csrf);
+    await deleteCityPhone(csrf);
+
+    console.log(phones)
+
+    if(phones.length > 0){
+        for (const phone of phones) {
+            isMob = await storePhone(csrf, phone, "mob");
+            if (!isMob)
+                break;
+        }
+    }
+
+    if(city)
+        isCity = await storePhone(csrf, city, "city");
+
+    const instagram = document.getElementById("instagram").value;
+    const tiktok = document.getElementById("tiktok").value;
+
+    await deleteSocial(csrf);
+
+    if(instagram)
+        await storeSocial(csrf, instagram, "instagram");
+
+    if(tiktok)
+        await storeSocial(csrf, tiktok, "tiktok");
 
 
     addToFormData(formData, "_csrf", document.getElementById("csrf").value);
@@ -233,7 +264,7 @@ async function sendForm(method, url) {
     addToFormData(formData, "prev", prev);
 
 
-    if(isStoreTm && isStoreEn && isStoreRu) {
+    if(isStoreTm && isStoreEn && isStoreRu && isMob && isCity) {
         sendFormData(method, url, formData).then(res => {
             showNotification(res.data, "blue");
 
@@ -255,6 +286,62 @@ async function sendForm(method, url) {
 
 }
 
+// async function storeSocial(csrf, social, what) {
+//     const formData = new FormData();
+//
+//     addToFormData(formData, '_csrf', csrf);
+//     addToFormData(formData, "number", phone);
+//     addToFormData(formData, "type", type);
+// }
+
+async function deleteMobPhone(csrf) {
+    const  formData = new FormData();
+
+    addToFormData(formData, "_csrf", csrf)
+
+    await sendFormDataNotImage ("post", host + "/place-phones/mob", formData);
+}
+
+async function deleteCityPhone(csrf) {
+    const  formData = new FormData();
+
+    addToFormData(formData, "_csrf", csrf)
+
+    await sendFormDataNotImage ("post", host + "/place-phones/city", formData);
+}
+
+async function deleteSocial(csrf) {
+    const  formData = new FormData();
+
+    addToFormData(formData, "_csrf", csrf)
+
+    await sendFormDataNotImage ("post", host + "/place-socials/delete", formData);
+}
+
+async function storeSocial(csrf, link, name) {
+    const formData = new FormData();
+
+    addToFormData(formData, '_csrf', csrf);
+    addToFormData(formData, "link", link);
+    addToFormData(formData, "name", name);
+
+
+    return await sendSocial(formData);
+}
+
+async function sendSocial(formData) {
+    let isStore = false;
+    await sendFormData("post", host + "/place-socials", formData).then(res => {
+        isStore = true;
+    }).catch(err => {
+        isStore = false;
+        displayValidationErrors(err.response.data, true);
+    });
+
+    return isStore;
+}
+
+
 async function storePhone(csrf, phone, type) {
     const formData = new FormData();
 
@@ -265,6 +352,7 @@ async function storePhone(csrf, phone, type) {
 
     return await sendPhone(formData);
 }
+
 
 async function sendPhone(formData) {
     let isStore = false;
@@ -329,6 +417,7 @@ async function sendFormDataNotImage(method, url, formData) {
         data: formData
     });
 }
+
 
 
 
