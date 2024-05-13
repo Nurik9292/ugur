@@ -1,6 +1,7 @@
 package tm.ugur.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.Date;
 import java.util.Objects;
@@ -18,9 +19,11 @@ public class PlaceTranslation extends AbstractEntity{
     private String locale;
 
     @Column(name = "title")
+    @NotBlank(message = "Заголовк не должен быть пустым.")
     private String title;
 
     @Column(name = "address")
+    @NotBlank(message = "Адрес не должен быть пустым.")
     private String address;
 
     @ManyToOne

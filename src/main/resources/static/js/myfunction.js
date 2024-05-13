@@ -4,6 +4,7 @@ const host = "http://localhost:8080";
 let sortByStop = "";
 let sortByRoute = "";
 
+
 function onChagePageItems(page) {
     const url = host + '/' + page;
     const element = data();
@@ -166,86 +167,89 @@ function sendFromRoute(method, url) {
     addToFormData(formData, 'endStops', backStartStopIds);
     addToFormData(formData, "city", city.options[city.selectedIndex].value);
 
-    sendFormData(method, url, formData, "/routes");
+    sendFormData(method, url, formData).then(res => {
+        showNotification(res.data, "blue");
+
+        setTimeout(function() {
+            window.location.href = host + "/routes";
+        }, 2000);
+
+    })
+        .catch(error => {
+            if (error.response && error.response.status === 400) {
+                console.error('Validation error:', error.response.data);
+                displayValidationErrors(error.response.data);
+            } else {
+                console.error("Error sending request:", error);
+            }
+        });
 }
 
 
 
-function sendCreatePlace() {
-    sendForm("post", host + "/places");
+async function sendCreatePlace() {
+   await sendForm("post", host + "/places");
 }
 
-function sendUpdatePlace() {
+async function sendUpdatePlace() {
     const id = document.getElementById("id").value;
-    sendForm('put', host + "/places/" + id);
+   await sendForm('put', host + "/places/" + id);
 }
 
-function sendForm(method, url) {
+async function sendForm(method, url) {
     const formData = new FormData();
+    const csrf = document.getElementById("csrf").value;
+    const lat = document.getElementById("lat").value;
+    const lng = document.getElementById("lng").value;
     const images = myDropzone.getAcceptedFiles();
-    const prev = document.getElementById("prev").files[0];
-    const instagram = document.getElementById("instagram").value;
-    const tiktok = document.getElementById("tiktok").value;
+
+    if (!lat || !lng) {
+        showNotification("Заполните координаты", 'red');
+        return;
+    }
+
+    const isStoreTm = await storeTranslation(csrf, "tm", document.getElementById("title_tm").value,
+        document.getElementById("address_tm").value);
+    const isStoreRu = await storeTranslation(csrf, "ru", document.getElementById("title_ru").value,
+        document.getElementById("address_ru").value);
+    const isStoreEn = await storeTranslation(csrf, "en", document.getElementById("title_en").value,
+        document.getElementById("address_en").value);
+
     const cityPhone = document.getElementById("city_phone").value;
     const mobPhones = document.getElementsByClassName("mob_phone_place");
     const phones = Array.from(mobPhones).map(phone => phone.value);
-    const lat = document.getElementById("lat").value;
-    const lng = document.getElementById("lng").value;
-    const titleTm = document.getElementById("title_tm").value;
-    const titleRu = document.getElementById("title_ru").value;
-    const titleEn = document.getElementById("title_en").value;
-    const addressTm = document.getElementById("address_tm").value;
-    const addressRu = document.getElementById("address_ru").value;
-    const addressEn = document.getElementById("title_en").value;
 
-    if(removedImageIds.length !== 0){
-        addToFormData(formData, "removeImageIds",removedImageIds);
-    }
 
 
     addToFormData(formData, "_csrf", document.getElementById("csrf").value);
-    addToFormData(formData, "title_tm", titleTm);
-    addToFormData(formData, "title_ru", titleRu);
-    addToFormData(formData, "title_en", titleEn);
-    addToFormData(formData, "address_tm", addressTm);
-    addToFormData(formData, "address_ru", addressRu);
-    addToFormData(formData, "address_en", addressEn);
-    addToFormData(formData, "email", document.getElementById("email").value);
-    addToFormData(formData, "website", document.getElementById("site").value);
     addToFormData(formData, "lat", lat);
     addToFormData(formData, "lng", lng);
     addToFormData(formData, "placeCategory", document.getElementById("placeCategory").value);
     addToFormData(formData, "placeSubCategory", document.getElementById("placeSubCategory").value);
-    addToFormData(formData, "instagram", instagram);
-    addToFormData(formData, "tiktok", tiktok);
-    addToFormData(formData, "telephones", phones);
-    addToFormData(formData, "files", images)
-    addToFormData(formData, "cityPhone", cityPhone);
+    addToFormData(formData, "files", images);
     addToFormData(formData, "prev", prev);
 
-    let isCityPhone = true;
-    let isMobPhone = true;
-   if(cityPhone)
-       isCityPhone = checkPhone(cityPhone);
-   if(phones)
-        isMobPhone = checkPhone(phones);
 
-    if(lat && lng && addressEn && addressRu && addressTm && titleEn && titleRu && titleTm && cityPhone && isCityPhone && isMobPhone)
-      sendFormData(method, url, formData, "/places");
-    else {
-        if(!lat || !lng) {
-            showNotification("Заполните координаты", 'red');
-        }
-        checkAndShowNotification(titleTm, "Заполните Заголовок на туркменском");
-        checkAndShowNotification(titleRu, "Заполните Заголовок на русском");
-        checkAndShowNotification(titleEn, "Заполните Заголовок на английском");
-        checkAndShowNotification(addressTm, "Заполните адрес на туркменском");
-        checkAndShowNotification(addressRu, "Заполните адрес на русском");
-        checkAndShowNotification(addressEn, "Заполните адрес на английском");
-        checkAndShowNotificationString("city_phone", "Заполните поле правильно +993!");
-        checkAndShowNotificationString("mob_phone", "Заполните поле правильно +993!");
+    if(isStoreTm && isStoreEn && isStoreRu) {
+        sendFormData(method, url, formData).then(res => {
+            showNotification(res.data, "blue");
 
+            setTimeout(function() {
+                window.location.href = host + "/places";
+            }, 2000);
+
+        })
+            .catch(error => {
+                if (error.response && error.response.status === 400) {
+                    console.error('Validation error:', error.response.data);
+                    displayValidationErrors(error.response.data);
+                } else {
+                    console.error("Error sending request:", error);
+                }
+            });
     }
+
+
 }
 
 function checkPhone(phone) {
@@ -275,6 +279,30 @@ function checkAndShowNotificationString(field, message) {
 
 }
 
+async function storeTranslation(csrf, locale, title, address) {
+    const formDataTm = new FormData();
+
+    addToFormData(formDataTm, '_csrf', csrf);
+    addToFormData(formDataTm, "locale", locale);
+    addToFormData(formDataTm, "title", title);
+    addToFormData(formDataTm, "address", address);
+
+   return await sendTranslation(formDataTm);
+
+}
+
+async function sendTranslation(formData) {
+   let isStore = false;
+   await sendFormDataNotImage("post", host + "/place-translations", formData).then(res => {
+       isStore = true;
+    }).catch(err => {
+        isStore = false;
+        displayValidationErrors(err.response.data, true);
+    });
+
+   return isStore;
+}
+
 function addToFormData(formData, key, value) {
     if (Array.isArray(value)) {
         value.forEach(val => formData.append(key, val));
@@ -284,7 +312,7 @@ function addToFormData(formData, key, value) {
 }
 
 
-function sendFormData(method, url, formData, indexPage) {
+function sendFormData(method, url, formData) {
     return axios({
         method: method,
         url: url,
@@ -292,37 +320,36 @@ function sendFormData(method, url, formData, indexPage) {
         headers: {
             "Content-Type": "multipart/form-data",
         },
-    })
-        .then(res => {
-            showNotification(res.data, "blue");
+    });
+}
 
-            setTimeout(function() {
-                window.location.href = host + indexPage;
-            }, 2000);
-
-        })
-        .catch(error => {
-            if (error.response && error.response.status === 400) {
-                console.error('Validation error:', error.response.data);
-                displayValidationErrors(error.response.data);
-            } else {
-                console.error("Error sending request:", error);
-            }
-        });
+async function sendFormDataNotImage(method, url, formData) {
+    return await axios({
+        method: method,
+        url: url,
+        data: formData
+    });
 }
 
 
 
-function displayValidationErrors(errors) {
+function displayValidationErrors(errors, isLocale) {
     const errorElements = [];
 
     Object.keys(errors).forEach(fieldName => {
         console.log(fieldName)
-        const errorMessage = errors[fieldName];
+        let errorMessage = errors[fieldName];
         const errorElement =  document.getElementById(fieldName + "-error");
         errorElements.push(errorElement);
             if (errorElement) {
                 errorElement.textContent = errorMessage;
+                if(isLocale) {
+                    console.log(fieldName.endsWith("tm"))
+                    errorMessage = fieldName.endsWith("tm") ? "Tm " + errorMessage : errorMessage;
+                    errorMessage = fieldName.endsWith("ru") ? "Ru " + errorMessage : errorMessage;
+                    errorMessage = fieldName.endsWith("en") ? "En " + errorMessage : errorMessage;
+                    console.log(errorMessage)
+                }
                 showNotification(errorMessage, 'red');
             }
     });

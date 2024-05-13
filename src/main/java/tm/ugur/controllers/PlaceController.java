@@ -4,9 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.PathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,12 +14,9 @@ import org.springframework.web.multipart.MultipartFile;
 import tm.ugur.models.*;
 import tm.ugur.services.admin.PlaceCategoryService;
 import tm.ugur.services.admin.PlaceService;
-import tm.ugur.services.admin.PlaceSubCategoryService;
-import tm.ugur.storage.FileSystemStorageService;
 import tm.ugur.util.pagination.PaginationService;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -37,7 +32,7 @@ public class PlaceController {
     private final PlaceService placeService;
     private final PlaceCategoryService placeCategoryService;
     private final PaginationService paginationService;
-    private final FileSystemStorageService storageService;
+
 
 
     private static String sortByStatic = "";
@@ -45,13 +40,10 @@ public class PlaceController {
     @Autowired
     public PlaceController(PlaceService placeService,
                            PlaceCategoryService placeCategoryService,
-                           PaginationService paginationService,
-                           FileSystemStorageService storageService) {
+                           PaginationService paginationService) {
         this.placeService = placeService;
         this.placeCategoryService = placeCategoryService;
         this.paginationService = paginationService;
-
-        this.storageService = storageService;
     }
 
     @GetMapping
@@ -99,12 +91,6 @@ public class PlaceController {
 
     @PostMapping
     public ResponseEntity<?> store(
-            @RequestParam(value = "title_tm", required = false)  String title_tm,
-            @RequestParam(value = "title_ru", required = false)  String title_ru,
-            @RequestParam(value = "title_en", required = false)  String title_en,
-            @RequestParam(value = "address_tm", required = false) String address_tm,
-            @RequestParam(value = "address_ru", required = false) String address_ru,
-            @RequestParam(value = "address_en", required = false) String address_en,
             @RequestParam(value = "instagram", required = false) String instagram,
             @RequestParam(value = "tiktok", required = false) String tiktok,
             @RequestParam(value = "telephones", required = false) List<String> telephones,
@@ -113,17 +99,13 @@ public class PlaceController {
             @RequestParam(value = "prev", required = false) MultipartFile prev,
             @ModelAttribute("place") @Valid Place place, BindingResult result){
 
-
-        Map<String, String> titles = new HashMap<>(Map.of("tm", title_tm, "ru", title_ru, "en", title_en));
-        Map<String, String> address = new HashMap<>(Map.of("tm", address_tm, "ru", address_ru, "en", address_en));
-
         if(result.hasErrors()){;
             Map<String, String> errors = new HashMap<>();
             result.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
             return ResponseEntity.badRequest().body(errors);
         }
 
-        placeService.store(place, instagram, tiktok, telephones, cityPhone, files, prev, titles, address);
+        placeService.store(place, instagram, tiktok, telephones, cityPhone, files, prev);
 
         return ResponseEntity.ok("Заведение успешно добавленно");
     }

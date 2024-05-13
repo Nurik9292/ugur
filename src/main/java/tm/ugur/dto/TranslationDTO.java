@@ -1,13 +1,17 @@
 package tm.ugur.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 import java.util.Objects;
 
 public class TranslationDTO extends AbstractDTO{
 
     private String locale;
 
+    @NotBlank(message = "Заголовк не должен быть пустым.")
     private String title;
 
+    @NotBlank(message = "Адрес не должен быть пустым.")
     private String address;
 
     public TranslationDTO(){}
@@ -52,6 +56,7 @@ public class TranslationDTO extends AbstractDTO{
         return "TranslationDTO{" +
                 "locale='" + locale + '\'' +
                 ", title='" + title + '\'' +
+                ", address='" + address + '\'' +
                 ", id=" + id +
                 '}';
     }

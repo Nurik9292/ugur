@@ -27,12 +27,12 @@ public class AbstractMapper<E extends AbstractEntity, D extends AbstractDTO> imp
 
     @Override
     public E toEntity(D dto) {
-        return Objects.isNull(dto) ? null : this.modelMapper.map(dto, this.entityClass);
+        return Objects.isNull(dto) ? null : modelMapper.map(dto, entityClass);
     }
 
     @Override
     public D toDto(E entity) {
-        return Objects.isNull(entity) ? null : this.modelMapper.map(entity, this.dtoClass);
+        return Objects.isNull(entity) ? null : modelMapper.map(entity, dtoClass);
     }
 
     Converter<E, D> toDtoConverter() {

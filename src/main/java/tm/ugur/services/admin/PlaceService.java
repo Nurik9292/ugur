@@ -9,13 +9,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import tm.ugur.dto.TranslationDTO;
 import tm.ugur.models.*;
 import tm.ugur.repo.PlacePhoneRepository;
 import tm.ugur.repo.PlaceRepository;
 import tm.ugur.repo.SocialNetworkRepository;
+import tm.ugur.services.redis.RedisPlaceTranslationService;
 import tm.ugur.storage.FileSystemStorageService;
 import tm.ugur.util.ImageDownload;
 import tm.ugur.util.errors.places.PlaceNotFoundException;
+import tm.ugur.util.mappers.TranslationPlaceMapper;
 import tm.ugur.util.pagination.PaginationService;
 
 import java.util.*;
@@ -35,6 +38,8 @@ public class PlaceService {
     private final PlaceTranslationService translationService;
     private final PlaceThumbService thumbService;
     private final ImageDownload imageDownload;
+    private final RedisPlaceTranslationService redisTranslationService;
+    private final TranslationPlaceMapper translationPlaceMapper;
 
     @Autowired
     public PlaceService(PlaceRepository placeRepository,
@@ -46,7 +51,9 @@ public class PlaceService {
                         PlaceImageService placeImageService,
                         PlaceTranslationService translationService,
                         PlaceThumbService thumbService,
-                        ImageDownload imageDownload) {
+                        ImageDownload imageDownload,
+                        RedisPlaceTranslationService redisTranslationService,
+                        TranslationPlaceMapper translationPlaceMapper) {
         this.placeRepository = placeRepository;
         this.placePhoneRepository = placePhoneRepository;
         this.socialNetworkRepository = socialNetworkRepository;
@@ -57,6 +64,8 @@ public class PlaceService {
         this.translationService = translationService;
         this.thumbService = thumbService;
         this.imageDownload = imageDownload;
+        this.redisTranslationService = redisTranslationService;
+        this.translationPlaceMapper = translationPlaceMapper;
     }
 
     public List<Place> findAll(){
@@ -115,9 +124,7 @@ public class PlaceService {
                       List<String> phones,
                       String cityPhone,
                       MultipartFile[] images,
-                      MultipartFile prev,
-                      Map<String, String> titles,
-                      Map<String, String> address) {
+                      MultipartFile prev) {
 
         List<PlaceImage> savedImages = Objects.nonNull(images) ? storeImages(images) : Collections.emptyList();;
         place.setImages(savedImages);
@@ -127,21 +134,21 @@ public class PlaceService {
 
         place.setLocation(geometryFactory.createPoint(new Coordinate(place.getLat(), place.getLng())));
 
-        Set<SocialNetwork> savedNetworks = saveSocialNetworks(instagram, tiktok);
-        place.addSocialNetworks(savedNetworks);
+//        Set<SocialNetwork> savedNetworks = saveSocialNetworks(instagram, tiktok);
+//        place.addSocialNetworks(savedNetworks);
+//
+//        Set<PlacePhone> savedPhones = savePlacePhones(phones, cityPhone);
+//        place.addPhones(savedPhones);
 
-        Set<PlacePhone> savedPhones = savePlacePhones(phones, cityPhone);
-        place.addPhones(savedPhones);
-
-        Set<PlaceTranslation> savedTranslations = savePlaceTranslations(titles, address);
+        Set<PlaceTranslation> savedTranslations = getPlaceTranslations();
         place.setTranslations(savedTranslations);
 
         place.setCreatedAt(new Date());
         place.setUpdatedAt(new Date());
 
         Place finalPlace = placeRepository.save(place);
-        savedNetworks.forEach(network -> network.setPlace(finalPlace));
-        savedPhones.forEach(phone -> phone.setPlace(finalPlace));
+//        savedNetworks.forEach(network -> network.setPlace(finalPlace));
+//        savedPhones.forEach(phone -> phone.setPlace(finalPlace));
         if(!savedImages.isEmpty())
             savedImages.forEach(image -> image.setPlace(finalPlace));
         savedTranslations.forEach(translation -> translation.setPlace(finalPlace));
@@ -301,11 +308,12 @@ public class PlaceService {
         return savedPhones;
     }
 
-    private Set<PlaceTranslation> savePlaceTranslations(Map<String, String> titles, Map<String, String> address){
+    private Set<PlaceTranslation> getPlaceTranslations(){
         Set<PlaceTranslation> translations = new HashSet<>();
-        translations.add(translationService.store(new PlaceTranslation("tm", titles.get("tm"), address.get("tm"))));
-        translations.add(translationService.store(new PlaceTranslation("ru", titles.get("ru"), address.get("ru"))));
-        translations.add(translationService.store(new PlaceTranslation("en", titles.get("en"), address.get("en"))));
+        System.out.println(redisTranslationService.getTm());
+        translations.add(translationService.store(convertDtoToEntity(redisTranslationService.getTm())));
+        translations.add(translationService.store(convertDtoToEntity(redisTranslationService.getRu())));
+        translations.add(translationService.store(convertDtoToEntity(redisTranslationService.getEn())));
         return translations;
     }
 
@@ -361,5 +369,9 @@ public class PlaceService {
 
     public String pruningPath(String path){
         return path.substring(path.lastIndexOf("/") + 1);
+    }
+
+    private PlaceTranslation convertDtoToEntity(TranslationDTO translation) {
+        return translationPlaceMapper.toEntity(translation);
     }
 }

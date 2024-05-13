@@ -4,9 +4,11 @@ import jakarta.annotation.PostConstruct;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import tm.ugur.dto.RouteDTO;
 import tm.ugur.dto.TranslationDTO;
 import tm.ugur.models.PlaceSubCategoryTranslation;
 import tm.ugur.models.PlaceTranslation;
+import tm.ugur.models.Route;
 
 @Component
 public class TranslationPlaceMapper extends AbstractMapper<PlaceTranslation, TranslationDTO>{
@@ -15,6 +17,7 @@ public class TranslationPlaceMapper extends AbstractMapper<PlaceTranslation, Tra
 
     @Autowired
     public TranslationPlaceMapper(ModelMapper modelMapper) {
+        super(PlaceTranslation.class, TranslationDTO.class);
         this.modelMapper = modelMapper;
     }
 
@@ -40,5 +43,12 @@ public class TranslationPlaceMapper extends AbstractMapper<PlaceTranslation, Tra
         destination.setAddress(source.getAddress());
         destination.setLocale(source.getLocale());
         destination.setId(source.getId());
+    }
+
+    @Override
+    public void mapSpecificFields(TranslationDTO source, PlaceTranslation destination) {
+        destination.setTitle(source.getTitle());
+        destination.setAddress(source.getAddress());
+        destination.setLocale(source.getLocale());
     }
 }
