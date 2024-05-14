@@ -5,7 +5,6 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +27,7 @@ import tm.ugur.util.mappers.TranslationPlaceMapper;
 import tm.ugur.util.pagination.PaginationService;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @Service
@@ -252,7 +252,7 @@ public class PlaceService {
         savedPhones.forEach(phone -> phone.setPlace(finalPlace));
         if(!savedImages.isEmpty())
             savedImages.forEach(image -> image.setPlace(finalPlace));
-//        savedTranslations.forEach(translation -> translation.setPlace(finalPlace));
+        savedTranslations.forEach(translation -> translation.setPlace(finalPlace));
         if (Objects.nonNull(savedThumb))
             savedThumb.setPlace(finalPlace);
     }
@@ -337,6 +337,8 @@ public class PlaceService {
 
     private Set<PlaceTranslation> updatePlaceTranslations(Set<PlaceTranslation> existTranslation){
         Set<PlaceTranslation> translations = new HashSet<>();
+        AtomicBoolean hasRu = new AtomicBoolean(false);
+        AtomicBoolean hasEn = new AtomicBoolean(false);
         existTranslation.forEach(translation -> {
             if(translation.getLocale().equals("tm")) {
                 TranslationDTO translationDTO = redisTranslationService.getTm();
@@ -349,16 +351,21 @@ public class PlaceService {
                 translation.setTitle(translationDTO.getTitle());
                 translation.setAddress(translationDTO.getAddress());
                 translations.add(translationService.update(translation));
+                hasRu.set(true);
             }
             if(translation.getLocale().equals("en")) {
                 TranslationDTO translationDTO = redisTranslationService.getEn();
                 translation.setTitle(translationDTO.getTitle());
                 translation.setAddress(translationDTO.getAddress());
                 translations.add(translationService.update(translation));
+                hasEn.set(true);
             }
-
         });
 
+        if(!hasEn.get())
+            translations.add(translationService.store(convertDtoToEntity(redisTranslationService.getEn())));
+        if(!hasRu.get())
+            translations.add(translationService.store(convertDtoToEntity(redisTranslationService.getRu())));
 
         return translations;
     }
