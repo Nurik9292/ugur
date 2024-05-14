@@ -80,13 +80,18 @@
                             </thead>
                             <tbody>
                                 <tr th:each="place : ${places}">
-                                    <td th:each="trans : ${place.getTranslations()}" th:if="${trans.getLocale()} == 'ru'" th:text="${trans.getTitle()}"></td>
+                                    <td>
+                                        <div th:each="trans : ${place.getTranslations()}">
+                                            <p th:if="${trans.getTitle().length() > 8 and  trans.getLocale() == 'ru'}" th:text="${trans.getTitle().substring(0, 8)} + '...'"></p>
+                                            <p th:if="${trans.getTitle().length() < 8 and  trans.getLocale() == 'ru'}" th:text="${trans.getTitle()}"></p>
+                                        </div>
+                                    </td>
+
                                     <td>
                                         <div th:each="trans : ${place.getTranslations()}">
                                             <p th:if="${trans.getAddress().length() > 8 and  trans.getLocale() == 'ru'}" th:text="${trans.getAddress().substring(0, 8)} + '...'"></p>
                                             <p th:if="${trans.getAddress().length() < 8 and  trans.getLocale() == 'ru'}" th:text="${trans.getAddress()}"></p>
                                         </div>
-
                                     </td>
                                     <td>
                                         <div th:each="image : ${place.getImages()}" class="image-container">
