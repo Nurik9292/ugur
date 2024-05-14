@@ -75,6 +75,8 @@ public class SecurityConfig {
     @Order(2)
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         return http.csrf(Customizer.withDefaults())
+                .sessionManagement((sessionManagement) ->
+                        sessionManagement.maximumSessions(1).maxSessionsPreventsLogin(true))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/auth/login", "/error", "/process_login").permitAll()
