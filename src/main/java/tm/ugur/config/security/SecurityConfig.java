@@ -25,6 +25,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.web.cors.CorsConfiguration;
 import tm.ugur.config.jwt.JWTFilter;
 import tm.ugur.config.jwt.JwtAuthenticationEntryPoint;
@@ -76,7 +77,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         return http.csrf(Customizer.withDefaults())
                 .sessionManagement((sessionManagement) ->
-                        sessionManagement.maximumSessions(1).maxSessionsPreventsLogin(true))
+                        sessionManagement.maximumSessions(1).maxSessionsPreventsLogin(true).expiredUrl("/login?expired"))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/auth/login", "/error", "/process_login").permitAll()
@@ -92,7 +93,10 @@ public class SecurityConfig {
                 .build();
     }
 
-
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
+    }
     @Bean
     public AuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();

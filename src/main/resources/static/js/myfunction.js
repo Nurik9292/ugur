@@ -234,7 +234,7 @@ async function sendForm(method, url) {
 
     if(phones.length > 0){
         for (const phone of phones) {
-            isMob = await storePhone(csrf, phone, "mob");
+            isMob = await storePhone(csrf, phone.trim(), "mob");
             if (!isMob)
                 break;
         }
@@ -384,6 +384,7 @@ async function sendTranslation(formData) {
        isStore = true;
     }).catch(err => {
         isStore = false;
+       console.log(err)
         displayValidationErrors(err.response.data, true);
     });
 
