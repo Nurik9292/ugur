@@ -31,19 +31,27 @@
     font-size: 0.875rem;
 }
 
-/* Стили для контейнера изображений */
+
 .image-container {
     display: grid;
 }
 
-/* Стили для каждого изображения */
+
 .image-item {
-    width: calc(50% - 8px); /* Ширина изображения (половина контейнера минус отступы) */
-    max-width: 100%; /* Максимальная ширина изображения */
-    height: auto; /* Автоматическая высота */
-    object-fit: cover; /* Заполнение контейнера без искажения пропорций */
+    width: calc(50% - 8px);
+    max-width: 100%;
+    height: auto;
+    object-fit: cover;
 }
 
 tbody tr td {
     width: 100px;
+}
+
+#datatable {
+    width: 1800px;
+}
+
+#datatable th td {
+    width: 180px;
 }

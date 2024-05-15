@@ -4,8 +4,8 @@ const host = "http://95.85.127.56:8083";
 let sortByStop = "";
 let sortByRoute = "";
 
-
-function onChagePageItems(page) {
+////////////////// SORT //////////////////////////////
+function onChangePageItems(page) {
     const url = host + '/' + page;
     const element = data();
 
@@ -81,7 +81,6 @@ function onClickSortPlace(sortBy) {
     const fullUrl = `${url}?${queryString}`;
     window.location.href = fullUrl;
 }
-
 function onClickSortPlaceCategory(sortBy) {
     const url = host + '/place-categories';
     const element = data();
@@ -111,6 +110,9 @@ function data() {
     return {page: pageNumber, items: items};
 }
 
+/////////////////////// SORT ///////////////
+
+
 function addInputMobPhone() {
     const addInputButton = document.getElementById("add-input");
     let mobPhoneInput = document.getElementById("mob_phone");
@@ -129,6 +131,7 @@ function addInputMobPhone() {
     mobPhoneInput.parentNode.insertBefore(newInput, mobPhoneInput.nextSibling);
 }
 
+//////////////////////// CRUD ROUTE //////////////////////////////
 
 function sendCreateRoute() {
     sendFromRoute("post", host + "/routes");
@@ -185,7 +188,9 @@ function sendFromRoute(method, url) {
         });
 }
 
+//////////////////////// END CRUD ROUTE //////////////////////////////
 
+///////////////////// CRUD PLACE ///////////////////////////////
 
 async function sendCreatePlace() {
    await sendForm("post", host + "/places");
@@ -230,7 +235,6 @@ async function sendForm(method, url) {
     await deleteMobPhone(csrf);
     await deleteCityPhone(csrf);
 
-    console.log(phones)
 
     if(phones.length > 0){
         for (const phone of phones) {
@@ -390,6 +394,8 @@ async function sendTranslation(formData) {
 
    return isStore;
 }
+
+///////////////////// EDN CRUD PLACE ///////////////////////////////
 
 function addToFormData(formData, key, value) {
     if (Array.isArray(value)) {
@@ -602,10 +608,4 @@ if(navEnTab) {
     });
 }
 
-
-const searchStopFront = document.getElementById('search-stop-front');
-
-if(searchStopFront) {
-
-}
 

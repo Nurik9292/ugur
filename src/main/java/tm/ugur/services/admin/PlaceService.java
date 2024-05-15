@@ -5,9 +5,11 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import tm.ugur.dto.PlaceDTO;
 import tm.ugur.dto.PlacePhoneDTO;
 import tm.ugur.dto.SocialNetworkDTO;
 import tm.ugur.dto.TranslationDTO;
@@ -21,6 +23,7 @@ import tm.ugur.services.redis.RedisPlaceTranslationService;
 import tm.ugur.storage.FileSystemStorageService;
 import tm.ugur.util.ImageDownload;
 import tm.ugur.util.errors.places.PlaceNotFoundException;
+import tm.ugur.util.mappers.PlaceMapper;
 import tm.ugur.util.mappers.PlacePhoneMapper;
 import tm.ugur.util.mappers.SocialNetworkMapper;
 import tm.ugur.util.mappers.TranslationPlaceMapper;
@@ -50,6 +53,7 @@ public class PlaceService {
     private final PlacePhoneMapper placePhoneMapper;
     private final RedisPlaceSocialService redisPlaceSocialService;
     private final SocialNetworkMapper socialNetworkMapper;
+    private final PlaceMapper placeMapper;
 
     @Autowired
     public PlaceService(PlaceRepository placeRepository,
@@ -67,7 +71,8 @@ public class PlaceService {
                         RedisPlacePhoneService placePhoneService,
                         PlacePhoneMapper placePhoneMapper,
                         RedisPlaceSocialService redisPlaceSocialService,
-                        SocialNetworkMapper socialNetworkMapper) {
+                        SocialNetworkMapper socialNetworkMapper,
+                        PlaceMapper placeMapper) {
         this.placeRepository = placeRepository;
         this.placePhoneRepository = placePhoneRepository;
         this.socialNetworkRepository = socialNetworkRepository;
@@ -84,6 +89,7 @@ public class PlaceService {
         this.placePhoneMapper = placePhoneMapper;
         this.redisPlaceSocialService = redisPlaceSocialService;
         this.socialNetworkMapper = socialNetworkMapper;
+        this.placeMapper = placeMapper;
     }
 
     public List<Place> findAll(){
@@ -107,8 +113,10 @@ public class PlaceService {
         int pageNumber = page == null ? 1 : Integer.parseInt(page);
         int itemsPerPage = items == null ? 10 : Integer.parseInt(items);
 
-        List<Place> places = sortBy.isBlank() ? placeRepository.findAll() :
+
+        List<Place> places = sortBy.isBlank() ? placeRepository.findAll( Sort.by(Sort.Direction.DESC, "updatedAt")) :
                 sortBy.equals("title") ? placeSortedTitle() : placeSortedAddress();
+
 
         return this.paginationService.createPage(places, pageNumber, itemsPerPage);
     }
@@ -392,6 +400,10 @@ public class PlaceService {
 
     public String pruningPath(String path){
         return path.substring(path.lastIndexOf("/") + 1);
+    }
+
+    public PlaceDTO convertToDTO(Place place){
+        return this.placeMapper.toDto(place);
     }
 
     private PlaceTranslation convertDtoToEntity(TranslationDTO translation) {
