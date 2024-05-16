@@ -101,7 +101,7 @@
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label for="prev">Превью</label>
-                                            <input class="form-control" type="file" id="prev" name="prev" multiple accept="image/jpeg, image/jpg, image/png">
+                                            <input class="form-control" type="file" id="prev" name="prev" accept="image/jpeg, image/jpg, image/png">
                                             <div style="color: red; margin-bottom: 20px" id="prev-error"></div>
                                             <img style="width: 100px; height: 100px" th:if="${place.getThumbs() != null}"
                                                  th:src="${'/images/place/thumb' + place.getThumbs().getPath().substring(place.getThumbs().getPath().lastIndexOf('/'))}"
@@ -144,9 +144,12 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="mob_phone">Мобильный телефон</label>
-                            <input th:each="number : ${mobNumbers}" th:value="${number}" class="form-control mob_phone_place" id="mob_phone" name="mob_phone" type="text" placeholder="Введите моб телефон"> <br>
+                            <div th:each="number : ${mobNumbers}" class="input-group">
+                                <input  th:value="${number}" class="form-control mob_phone_place" id="mob_phone" name="mob_phone" type="text" placeholder="Введите моб телефон">
+                                <span class="input-group-text edit-mob">Удалить</span>
+                            </div>
                             <div id="notPhone"></div>
-                            <a href="#" class="btn btn-primary ml-3" id="add-input" onclick="addInputMobPhone()">Добавить поле</a>
+                            <a class="btn btn-primary ml-3" id="add-input" onclick="addInputMobPhone()">Добавить поле</a>
                             <div style="color: red;" id="mob-error"></div>
                         </div>
                     </div>

@@ -118,7 +118,12 @@ function addInputMobPhone() {
     const div = document.createElement("div");
     const span = document.createElement("span");
     const newInput = document.createElement("input");
-      if(mobPhoneInput == null)
+
+    if(mobPhoneInput.parentElement.classList.contains("input-group"))
+        mobPhoneInput = mobPhoneInput.parentElement;
+
+
+    if(mobPhoneInput == null)
         mobPhoneInput = document.getElementById("notPhone");
 
     newInput.classList.add("form-control");
@@ -128,13 +133,34 @@ function addInputMobPhone() {
     newInput.required = true;
 
     span.classList.add("input-group-text");
-    div.classList.add("input-group");
+    span.style.background = "red";
+    span.style.color = "white";
+    span.style.height = "40px";
+    span.style.cursor = "pointer";
+    span.textContent = "Удалить";
+    span.addEventListener("click", function (){
+        const parentElement = span.parentElement;
+       parentElement.remove();
+    });
 
+    div.classList.add("input-group");
 
     div.appendChild(newInput);
     div.appendChild(span);
     mobPhoneInput.parentNode.insertBefore(div, mobPhoneInput.nextSibling);
 }
+
+const inputMob = document.querySelectorAll(".edit-mob");
+console.log(inputMob)
+if(inputMob) {
+    inputMob.forEach(input => {
+        input.addEventListener("click", function (){
+            const parent = this.parentElement;
+            parent.remove();
+        });
+    });
+}
+
 
 //////////////////////// CRUD ROUTE //////////////////////////////
 

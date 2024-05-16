@@ -55,3 +55,10 @@ tbody tr td {
 #datatable th td {
     width: 180px;
 }
+
+.edit-mob{
+    background: red;
+    color: white;
+    height: 40px;
+    cursor: pointer;
+}
