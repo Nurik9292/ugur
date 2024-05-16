@@ -46,6 +46,7 @@
                                             <option th:value="${category.getId()}"
                                                     th:each="translation : ${category.getTranslations()}"
                                                     th:if="${translation.getLocale() == 'ru'}"
+                                                        th:selected="${categoryId == category.getId()}"
                                                     th:text="${translation.getTitle()}">
                                             </option>
                                         </th:block>
@@ -145,7 +146,7 @@
                         <div class="dataTable-info"
                              th:text="'Showing 1 to ' + ${places.getSize()} + ' of ' + ${places.getTotalElements()} + ' entries'">
                         </div>
-                        <th:block th:insert="~{pagination/pagination :: paginate(${places}, ${totalPage}, 'places')}"></th:block>
+                        <th:block th:insert="~{pagination/pagination :: paginate(${places}, ${totalPage}, ${categoryId}, 'places')}"></th:block>
                     </div>
                 </div>
             </div>

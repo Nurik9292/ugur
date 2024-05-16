@@ -36,6 +36,7 @@ public class PlaceController {
 
 
     private static String sortByStatic = "";
+    private static String categoryId = "";
 
     @Autowired
     public PlaceController(PlaceService placeService,
@@ -71,6 +72,7 @@ public class PlaceController {
         model.addAttribute("page", "place-main-index");
         model.addAttribute("places", places);
         model.addAttribute("totalPage", totalPage);
+        model.addAttribute("categoryId", categoryId == null ? 0 : Long.parseLong(categoryId));
         model.addAttribute("categories", placeCategoryService.findAll());
 
 
