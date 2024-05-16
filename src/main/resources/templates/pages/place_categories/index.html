@@ -109,7 +109,7 @@
                         <div class="dataTable-info"
                              th:text="'Showing 1 to ' + ${placeCategories.getSize()} + ' of ' + ${placeCategories.getTotalElements()} + ' entries'">
                         </div>
-                        <th:block th:insert="~{pagination/pagination :: paginate(${placeCategories}, ${totalPage}, 'place-categories')}"></th:block>
+                        <th:block th:insert="~{pagination/pagination :: paginate(${placeCategories}, ${totalPage}, null, 'place-categories')}"></th:block>
                     </div>
                 </div>
             </div>

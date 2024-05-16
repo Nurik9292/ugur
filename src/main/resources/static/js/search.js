@@ -69,32 +69,6 @@ if (searchPlace && table) {
 
 function createTableRow(data) {
 
-    console.log(data)
-
-
-    const tr =  document.createElement("tr");
-    const tdTitle = document.createElement("td");
-    const divTitle =document.createElement("div");
-    const pTitle = document.createElement("p");
-    const tdAddress = document.createElement("td");
-    const divAddress =document.createElement("div");
-    const pAddress = document.createElement("p");
-    const tdImage = document.createElement("td");
-    const divImage = document.createElement("div");
-    const tdThumb = document.createElement("td");
-    const imgThumb = document.createElement("img");
-    const tdPhone = document.createElement("td");
-    const tdWebsite = document.createElement("td");
-    const tdSocial = document.createElement("td");
-    const tdEmail = document.createElement("td");
-
-    const tdButton = document.createElement("td");
-    const aEdit = document.createElement("a");
-    const formDelete = document.createElement("form");
-    const buttonDelete = document.createElement("button");
-    const inputCsrfDelete = document.createElement("input");
-    const inputDeleteMethod = document.createElement("input");
-
     const svgEdit = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svgEdit.classList.add("icon");
     svgEdit.classList.add("icon-xs");
@@ -130,6 +104,55 @@ function createTableRow(data) {
     svgDelete.appendChild(svgPathDelete);
 
 
+    const tr = document.createElement("tr");
+
+    const tdTitle = document.createElement("td");
+    const divTitle = document.createElement("div");
+    const pTitle = document.createElement("p");
+
+    const tdAddress = document.createElement("td");
+    const divAddress = document.createElement("div");
+    const pAddress = document.createElement("p");
+
+    const tdImage = document.createElement("td");
+    const divImage = document.createElement("div");
+    const tdThumb = document.createElement("td");
+
+    const imgThumb = document.createElement("img");
+
+    const tdPhone = document.createElement("td");
+    const tdWebsite = document.createElement("td");
+    const tdSocial = document.createElement("td");
+    const tdEmail = document.createElement("td");
+
+    const tdButton = document.createElement("td");
+    const aEdit = document.createElement("a");
+
+    const formDelete = document.createElement("form");
+    const buttonDelete = document.createElement("button");
+    const inputCsrfDelete = document.createElement("input");
+    const inputDeleteMethod = document.createElement("input");
+
+    formDelete.action = `/places/${data.id}`;
+    formDelete.method = "post";
+    inputCsrfDelete.name = csrfName;
+    inputCsrfDelete.value = csrfVale;
+    inputCsrfDelete.type = "hidden";
+    formDelete.appendChild(inputCsrfDelete);
+    inputDeleteMethod.name = "_method";
+    inputDeleteMethod.value = "DELETE";
+    inputDeleteMethod.type = "hidden";
+    formDelete.appendChild(inputDeleteMethod);
+    buttonDelete.classList.add("btn");
+    buttonDelete.classList.add("btn-sm");
+    buttonDelete.classList.add("btn-outline-danger");
+    buttonDelete.classList.add("svg");
+    buttonDelete.style.marginLeft = "2px";
+    buttonDelete.appendChild(svgDelete);
+    buttonDelete.textContent = "Удалить";
+    formDelete.appendChild(buttonDelete);
+
+
     pTitle.textContent = data.titles.ru;
     divTitle.appendChild(pTitle);
     tdTitle.appendChild(divTitle);
@@ -144,11 +167,11 @@ function createTableRow(data) {
         const imagePth = im.path.split('/').pop();
         const img = document.createElement("img");
         img.classList.add("image-item");
-        img.src =  `images/places/${imagePth}`;
+        img.src = `images/places/${imagePth}`;
         divImage.appendChild(img);
     });
     tdImage.appendChild(divImage);
-    if(data.thumb != null){
+    if (data.thumb != null) {
         const thumbPath = data.thumb.path.split('/').pop();
         imgThumb.src = `images/place/thumb/${thumbPath}`;
     }
@@ -177,6 +200,7 @@ function createTableRow(data) {
     aEdit.classList.add("btn-sm");
     aEdit.classList.add("btn-outline-success");
     aEdit.classList.add("svg");
+    aEdit.style.marginRight = "20px";
     aEdit.href = `/places/${data.id}/edit`;
     aEdit.appendChild(document.createElement("img"));
     aEdit.textContent = "Изменить";
@@ -184,28 +208,10 @@ function createTableRow(data) {
     tdButton.classList.add("d-inline-flex");
     tdButton.classList.add("align-content-between");
 
-    formDelete.action = `/places/${data.id}`;
-    formDelete.method = "post";
-    inputCsrfDelete.name = csrfName;
-    inputCsrfDelete.value = csrfVale;
-    inputCsrfDelete.type = "hidden";
-    formDelete.appendChild(inputCsrfDelete);
-    inputDeleteMethod.name = "_method";
-    inputDeleteMethod.value = "DELETE";
-    inputDeleteMethod.type = "hidden";
-    formDelete.appendChild(inputDeleteMethod);
-    buttonDelete.classList.add("btn");
-    buttonDelete.classList.add("btn-sm");
-    buttonDelete.classList.add("btn-outline-danger");
-    buttonDelete.classList.add("svg");
-    buttonDelete.style.marginLeft = "2px";
-    buttonDelete.appendChild(svgDelete);
-    buttonDelete.textContent = "Удалить";
-    formDelete.appendChild(buttonDelete);
+
 
     tdButton.appendChild(aEdit);
     tdButton.appendChild(formDelete);
-
 
     tr.appendChild(tdTitle);
     tr.appendChild(tdAddress);
@@ -225,7 +231,7 @@ function createTableRow(data) {
 function debounce(func, delay) {
     let timer;
 
-    return function() {
+    return function () {
         if (timer) {
             clearTimeout(timer);
         }

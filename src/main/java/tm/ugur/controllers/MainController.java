@@ -7,30 +7,37 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import tm.ugur.dto.BusDTO;
 import tm.ugur.security.PersonDetails;
 import tm.ugur.services.admin.BusSservice;
 import tm.ugur.services.admin.ClientService;
+import tm.ugur.services.redis.RedisBusService;
 
+import java.util.List;
 import java.util.Objects;
 
 @Controller
 public class MainController {
 
     private final ClientService clientService;
-    private final BusSservice busSservice;
+    private final RedisBusService redisBusService;
+
 
     @Autowired
-    public MainController(ClientService clientService, BusSservice busSservice) {
+    public MainController(ClientService clientService, RedisBusService redisBusService) {
         this.clientService = clientService;
-        this.busSservice = busSservice;
+        this.redisBusService = redisBusService;
     }
 
     @GetMapping("/")
     public String mainPage(Model model){
+        List<BusDTO> buses = redisBusService.getAll();
+
         model.addAttribute("title", "Главная");
         model.addAttribute("page", "main");
         model.addAttribute("clientCount", this.clientService.getAll().size());
-        model.addAttribute("busCount", this.busSservice.findAll().size());
+        model.addAttribute("busCount", buses.size());
+        model.addAttribute("busOnline", buses.stream().filter(BusDTO::isStatus).toList().size());
         return "layouts/base";
     }
 
