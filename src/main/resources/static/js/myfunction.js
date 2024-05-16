@@ -110,16 +110,15 @@ function data() {
     return {page: pageNumber, items: items};
 }
 
-/////////////////////// SORT ///////////////
+/////////////////////// END  SORT ///////////////
 
 
 function addInputMobPhone() {
-    const addInputButton = document.getElementById("add-input");
     let mobPhoneInput = document.getElementById("mob_phone");
+    const div = document.createElement("div");
+    const span = document.createElement("span");
     const newInput = document.createElement("input");
-    const newBr = document.createElement("br");
-
-    if(mobPhoneInput == null)
+      if(mobPhoneInput == null)
         mobPhoneInput = document.getElementById("notPhone");
 
     newInput.classList.add("form-control");
@@ -128,7 +127,13 @@ function addInputMobPhone() {
     newInput.placeholder = "Введите другую моб телефон";
     newInput.required = true;
 
-    mobPhoneInput.parentNode.insertBefore(newInput, mobPhoneInput.nextSibling);
+    span.classList.add("input-group-text");
+    div.classList.add("input-group");
+
+
+    div.appendChild(newInput);
+    div.appendChild(span);
+    mobPhoneInput.parentNode.insertBefore(div, mobPhoneInput.nextSibling);
 }
 
 //////////////////////// CRUD ROUTE //////////////////////////////
@@ -207,6 +212,7 @@ async function sendForm(method, url) {
     const lat = document.getElementById("lat").value;
     const lng = document.getElementById("lng").value;
     const images = myDropzone.getAcceptedFiles();
+    const prev = document.getElementById("prev").files[0];
 
     if (!lat || !lng) {
         showNotification("Заполните координаты", 'red');
@@ -261,13 +267,12 @@ async function sendForm(method, url) {
     const email = document.getElementById("email").value;
     const website = document.getElementById("website").value;
 
-    console.log(document.getElementById("placeCategory").value)
-
     addToFormData(formData, "_csrf", document.getElementById("csrf").value);
     addToFormData(formData, "lat", lat);
     addToFormData(formData, "lng", lng);
     addToFormData(formData, "placeCategory", document.getElementById("placeCategory").value);
     addToFormData(formData, "placeSubCategory", document.getElementById("placeSubCategory").value);
+
     if(removedImageIds.length > 0)
         addToFormData(formData, "removeImageIds", removedImageIds);
 
@@ -276,7 +281,8 @@ async function sendForm(method, url) {
     if(website)
         addToFormData(formData, "website", website);
     addToFormData(formData, "files", images);
-    addToFormData(formData, "prev", prev);
+    if(prev)
+        addToFormData(formData, "prev", prev);
 
 
     if(isStoreTm && isStoreEn && isStoreRu && isMob && isCity) {

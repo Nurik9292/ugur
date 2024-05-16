@@ -161,6 +161,8 @@ public class PlaceController {
                          @RequestParam(value = "removeImageIds", required = false) long[] removedImageIds,
                          @ModelAttribute("place") @Valid Place place, BindingResult result){
 
+        System.out.println(prev);
+
         if(result.hasErrors()){
             Map<String, String> errors = new HashMap<>();
             result.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
