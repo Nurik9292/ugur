@@ -222,7 +222,7 @@ public class PlaceService {
     public void update(Long id, Place place,
                        MultipartFile[] images,
                        MultipartFile prev,
-                       Long[] removeImageIds){
+                       long[] removeImageIds){
 
 
         Place existingPlace = findOne(id);
@@ -378,7 +378,7 @@ public class PlaceService {
         return translations;
     }
 
-    private void deleteImageIds(Place existingPlace, Long[] removeImageIds){
+    private void deleteImageIds(Place existingPlace, long[] removeImageIds){
         List<PlaceImage> placeImages = existingPlace.getImages();
 
         for(int i = 0; i < placeImages.size(); i++){

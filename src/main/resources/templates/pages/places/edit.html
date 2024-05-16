@@ -102,8 +102,10 @@
                                         <div class="col-md-6 mb-3">
                                             <label for="prev">Превью</label>
                                             <input class="form-control" type="file" id="prev" name="prev" multiple accept="image/jpeg, image/jpg, image/png">
-                                            <div style="color: red;" id="prev-error"></div>
-
+                                            <div style="color: red; margin-bottom: 20px" id="prev-error"></div>
+                                            <img style="width: 100px; height: 100px" th:if="${place.getThumbs() != null}"
+                                                 th:src="${'/images/place/thumb' + place.getThumbs().getPath().substring(place.getThumbs().getPath().lastIndexOf('/'))}"
+                                                 alt="Нет фото">
                                         </div>
                                     </div>
                                 </div>

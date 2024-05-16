@@ -158,7 +158,7 @@ public class PlaceController {
     public ResponseEntity<?> update(@PathVariable("id") long id,
                          @RequestParam(value = "files", required = false) MultipartFile[] files,
                          @RequestParam(value = "prev", required = false) MultipartFile prev,
-                         @RequestParam(value = "removeImageIds", required = false) Long[] removedImageIds,
+                         @RequestParam(value = "removeImageIds", required = false) long[] removedImageIds,
                          @ModelAttribute("place") @Valid Place place, BindingResult result){
 
         if(result.hasErrors()){
@@ -167,6 +167,7 @@ public class PlaceController {
             return ResponseEntity.badRequest().body(errors);
         }
 
+        System.out.println(Arrays.toString(removedImageIds));
 
         this.placeService.update(id, place, files, prev, removedImageIds);
 

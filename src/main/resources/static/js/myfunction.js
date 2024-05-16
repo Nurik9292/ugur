@@ -268,6 +268,9 @@ async function sendForm(method, url) {
     addToFormData(formData, "lng", lng);
     addToFormData(formData, "placeCategory", document.getElementById("placeCategory").value);
     addToFormData(formData, "placeSubCategory", document.getElementById("placeSubCategory").value);
+    if(removedImageIds.length > 0)
+        addToFormData(formData, "removeImageIds", removedImageIds);
+
     if(email)
         addToFormData(formData, "email", email);
     if(website)
