@@ -101,6 +101,24 @@ function onClickSortPlaceCategory(sortBy) {
     window.location.href = fullUrl;
 }
 
+function filterCategory() {
+    const url = host + '/places';
+    const element = data();
+
+    const params = {
+        page: element.page,
+        items: element.items,
+        categoryId: document.getElementById("category").value
+    };
+
+    const queryString = Object.entries(params)
+        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+        .join('&');
+
+    const fullUrl = `${url}?${queryString}`;
+    window.location.href = fullUrl;
+}
+
 function data() {
     const selector = document.getElementById("selector");
     const items = selector.options[selector.selectedIndex].value;
@@ -153,7 +171,7 @@ function addInputMobPhone() {
 }
 
 const inputMob = document.querySelectorAll(".edit-mob");
-console.log(inputMob)
+
 if(inputMob) {
     inputMob.forEach(input => {
         input.addEventListener("click", function (){

@@ -21,12 +21,14 @@ public class PlaceImageService {
         this.storageService = storageService;
     }
 
+    @Transactional
     public PlaceImage store(PlaceImage placeImage){
         placeImage.setCreatedAt(new Date());
         placeImage.setUpdatedAt(new Date());
         return imageRepository.save(placeImage);
     }
 
+    @Transactional
     public void delete(PlaceImage placeImage){
         storageService.delete(placeImage.getPath());
         imageRepository.delete(placeImage);

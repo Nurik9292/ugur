@@ -49,13 +49,14 @@ public class PlaceController {
     @GetMapping
     public String index(@RequestParam(name = "page", required = false) String page,
                         @RequestParam(name = "items", required = false) String items,
-                        @RequestParam(value = "sortBy", required = false) String sortBy, Model model){
+                        @RequestParam(value = "sortBy", required = false) String sortBy,
+                        @RequestParam(name = "categoryId", required = false) String categoryId, Model model){
 
         if(sortBy != null){
             sortByStatic = sortBy;
         }
 
-        Page<Place> places = this.placeService.getPlacePages(page, items, sortByStatic);
+        Page<Place> places = this.placeService.getPlacePages(page, items, categoryId, sortByStatic);
         int totalPages = places.getTotalPages();
 
         Integer[] totalPage = this.paginationService.getTotalPage(totalPages, places.getNumber());
@@ -70,6 +71,7 @@ public class PlaceController {
         model.addAttribute("page", "place-main-index");
         model.addAttribute("places", places);
         model.addAttribute("totalPage", totalPage);
+        model.addAttribute("categories", placeCategoryService.findAll());
 
 
         return "layouts/places/index";

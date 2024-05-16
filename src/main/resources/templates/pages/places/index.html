@@ -31,7 +31,7 @@
                         <div class="dataTable-dropdown">
                             <label>
                                 <form id="myForm">
-                                <select id="selector"  class="dataTable-selector" onchange="onChangePageItems('places')">
+                                <select id="selector"  class="dataTable-selector" style="margin-right: 20px" onchange="onChangePageItems('places')">
                                     <option value="5" th:selected=" 5 == ${places.getSize()}">5</option>
                                     <option value="10" th:selected="10 == ${places.getSize()}">10</option>
                                     <option value="15" th:selected="15 == ${places.getSize()}">15</option>
@@ -40,6 +40,16 @@
                                     <option value="50" th:selected="50 == ${places.getSize()}">50</option>
                                     <option value="100" th:selected="100 == ${places.getSize()}">100</option>
                                 </select>
+                                    <select id="category"  class="dataTable-selector" onchange="filterCategory()">
+                                        <option>Выберите категорию</option>
+                                        <th:block th:each="category : ${categories}">
+                                            <option th:value="${category.getId()}"
+                                                    th:each="translation : ${category.getTranslations()}"
+                                                    th:if="${translation.getLocale() == 'ru'}"
+                                                    th:text="${translation.getTitle()}">
+                                            </option>
+                                        </th:block>
+                                    </select>
                                 </form>
                             </label>
                         </div>

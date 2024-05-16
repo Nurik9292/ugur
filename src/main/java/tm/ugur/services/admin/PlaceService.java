@@ -109,7 +109,7 @@ public class PlaceService {
     }
 
 
-    public Page<Place> getPlacePages(String page, String items, String sortBy){
+    public Page<Place> getPlacePages(String page, String items, String categoryId, String sortBy){
         int pageNumber = page == null ? 1 : Integer.parseInt(page);
         int itemsPerPage = items == null ? 10 : Integer.parseInt(items);
 
@@ -117,6 +117,10 @@ public class PlaceService {
         List<Place> places = sortBy.isBlank() ? placeRepository.findAll( Sort.by(Sort.Direction.DESC, "updatedAt")) :
                 sortBy.equals("title") ? placeSortedTitle() : placeSortedAddress();
 
+        System.out.println(categoryId);
+        if(Objects.nonNull(categoryId)) {
+          places = places.stream().filter(place -> place.getPlaceCategory().getId() == Long.parseLong(categoryId)).toList();
+        }
 
         return this.paginationService.createPage(places, pageNumber, itemsPerPage);
     }
