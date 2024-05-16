@@ -119,7 +119,9 @@ function addInputMobPhone() {
     const span = document.createElement("span");
     const newInput = document.createElement("input");
 
-    if(mobPhoneInput.parentElement.classList.contains("input-group"))
+
+
+    if(mobPhoneInput != null &&  mobPhoneInput.parentElement.classList.contains("input-group"))
         mobPhoneInput = mobPhoneInput.parentElement;
 
 
