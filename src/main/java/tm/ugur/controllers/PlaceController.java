@@ -15,6 +15,8 @@ import tm.ugur.models.*;
 import tm.ugur.services.admin.PlaceCategoryService;
 import tm.ugur.services.admin.PlaceService;
 import tm.ugur.util.pagination.PaginationUtil;
+import tm.ugur.util.sort.Sort;
+import tm.ugur.util.sort.place.SortPlace;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -32,56 +34,50 @@ public class PlaceController {
     private final PlaceService placeService;
     private final PlaceCategoryService placeCategoryService;
     private final PaginationUtil paginationUtil;
+    private final SortPlace sortPlace;
 
-
-
-    private static String sortByStatic = "";
-    private static String categoryId = "";
 
     @Autowired
     public PlaceController(PlaceService placeService,
                            PlaceCategoryService placeCategoryService,
-                           PaginationUtil paginationUtil) {
+                           PaginationUtil paginationUtil,
+                           SortPlace sortPlace) {
         this.placeService = placeService;
         this.placeCategoryService = placeCategoryService;
         this.paginationUtil = paginationUtil;
+        this.sortPlace = sortPlace;
     }
 
     @GetMapping
     public String index(@RequestParam(name = "page", required = false) String page,
                         @RequestParam(name = "items", required = false) String items,
                         @RequestParam(value = "sortBy", required = false) String sortBy,
-                        @RequestParam(name = "categoryId", required = false) String categoryId, Model model){
+                        @RequestParam(name = "category", required = false) String category,
+                        @RequestParam(name = "search", required = false) String search,
+                        Model model){
 
-        if(sortBy != null){
-            sortByStatic = sortBy;
-        }
+        int pageNumber = page == null ? 1 : Integer.parseInt(page);
+        int itemsPerPage = items == null ? 10 : Integer.parseInt(items);
+        long categoryId = category != null && category.matches("^(?!\\s*$)\\d+$")  ? Long.parseLong(category) : 0;
 
-        Page<Place> places = this.placeService.getPlacePages(page, items, categoryId, sortByStatic);
-        int totalPages = places.getTotalPages();
-
-        Integer[] totalPage = this.paginationUtil.getTotalPage(totalPages, places.getNumber());
-
-        if(places.getTotalPages() > 0){
-            List<Integer> pageNumbers = IntStream.rangeClosed(1, places.getTotalPages()).boxed().toList();
-            model.addAttribute("pageNumbers", pageNumbers);
-        }
-
+        List<Place> placeList =  search == null ? placeService.findAll(categoryId) : placeService.search(search, "ru");
+        sortPlace.setData(placeList, sortBy);
+        sortPlace.execute();
+        Page<Place> places = paginationUtil.createPage(placeList, pageNumber, itemsPerPage);
 
         model.addAttribute("title", "Заведение");
         model.addAttribute("page", "place-main-index");
         model.addAttribute("places", places);
-        model.addAttribute("totalPage", totalPage);
-        model.addAttribute("categoryId", categoryId == null ? 0 : Long.parseLong(categoryId));
+        model.addAttribute("sort", Objects.nonNull(sortBy) ? sortBy : "");
+        model.addAttribute("totalPage", this.paginationUtil.getTotalPage(places.getTotalPages(), places.getNumber()));
+        model.addAttribute("category", categoryId);
         model.addAttribute("categories", placeCategoryService.findAll());
-
 
         return "layouts/places/index";
     }
 
     @GetMapping("/create")
     public String create(@ModelAttribute("place") Place place, Model model){
-        sortByStatic = "";
 
         List<PlaceCategory> placeCategories = placeCategoryService.findAll();
 
@@ -113,7 +109,6 @@ public class PlaceController {
 
     @GetMapping("/{id}/edit")
     public String edit(@PathVariable("id") long id, Model model){
-        sortByStatic = "";
 
         Place place = placeService.findOne(id);
         List<SocialNetwork> socialNetworks = new ArrayList<>(place.getSocialNetworks());

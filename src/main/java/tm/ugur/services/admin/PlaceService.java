@@ -6,6 +6,7 @@ import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -92,59 +93,35 @@ public class PlaceService {
         this.placeMapper = placeMapper;
     }
 
-    public List<Place> findAll(){
-        return placeRepository.findAll();
+    public List<Place> search(String search, String locale) {
+        List<Place> places = placeRepository.findAll();
+
+        if (Objects.nonNull(search) && Objects.nonNull(locale)) {
+            places = places.stream()
+                    .filter(place -> place.getTranslations().stream()
+                            .anyMatch(translation -> translation.getLocale().equals(locale) &&
+                                    translation.getTitle().toLowerCase().contains(search.toLowerCase())))
+                    .collect(Collectors.toList());
+        }
+
+        return places;
     }
 
-    public Page<Place> findAll(int pageNumber, int itemsPerPage)
-    {
-        return paginationUtil.createPage(placeRepository.findAll(Sort.by(Sort.Direction.DESC, "updatedAt")), pageNumber, itemsPerPage);
+    public List<Place> findAll(long categoryId){
+        Sort sort = Sort.by(Sort.Direction.DESC, "updatedAt");
+        List<Place> places = placeRepository.findAll(sort);
+
+        return  categoryId == 0 ? places : places.stream()
+                .filter(place -> place.getPlaceCategory().getId() == categoryId)
+                .collect(Collectors.toList());
     }
+
 
     public Place findOne(long id){
         return placeRepository.findById(id).map(place -> {
             setLatLng(place);
             return place;
         }).orElseThrow(PlaceNotFoundException::new);
-    }
-
-
-    public Page<Place> getPlacePages(String page, String items, String categoryId, String sortBy){
-        int pageNumber = page == null ? 1 : Integer.parseInt(page);
-        int itemsPerPage = items == null ? 10 : Integer.parseInt(items);
-
-
-        List<Place> places = sortBy.isBlank() ? placeRepository.findAll(Sort.by(Sort.Direction.DESC, "updatedAt")) :
-                sortBy.equals("title") ? placeSortedTitle() : placeSortedAddress();
-
-        System.out.println(categoryId);
-        if(Objects.nonNull(categoryId)) {
-          places = places.stream().filter(place -> place.getPlaceCategory().getId() == Long.parseLong(categoryId)).toList();
-        }
-
-        return this.paginationUtil.createPage(places, pageNumber, itemsPerPage);
-    }
-
-    private List<Place> placeSortedTitle(){
-        return placeRepository.findAll().stream()
-                .sorted(Comparator.comparing(place -> {
-                    PlaceTranslation russianTranslation = place.getTranslations().stream()
-                            .filter(translation -> translation.getLocale().equals("ru"))
-                            .findFirst().orElse(null);
-
-                    return russianTranslation != null ? russianTranslation.getTitle() : "";
-                })).toList();
-    }
-
-    private List<Place> placeSortedAddress(){
-        return placeRepository.findAll().stream()
-                .sorted(Comparator.comparing(place -> {
-                    PlaceTranslation russianTranslation = place.getTranslations().stream()
-                            .filter(translation -> translation.getLocale().equals("ru"))
-                            .findFirst().orElse(null);
-
-                    return russianTranslation != null ? russianTranslation.getAddress() : "";
-                })).toList();
     }
 
     @Transactional

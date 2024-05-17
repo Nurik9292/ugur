@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.expression.Numbers;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -26,6 +27,13 @@ public class PaginationUtil {
         return new PageImpl<>(pageContent, PageRequest.of(pageNumber - 1, itemsPerPage), content.size());
     }
 
+    public static <T> List<T> getContent(Page<T> page) {
+        if (page == null || page.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return page.getContent();
+    }
 
 
     public Integer[] getTotalPage(int totalPages, int currentPage){
