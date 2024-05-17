@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import tm.ugur.models.*;
 import tm.ugur.services.admin.PlaceCategoryService;
 import tm.ugur.services.admin.PlaceService;
-import tm.ugur.util.pagination.PaginationService;
+import tm.ugur.util.pagination.PaginationUtil;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -31,7 +31,7 @@ public class PlaceController {
 
     private final PlaceService placeService;
     private final PlaceCategoryService placeCategoryService;
-    private final PaginationService paginationService;
+    private final PaginationUtil paginationUtil;
 
 
 
@@ -41,10 +41,10 @@ public class PlaceController {
     @Autowired
     public PlaceController(PlaceService placeService,
                            PlaceCategoryService placeCategoryService,
-                           PaginationService paginationService) {
+                           PaginationUtil paginationUtil) {
         this.placeService = placeService;
         this.placeCategoryService = placeCategoryService;
-        this.paginationService = paginationService;
+        this.paginationUtil = paginationUtil;
     }
 
     @GetMapping
@@ -60,7 +60,7 @@ public class PlaceController {
         Page<Place> places = this.placeService.getPlacePages(page, items, categoryId, sortByStatic);
         int totalPages = places.getTotalPages();
 
-        Integer[] totalPage = this.paginationService.getTotalPage(totalPages, places.getNumber());
+        Integer[] totalPage = this.paginationUtil.getTotalPage(totalPages, places.getNumber());
 
         if(places.getTotalPages() > 0){
             List<Integer> pageNumbers = IntStream.rangeClosed(1, places.getTotalPages()).boxed().toList();

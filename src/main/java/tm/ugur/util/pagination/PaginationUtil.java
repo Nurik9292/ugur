@@ -3,17 +3,14 @@ package tm.ugur.util.pagination;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import org.thymeleaf.expression.Numbers;
 
 import java.util.List;
 import java.util.Locale;
 
 @Component
-public class PaginationService {
+public class PaginationUtil {
 
 
 

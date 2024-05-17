@@ -27,7 +27,7 @@ import tm.ugur.util.mappers.PlaceMapper;
 import tm.ugur.util.mappers.PlacePhoneMapper;
 import tm.ugur.util.mappers.SocialNetworkMapper;
 import tm.ugur.util.mappers.TranslationPlaceMapper;
-import tm.ugur.util.pagination.PaginationService;
+import tm.ugur.util.pagination.PaginationUtil;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -40,7 +40,7 @@ public class PlaceService {
     private final PlaceRepository placeRepository;
     private final PlacePhoneRepository placePhoneRepository;
     private final SocialNetworkRepository socialNetworkRepository;
-    private final PaginationService paginationService;
+    private final PaginationUtil paginationUtil;
     private final GeometryFactory geometryFactory;
     private final FileSystemStorageService storageService;
     private final PlaceImageService placeImageService;
@@ -59,7 +59,7 @@ public class PlaceService {
     public PlaceService(PlaceRepository placeRepository,
                         PlacePhoneRepository placePhoneRepository,
                         SocialNetworkRepository socialNetworkRepository,
-                        PaginationService paginationService,
+                        PaginationUtil paginationUtil,
                         GeometryFactory geometryFactory,
                         FileSystemStorageService storageService,
                         PlaceImageService placeImageService,
@@ -76,7 +76,7 @@ public class PlaceService {
         this.placeRepository = placeRepository;
         this.placePhoneRepository = placePhoneRepository;
         this.socialNetworkRepository = socialNetworkRepository;
-        this.paginationService = paginationService;
+        this.paginationUtil = paginationUtil;
         this.geometryFactory = geometryFactory;
         this.storageService = storageService;
         this.placeImageService = placeImageService;
@@ -98,7 +98,7 @@ public class PlaceService {
 
     public Page<Place> findAll(int pageNumber, int itemsPerPage)
     {
-        return paginationService.createPage(placeRepository.findAll(), pageNumber, itemsPerPage);
+        return paginationUtil.createPage(placeRepository.findAll(Sort.by(Sort.Direction.DESC, "updatedAt")), pageNumber, itemsPerPage);
     }
 
     public Place findOne(long id){
@@ -114,7 +114,7 @@ public class PlaceService {
         int itemsPerPage = items == null ? 10 : Integer.parseInt(items);
 
 
-        List<Place> places = sortBy.isBlank() ? placeRepository.findAll( Sort.by(Sort.Direction.DESC, "updatedAt")) :
+        List<Place> places = sortBy.isBlank() ? placeRepository.findAll(Sort.by(Sort.Direction.DESC, "updatedAt")) :
                 sortBy.equals("title") ? placeSortedTitle() : placeSortedAddress();
 
         System.out.println(categoryId);
@@ -122,7 +122,7 @@ public class PlaceService {
           places = places.stream().filter(place -> place.getPlaceCategory().getId() == Long.parseLong(categoryId)).toList();
         }
 
-        return this.paginationService.createPage(places, pageNumber, itemsPerPage);
+        return this.paginationUtil.createPage(places, pageNumber, itemsPerPage);
     }
 
     private List<Place> placeSortedTitle(){

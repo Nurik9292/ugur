@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tm.ugur.dto.RouteDTO;
 import tm.ugur.models.Route;
 import tm.ugur.repo.RouteRepository;
-import tm.ugur.util.pagination.PaginationService;
+import tm.ugur.util.pagination.PaginationUtil;
 import tm.ugur.util.mappers.RouteMapper;
 
 import java.util.*;
@@ -25,7 +25,7 @@ public class RouteService {
     private final RouteRepository routeRepository;
     private final EndRouteStopService endRouteStopService;
     private final StartRouteStopService startRouteStopService;
-    private final PaginationService paginationService;
+    private final PaginationUtil paginationUtil;
     private final RouteMapper routeMapper;
     private final GeometryFactory factory;
 
@@ -33,13 +33,13 @@ public class RouteService {
     public RouteService(RouteRepository routeRepository,
                         EndRouteStopService endRouteStopService,
                         StartRouteStopService startRouteStopService,
-                        PaginationService paginationService,
+                        PaginationUtil paginationUtil,
                         RouteMapper routeMapper,
                         GeometryFactory factory) {
         this.routeRepository = routeRepository;
         this.endRouteStopService = endRouteStopService;
         this.startRouteStopService = startRouteStopService;
-        this.paginationService = paginationService;
+        this.paginationUtil = paginationUtil;
         this.routeMapper = routeMapper;
         this.factory = factory;
     }
@@ -56,7 +56,7 @@ public class RouteService {
                 ? routeRepository.findAll(Sort.by(sortBy)) : routeRepository.findAll();;
 
 
-        return this.paginationService.createPage(routes, pageNumber, itemsPerPage);
+        return this.paginationUtil.createPage(routes, pageNumber, itemsPerPage);
     }
 
     public List<Route> findAll(){
@@ -65,12 +65,12 @@ public class RouteService {
 
     public Page<Route> findAll(int pageNumber, int itemsPerPage, String sortBy)
     {
-        return this.paginationService.createPage(routeRepository.findAll(Sort.by(sortBy)), pageNumber, itemsPerPage);
+        return this.paginationUtil.createPage(routeRepository.findAll(Sort.by(sortBy)), pageNumber, itemsPerPage);
     }
 
     public Page<Route> findAll(int pageNumber, int itemsPerPage)
     {
-        return paginationService.createPage(routeRepository.findAll(), pageNumber, itemsPerPage);
+        return paginationUtil.createPage(routeRepository.findAll(), pageNumber, itemsPerPage);
     }
 
     @Transactional

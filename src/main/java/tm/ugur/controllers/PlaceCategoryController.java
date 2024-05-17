@@ -14,7 +14,7 @@ import tm.ugur.models.PlaceCategoryTranslation;
 import tm.ugur.models.PlaceSubCategory;
 import tm.ugur.services.admin.PlaceCategoryService;
 import tm.ugur.util.mappers.PlaceSubCategoriesMapper;
-import tm.ugur.util.pagination.PaginationService;
+import tm.ugur.util.pagination.PaginationUtil;
 
 import java.util.*;
 import java.util.stream.IntStream;
@@ -24,15 +24,15 @@ import java.util.stream.IntStream;
 public class PlaceCategoryController {
 
     private final PlaceCategoryService placeCategoryService;
-    private final PaginationService paginationService;
+    private final PaginationUtil paginationUtil;
     private final PlaceSubCategoriesMapper placeSubCategoriesMapper;
     private static String sortByStatic = "";
 
     public PlaceCategoryController(PlaceCategoryService placeCategoryService,
-                                   PaginationService paginationService,
+                                   PaginationUtil paginationUtil,
                                    PlaceSubCategoriesMapper placeSubCategoriesMapper) {
         this.placeCategoryService = placeCategoryService;
-        this.paginationService = paginationService;
+        this.paginationUtil = paginationUtil;
         this.placeSubCategoriesMapper = placeSubCategoriesMapper;
     }
 
@@ -48,7 +48,7 @@ public class PlaceCategoryController {
         Page<PlaceCategory> placeCategories = this.placeCategoryService.getPlaceCategoryPages(page, items, sortByStatic);
         int totalPages = placeCategories.getTotalPages();
 
-        Integer[] totalPage = this.paginationService.getTotalPage(totalPages, placeCategories.getNumber());
+        Integer[] totalPage = this.paginationUtil.getTotalPage(totalPages, placeCategories.getNumber());
 
         if(placeCategories.getTotalPages() > 0){
             List<Integer> pageNumbers = IntStream.rangeClosed(1, placeCategories.getTotalPages()).boxed().toList();

@@ -1,14 +1,12 @@
 package tm.ugur.services.admin;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tm.ugur.models.PlaceCategoryTranslation;
 import tm.ugur.models.PlaceSubCategory;
 import tm.ugur.models.PlaceSubCategoryTranslation;
 import tm.ugur.repo.PlaceSubCategoryRepository;
-import tm.ugur.util.pagination.PaginationService;
+import tm.ugur.util.pagination.PaginationUtil;
 
 import java.util.*;
 
@@ -17,14 +15,14 @@ import java.util.*;
 public class PlaceSubCategoryService {
 
     private final PlaceSubCategoryRepository placeSubCategoryRepository;
-    private final PaginationService paginationService;
+    private final PaginationUtil paginationUtil;
     private final PlaceSubCategoryTranslationService translationService;
 
     public PlaceSubCategoryService(PlaceSubCategoryRepository placeSubCategoryRepository,
-                                   PaginationService paginationService,
+                                   PaginationUtil paginationUtil,
                                    PlaceSubCategoryTranslationService translationService) {
         this.placeSubCategoryRepository = placeSubCategoryRepository;
-        this.paginationService = paginationService;
+        this.paginationUtil = paginationUtil;
         this.translationService = translationService;
     }
 
@@ -34,7 +32,7 @@ public class PlaceSubCategoryService {
 
     public Page<PlaceSubCategory> findAll(int pageNumber, int itemsPerPage)
     {
-        return paginationService.createPage(placeSubCategoryRepository.findAll(), pageNumber, itemsPerPage);
+        return paginationUtil.createPage(placeSubCategoryRepository.findAll(), pageNumber, itemsPerPage);
     }
 
 
@@ -46,7 +44,7 @@ public class PlaceSubCategoryService {
         List<PlaceSubCategory> placeCategories = !sortBy.isBlank()
                 ? subCategorySorted(sortBy) : placeSubCategoryRepository.findAll();;
 
-        return this.paginationService.createPage(placeCategories, pageNumber, itemsPerPage);
+        return this.paginationUtil.createPage(placeCategories, pageNumber, itemsPerPage);
     }
 
     private List<PlaceSubCategory> subCategorySorted(String sortBy){

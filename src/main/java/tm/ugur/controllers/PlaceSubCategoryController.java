@@ -7,17 +7,15 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import tm.ugur.models.PlaceCategory;
-import tm.ugur.models.PlaceCategoryTranslation;
 import tm.ugur.models.PlaceSubCategory;
 import tm.ugur.models.PlaceSubCategoryTranslation;
 import tm.ugur.services.admin.PlaceCategoryService;
 import tm.ugur.services.admin.PlaceSubCategoryService;
-import tm.ugur.util.pagination.PaginationService;
+import tm.ugur.util.pagination.PaginationUtil;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Controller
@@ -26,15 +24,15 @@ public class PlaceSubCategoryController {
 
     private final PlaceSubCategoryService placeSubCategoryService;
     private final PlaceCategoryService placeCategoryService;
-    private final PaginationService paginationService;
+    private final PaginationUtil paginationUtil;
     private static String sortByStatic = "";
 
     public PlaceSubCategoryController(PlaceSubCategoryService placeSubCategoryService,
                                       PlaceCategoryService placeCategoryService,
-                                      PaginationService paginationService) {
+                                      PaginationUtil paginationUtil) {
         this.placeSubCategoryService = placeSubCategoryService;
         this.placeCategoryService = placeCategoryService;
-        this.paginationService = paginationService;
+        this.paginationUtil = paginationUtil;
     }
 
 
@@ -50,7 +48,7 @@ public class PlaceSubCategoryController {
         Page<PlaceSubCategory> placeSubCategories = this.placeSubCategoryService.getPlaceSubCategoryPages(page, items, sortByStatic);
         int totalPages = placeSubCategories.getTotalPages();
 
-        Integer[] totalPage = this.paginationService.getTotalPage(totalPages, placeSubCategories.getNumber());
+        Integer[] totalPage = this.paginationUtil.getTotalPage(totalPages, placeSubCategories.getNumber());
 
         if(placeSubCategories.getTotalPages() > 0){
             List<Integer> pageNumbers = IntStream.rangeClosed(1, placeSubCategories.getTotalPages()).boxed().toList();

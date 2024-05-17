@@ -2,16 +2,14 @@ package tm.ugur.services.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import tm.ugur.models.PlaceCategory;
 import tm.ugur.models.PlaceCategoryTranslation;
-import tm.ugur.models.PlaceImage;
 import tm.ugur.repo.PlaceCategoryRepository;
 import tm.ugur.storage.FileSystemStorageService;
-import tm.ugur.util.pagination.PaginationService;
+import tm.ugur.util.pagination.PaginationUtil;
 
 import java.util.*;
 
@@ -20,17 +18,17 @@ import java.util.*;
 public class PlaceCategoryService {
 
     private final PlaceCategoryRepository placeCategoryRepository;
-    private final PaginationService paginationService;
+    private final PaginationUtil paginationUtil;
     private final PlaceCategoryTranslationService translationService;
     private final FileSystemStorageService storageService;
 
     @Autowired
     public PlaceCategoryService(PlaceCategoryRepository placeCategoryRepository,
-                                PaginationService paginationService,
+                                PaginationUtil paginationUtil,
                                 PlaceCategoryTranslationService translationService,
                                 FileSystemStorageService storageService) {
         this.placeCategoryRepository = placeCategoryRepository;
-        this.paginationService = paginationService;
+        this.paginationUtil = paginationUtil;
         this.translationService = translationService;
         this.storageService = storageService;
     }
@@ -42,7 +40,7 @@ public class PlaceCategoryService {
 
     public Page<PlaceCategory> findAll(int pageNumber, int itemsPerPage)
     {
-        return paginationService.createPage(placeCategoryRepository.findAll(), pageNumber, itemsPerPage);
+        return paginationUtil.createPage(placeCategoryRepository.findAll(), pageNumber, itemsPerPage);
     }
 
 
@@ -53,7 +51,7 @@ public class PlaceCategoryService {
         List<PlaceCategory> placeCategories = !sortBy.isBlank()
                 ? categorySorted(sortBy) : placeCategoryRepository.findAll();
 
-        return this.paginationService.createPage(placeCategories, pageNumber, itemsPerPage);
+        return this.paginationUtil.createPage(placeCategories, pageNumber, itemsPerPage);
     }
 
     private List<PlaceCategory> categorySorted(String sortBy){

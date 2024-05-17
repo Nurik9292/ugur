@@ -10,11 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.expression.Numbers;
 import tm.ugur.dto.StopDTO;
-import tm.ugur.models.Client;
 import tm.ugur.models.Stop;
 import tm.ugur.repo.CityRepository;
 import tm.ugur.repo.StopRepository;
-import tm.ugur.util.pagination.PaginationService;
+import tm.ugur.util.pagination.PaginationUtil;
 import tm.ugur.util.errors.stop.StopNotFoundException;
 import tm.ugur.util.mappers.StopMapper;
 
@@ -24,19 +23,19 @@ import java.util.*;
 @Transactional(readOnly = true)
 public class StopService {
 
-    private final PaginationService paginationService;
+    private final PaginationUtil paginationUtil;
     private final StopRepository stopRepository;
     private final CityRepository cityRepository;
     private final GeometryFactory factory;
     private final StopMapper stopMapper;
 
     @Autowired
-    public StopService(PaginationService paginationService,
+    public StopService(PaginationUtil paginationUtil,
                        StopRepository stopRepository,
                        CityRepository cityRepository,
                        GeometryFactory factory,
                        StopMapper stopMapper) {
-        this.paginationService = paginationService;
+        this.paginationUtil = paginationUtil;
         this.stopRepository = stopRepository;
         this.cityRepository = cityRepository;
         this.factory = factory;
@@ -51,7 +50,7 @@ public class StopService {
                 ? this.stopRepository.findAll(Sort.by(sortBy)) : this.stopRepository.findAll();
 
 
-        return paginationService.createPage(stops, pageNumber, itemsPerPage);
+        return paginationUtil.createPage(stops, pageNumber, itemsPerPage);
 
     }
 
@@ -62,13 +61,13 @@ public class StopService {
     public Page<Stop> findAll(int pageNumber,  int itemsPerPage){
         List<Stop> stops = this.stopRepository.findAll();
         stops.forEach(this::setLatLng);
-        return paginationService.createPage(stopRepository.findAll(), pageNumber, itemsPerPage);
+        return paginationUtil.createPage(stopRepository.findAll(), pageNumber, itemsPerPage);
     }
 
     public Page<Stop> findAll(int pageNumber,  int itemsPerPage, String sortBy){
         List<Stop> stops = this.stopRepository.findAll();
         stops.forEach(this::setLatLng);
-        return paginationService.createPage(stopRepository.findAll(Sort.by(sortBy)), pageNumber, itemsPerPage);
+        return paginationUtil.createPage(stopRepository.findAll(Sort.by(sortBy)), pageNumber, itemsPerPage);
     }
 
 
