@@ -13,8 +13,8 @@ import tm.ugur.dto.views.Views;
 import tm.ugur.models.Client;
 import tm.ugur.security.ClientDetails;
 import tm.ugur.services.api.RouteApiService;
-import tm.ugur.util.errors.route.RouteErrorResponse;
-import tm.ugur.util.errors.route.RouteNotFoundException;
+import tm.ugur.errors.route.RouteErrorResponse;
+import tm.ugur.errors.route.RouteNotFoundException;
 import tm.ugur.ws.SendClientBuses;
 
 import java.util.List;

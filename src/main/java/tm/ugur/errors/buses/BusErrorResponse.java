@@ -1,13 +1,16 @@
-package tm.ugur.util.errors.placeSubCategories;
+package tm.ugur.errors.buses;
 
-public class PlaceSubCategoryErrorResponse {
+public class BusErrorResponse {
 
     private String message;
+
     private long timestamp;
 
-    public PlaceSubCategoryErrorResponse(){}
+    public BusErrorResponse(){
 
-    public PlaceSubCategoryErrorResponse(String message, long timestamp) {
+    }
+
+    public BusErrorResponse(String message, long timestamp) {
         this.message = message;
         this.timestamp = timestamp;
     }

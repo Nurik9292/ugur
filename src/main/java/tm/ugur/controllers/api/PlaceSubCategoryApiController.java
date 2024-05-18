@@ -6,8 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tm.ugur.dto.PlaceSubCategoryDTO;
 import tm.ugur.services.api.PlaceSubCategoryApiService;
-import tm.ugur.util.errors.placeSubCategories.PlaceSubCategoryErrorResponse;
-import tm.ugur.util.errors.placeSubCategories.PlaceSubCategoryNotFoundException;
+import tm.ugur.errors.placeSubCategories.PlaceSubCategoryErrorResponse;
+import tm.ugur.errors.placeSubCategories.PlaceSubCategoryNotFoundException;
 
 import java.util.List;
 

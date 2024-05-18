@@ -5,9 +5,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tm.ugur.dto.PlaceCategoryDTO;
 import tm.ugur.dto.PlaceDTO;
-import tm.ugur.dto.StopDTO;
 import tm.ugur.models.Client;
 import tm.ugur.models.Place;
 import tm.ugur.models.PlaceCategory;
@@ -16,11 +14,10 @@ import tm.ugur.repo.PlaceCategoryRepository;
 import tm.ugur.repo.PlaceRepository;
 import tm.ugur.repo.PlaceSubCategoryRepository;
 import tm.ugur.security.ClientDetails;
-import tm.ugur.util.errors.places.PlaceNotFoundException;
-import tm.ugur.util.errors.route.RouteNotFoundException;
+import tm.ugur.errors.places.PlaceNotFoundException;
+import tm.ugur.errors.route.RouteNotFoundException;
 import tm.ugur.util.mappers.PlaceMapper;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 

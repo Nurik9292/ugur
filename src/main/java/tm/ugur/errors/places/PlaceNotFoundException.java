@@ -1,4 +1,4 @@
-package tm.ugur.util.errors.places;
+package tm.ugur.errors.places;
 
 public class PlaceNotFoundException extends RuntimeException{
 

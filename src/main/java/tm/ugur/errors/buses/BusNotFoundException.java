@@ -1,4 +1,4 @@
-package tm.ugur.util.errors.buses;
+package tm.ugur.errors.buses;
 
 public class BusNotFoundException extends RuntimeException{
 }

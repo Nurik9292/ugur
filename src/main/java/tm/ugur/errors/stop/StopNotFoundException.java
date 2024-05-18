@@ -1,4 +1,4 @@
-package tm.ugur.util.errors.stop;
+package tm.ugur.errors.stop;
 
 public class StopNotFoundException extends RuntimeException{
 

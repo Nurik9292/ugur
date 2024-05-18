@@ -14,7 +14,7 @@ import tm.ugur.models.Stop;
 import tm.ugur.repo.CityRepository;
 import tm.ugur.repo.StopRepository;
 import tm.ugur.util.pagination.PaginationUtil;
-import tm.ugur.util.errors.stop.StopNotFoundException;
+import tm.ugur.errors.stop.StopNotFoundException;
 import tm.ugur.util.mappers.StopMapper;
 
 import java.util.*;

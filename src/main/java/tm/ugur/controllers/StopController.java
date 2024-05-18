@@ -15,8 +15,8 @@ import tm.ugur.models.Stop;
 import tm.ugur.security.PersonDetails;
 import tm.ugur.services.admin.CityService;
 import tm.ugur.services.admin.StopService;
-import tm.ugur.util.errors.stop.StopErrorResponse;
-import tm.ugur.util.errors.stop.StopNotFoundException;
+import tm.ugur.errors.stop.StopErrorResponse;
+import tm.ugur.errors.stop.StopNotFoundException;
 
 import java.util.List;
 import java.util.Objects;

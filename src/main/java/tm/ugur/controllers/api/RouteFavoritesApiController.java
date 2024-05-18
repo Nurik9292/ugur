@@ -10,8 +10,8 @@ import tm.ugur.models.Client;
 import tm.ugur.models.Route;
 import tm.ugur.security.ClientDetails;
 import tm.ugur.services.api.RouteApiService;
-import tm.ugur.util.errors.route.RouteErrorResponse;
-import tm.ugur.util.errors.route.RouteNotFoundException;
+import tm.ugur.errors.route.RouteErrorResponse;
+import tm.ugur.errors.route.RouteNotFoundException;
 
 import java.util.List;
 import java.util.Map;

@@ -8,13 +8,11 @@ import tm.ugur.models.*;
 import tm.ugur.repo.BusRepository;
 import tm.ugur.repo.RouteRepository;
 import tm.ugur.services.redis.RedisBusService;
-import tm.ugur.util.errors.buses.BusNotFoundException;
-import tm.ugur.util.errors.route.RouteNotFoundException;
+import tm.ugur.errors.buses.BusNotFoundException;
+import tm.ugur.errors.route.RouteNotFoundException;
 import tm.ugur.util.mappers.BusMapper;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)

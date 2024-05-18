@@ -6,9 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tm.ugur.dto.PlaceCategoryDTO;
 import tm.ugur.services.api.PlaceCategoryApiService;
-import tm.ugur.util.errors.placeCategories.PlaceCategoryErrorResponse;
-import tm.ugur.util.errors.placeCategories.PlaceCategoryNotFoundException;
-import tm.ugur.util.errors.places.PlaceNotFoundException;
+import tm.ugur.errors.placeCategories.PlaceCategoryErrorResponse;
+import tm.ugur.errors.placeCategories.PlaceCategoryNotFoundException;
+import tm.ugur.errors.places.PlaceNotFoundException;
 
 import java.util.List;
 

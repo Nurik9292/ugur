@@ -1,14 +1,13 @@
-package tm.ugur.util.errors.route;
+package tm.ugur.errors.stop;
 
-public class RouteErrorResponse {
+public class StopErrorResponse {
 
     private String message;
-
     private long timestamp;
 
-    public RouteErrorResponse(){}
+    public StopErrorResponse(){}
 
-    public RouteErrorResponse(String message, long timestamp) {
+    public StopErrorResponse(String message, long timestamp) {
         this.message = message;
         this.timestamp = timestamp;
     }

@@ -11,7 +11,7 @@ import tm.ugur.models.Client;
 import tm.ugur.models.Stop;
 import tm.ugur.repo.StopRepository;
 import tm.ugur.security.ClientDetails;
-import tm.ugur.util.errors.stop.StopNotFoundException;
+import tm.ugur.errors.stop.StopNotFoundException;
 import tm.ugur.util.mappers.StopMapper;
 
 import java.util.List;

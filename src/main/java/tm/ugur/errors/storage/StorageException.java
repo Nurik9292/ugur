@@ -1,4 +1,4 @@
-package tm.ugur.util.errors.storage;
+package tm.ugur.errors.storage;
 
 public class StorageException extends RuntimeException{
 

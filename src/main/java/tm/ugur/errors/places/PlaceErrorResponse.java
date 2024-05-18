@@ -1,16 +1,13 @@
-package tm.ugur.util.errors.buses;
+package tm.ugur.errors.places;
 
-public class BusErrorResponse {
+public class PlaceErrorResponse {
 
     private String message;
-
     private long timestamp;
 
-    public BusErrorResponse(){
+    public PlaceErrorResponse(){}
 
-    }
-
-    public BusErrorResponse(String message, long timestamp) {
+    public PlaceErrorResponse(String message, long timestamp) {
         this.message = message;
         this.timestamp = timestamp;
     }

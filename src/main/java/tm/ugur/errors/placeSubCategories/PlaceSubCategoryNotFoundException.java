@@ -1,4 +1,4 @@
-package tm.ugur.util.errors.placeSubCategories;
+package tm.ugur.errors.placeSubCategories;
 
 public class PlaceSubCategoryNotFoundException extends RuntimeException{
 

@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import tm.ugur.models.Route;
 import tm.ugur.security.PersonDetails;
 import tm.ugur.services.admin.*;
-import tm.ugur.util.errors.route.RouteErrorResponse;
-import tm.ugur.util.errors.route.RouteNotFoundException;
+import tm.ugur.errors.route.RouteErrorResponse;
+import tm.ugur.errors.route.RouteNotFoundException;
 import tm.ugur.util.pagination.PaginationUtil;
 
 import java.util.*;

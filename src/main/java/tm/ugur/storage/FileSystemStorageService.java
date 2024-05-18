@@ -8,8 +8,8 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
-import tm.ugur.util.errors.storage.StorageException;
-import tm.ugur.util.errors.storage.StorageFileNotFoundException;
+import tm.ugur.errors.storage.StorageException;
+import tm.ugur.errors.storage.StorageFileNotFoundException;
 import tm.ugur.util.files.FileResize;
 
 import java.io.*;

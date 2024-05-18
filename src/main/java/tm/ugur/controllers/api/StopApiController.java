@@ -6,8 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tm.ugur.dto.StopDTO;
 import tm.ugur.services.api.StopApiService;
-import tm.ugur.util.errors.stop.StopErrorResponse;
-import tm.ugur.util.errors.stop.StopNotFoundException;
+import tm.ugur.errors.stop.StopErrorResponse;
+import tm.ugur.errors.stop.StopNotFoundException;
 
 import java.util.List;
 

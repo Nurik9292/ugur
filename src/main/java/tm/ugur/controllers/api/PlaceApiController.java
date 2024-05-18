@@ -3,13 +3,11 @@ package tm.ugur.controllers.api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import tm.ugur.dto.PlaceDTO;
-import tm.ugur.models.Place;
 import tm.ugur.services.api.PlaceApiService;
-import tm.ugur.util.errors.places.PlaceErrorResponse;
-import tm.ugur.util.errors.places.PlaceNotFoundException;
+import tm.ugur.errors.places.PlaceErrorResponse;
+import tm.ugur.errors.places.PlaceNotFoundException;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package tm.ugur.util.errors.route;
+package tm.ugur.errors.route;
 
 public class RouteNotFoundException extends RuntimeException{
 }

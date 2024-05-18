@@ -1,13 +1,13 @@
-package tm.ugur.util.errors.places;
+package tm.ugur.errors.placeSubCategories;
 
-public class PlaceErrorResponse {
+public class PlaceSubCategoryErrorResponse {
 
     private String message;
     private long timestamp;
 
-    public PlaceErrorResponse(){}
+    public PlaceSubCategoryErrorResponse(){}
 
-    public PlaceErrorResponse(String message, long timestamp) {
+    public PlaceSubCategoryErrorResponse(String message, long timestamp) {
         this.message = message;
         this.timestamp = timestamp;
     }

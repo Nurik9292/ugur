@@ -6,15 +6,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import tm.ugur.dto.PlaceDTO;
-import tm.ugur.dto.StopDTO;
 import tm.ugur.models.Client;
 import tm.ugur.models.Place;
 import tm.ugur.security.ClientDetails;
 import tm.ugur.services.api.PlaceApiService;
-import tm.ugur.util.errors.places.PlaceErrorResponse;
-import tm.ugur.util.errors.places.PlaceNotFoundException;
-import tm.ugur.util.errors.stop.StopNotFoundException;
+import tm.ugur.errors.places.PlaceErrorResponse;
+import tm.ugur.errors.places.PlaceNotFoundException;
+import tm.ugur.errors.stop.StopNotFoundException;
 
 import java.util.List;
 import java.util.Map;

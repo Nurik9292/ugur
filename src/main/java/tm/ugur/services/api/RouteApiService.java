@@ -13,7 +13,7 @@ import tm.ugur.repo.RouteRepository;
 import tm.ugur.security.ClientDetails;
 import tm.ugur.services.redis.RedisBusService;
 import tm.ugur.services.redis.RedisRouteService;
-import tm.ugur.util.errors.route.RouteNotFoundException;
+import tm.ugur.errors.route.RouteNotFoundException;
 import tm.ugur.util.mappers.RouteMapper;
 import tm.ugur.util.mappers.StopMapper;
 

@@ -15,14 +15,13 @@ import tm.ugur.models.*;
 import tm.ugur.services.admin.PlaceCategoryService;
 import tm.ugur.services.admin.PlaceService;
 import tm.ugur.util.pagination.PaginationUtil;
-import tm.ugur.util.sort.Sort;
 import tm.ugur.util.sort.place.SortPlace;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.IntStream;
+
 
 @Controller
 @RequestMapping("/places")

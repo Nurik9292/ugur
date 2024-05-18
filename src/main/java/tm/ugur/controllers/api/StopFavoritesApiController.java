@@ -10,12 +10,11 @@ import tm.ugur.models.Client;
 import tm.ugur.models.Stop;
 import tm.ugur.security.ClientDetails;
 import tm.ugur.services.api.StopApiService;
-import tm.ugur.util.errors.stop.StopErrorResponse;
-import tm.ugur.util.errors.stop.StopNotFoundException;
+import tm.ugur.errors.stop.StopErrorResponse;
+import tm.ugur.errors.stop.StopNotFoundException;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/favorites/stops")

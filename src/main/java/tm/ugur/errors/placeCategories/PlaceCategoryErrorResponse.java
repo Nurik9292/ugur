@@ -1,4 +1,4 @@
-package tm.ugur.util.errors.placeCategories;
+package tm.ugur.errors.placeCategories;
 
 public class PlaceCategoryErrorResponse {
 
