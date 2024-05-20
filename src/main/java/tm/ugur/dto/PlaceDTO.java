@@ -1,7 +1,6 @@
 package tm.ugur.dto;
 
 import tm.ugur.dto.geo.PointDTO;
-import tm.ugur.models.PlaceCategory;
 
 
 import java.util.List;

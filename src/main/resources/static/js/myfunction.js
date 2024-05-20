@@ -10,7 +10,7 @@ function onChangePageItems(page) {
     const params = {
         page: element.page,
         items: element.items
-    };
+    }
 
     const queryString = Object.entries(params)
         .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)

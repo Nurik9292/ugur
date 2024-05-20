@@ -1,13 +1,14 @@
-package tm.ugur.models;
+package tm.ugur.models.place.category;
 
 import jakarta.persistence.*;
+import tm.ugur.models.AbstractEntity;
 
 import java.util.Date;
 import java.util.Objects;
 
 @Entity
 @Table(name = "place_category_translations")
-public class PlaceCategoryTranslation extends AbstractEntity{
+public class PlaceCategoryTranslation extends AbstractEntity {
 
     @Id
     @Column(name = "id")

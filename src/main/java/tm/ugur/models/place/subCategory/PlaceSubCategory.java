@@ -1,6 +1,9 @@
-package tm.ugur.models;
+package tm.ugur.models.place.subCategory;
 
 import jakarta.persistence.*;
+import tm.ugur.models.AbstractEntity;
+import tm.ugur.models.place.Place;
+import tm.ugur.models.place.category.PlaceCategory;
 
 import java.util.Date;
 import java.util.List;
@@ -8,7 +11,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "place_sub_categories")
-public class PlaceSubCategory extends AbstractEntity{
+public class PlaceSubCategory extends AbstractEntity {
 
     @Id
     @Column(name = "id")

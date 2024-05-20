@@ -3,12 +3,11 @@ package tm.ugur.services.admin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tm.ugur.models.PlaceSubCategoryTranslation;
+import tm.ugur.models.place.subCategory.PlaceSubCategoryTranslation;
 import tm.ugur.repo.PlaceSubCategoryTranslationRepository;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)

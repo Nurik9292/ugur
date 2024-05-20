@@ -1,13 +1,14 @@
-package tm.ugur.models;
+package tm.ugur.models.place;
 
 import jakarta.persistence.*;
+import tm.ugur.models.AbstractEntity;
 
 import java.util.Date;
 import java.util.Objects;
 
 @Entity
 @Table(name = "place_thumbs")
-public class PlaceThumb extends AbstractEntity{
+public class PlaceThumb extends AbstractEntity {
 
     @Id
     @Column(name = "id")

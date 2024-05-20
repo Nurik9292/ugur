@@ -10,10 +10,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import tm.ugur.models.*;
+import tm.ugur.models.place.*;
+import tm.ugur.models.place.category.PlaceCategory;
+import tm.ugur.request.PlaceRequest;
 import tm.ugur.services.admin.PlaceCategoryService;
 import tm.ugur.services.admin.PlaceService;
+import tm.ugur.services.admin.PlaceTranslationService;
 import tm.ugur.util.pagination.PaginationUtil;
 import tm.ugur.util.sort.place.SortPlace;
 
@@ -31,6 +34,7 @@ public class PlaceController {
     String uploadPth;
 
     private final PlaceService placeService;
+    private final PlaceTranslationService placeTranslationService;
     private final PlaceCategoryService placeCategoryService;
     private final PaginationUtil paginationUtil;
     private final SortPlace sortPlace;
@@ -38,10 +42,12 @@ public class PlaceController {
 
     @Autowired
     public PlaceController(PlaceService placeService,
+                           PlaceTranslationService placeTranslationService,
                            PlaceCategoryService placeCategoryService,
                            PaginationUtil paginationUtil,
                            SortPlace sortPlace) {
         this.placeService = placeService;
+        this.placeTranslationService = placeTranslationService;
         this.placeCategoryService = placeCategoryService;
         this.paginationUtil = paginationUtil;
         this.sortPlace = sortPlace;
@@ -70,6 +76,7 @@ public class PlaceController {
         model.addAttribute("sort", Objects.nonNull(sortBy) ? sortBy : "");
         model.addAttribute("totalPage", this.paginationUtil.getTotalPage(places.getTotalPages(), places.getNumber()));
         model.addAttribute("category", categoryId);
+        model.addAttribute("search", search);
         model.addAttribute("categories", placeCategoryService.findAll());
 
         return "layouts/places/index";
@@ -88,19 +95,17 @@ public class PlaceController {
         return "layouts/places/create";
     }
 
-    @PostMapping
-    public ResponseEntity<?> store(
-            @RequestParam(value = "files", required = false) MultipartFile[] files,
-            @RequestParam(value = "prev", required = false) MultipartFile prev,
-            @ModelAttribute("place") @Valid Place place, BindingResult result){
 
-        if(result.hasErrors()){;
+    @PostMapping
+    public ResponseEntity<?> store(@ModelAttribute @Valid PlaceRequest $request, BindingResult result){
+
+        if(result.hasErrors()){
             Map<String, String> errors = new HashMap<>();
             result.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
             return ResponseEntity.badRequest().body(errors);
         }
 
-        placeService.store(place, files, prev);
+        placeService.store($request);
 
         return ResponseEntity.ok("Заведение успешно добавленно");
     }
@@ -154,12 +159,7 @@ public class PlaceController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable("id") long id,
-                         @RequestParam(value = "files", required = false) MultipartFile[] files,
-                         @RequestParam(value = "prev", required = false) MultipartFile prev,
-                         @RequestParam(value = "removeImageIds", required = false) long[] removedImageIds,
-                         @ModelAttribute("place") @Valid Place place, BindingResult result){
-
-        System.out.println(prev);
+                         @ModelAttribute("place") @Valid PlaceRequest request, BindingResult result){
 
         if(result.hasErrors()){
             Map<String, String> errors = new HashMap<>();
@@ -167,9 +167,7 @@ public class PlaceController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        System.out.println(Arrays.toString(removedImageIds));
-
-        this.placeService.update(id, place, files, prev, removedImageIds);
+        this.placeService.update(id, request);
 
         return ResponseEntity.ok("Заведение успешно измененно");
     }

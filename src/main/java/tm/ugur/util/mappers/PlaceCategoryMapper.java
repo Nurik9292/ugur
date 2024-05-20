@@ -1,21 +1,17 @@
 package tm.ugur.util.mappers;
 
 import jakarta.annotation.PostConstruct;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import tm.ugur.dto.BusDTO;
 import tm.ugur.dto.PlaceCategoryDTO;
-import tm.ugur.dto.PlaceDTO;
 import tm.ugur.dto.PlaceSubCategoryDTO;
-import tm.ugur.dto.geo.PointDTO;
-import tm.ugur.models.*;
+import tm.ugur.models.place.category.PlaceCategory;
+import tm.ugur.models.place.category.PlaceCategoryTranslation;
+import tm.ugur.models.place.subCategory.PlaceSubCategory;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 

@@ -3,8 +3,9 @@ package tm.ugur.services.admin;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tm.ugur.models.PlaceSubCategory;
-import tm.ugur.models.PlaceSubCategoryTranslation;
+import tm.ugur.errors.placeSubCategories.PlaceSubCategoryNotFoundException;
+import tm.ugur.models.place.subCategory.PlaceSubCategory;
+import tm.ugur.models.place.subCategory.PlaceSubCategoryTranslation;
 import tm.ugur.repo.PlaceSubCategoryRepository;
 import tm.ugur.util.pagination.PaginationUtil;
 
@@ -79,20 +80,18 @@ public class PlaceSubCategoryService {
         return placeSubCategoryRepository.save(placeSubCategory);
     }
 
-    public Optional<PlaceSubCategory> findOne(long id){
-        return placeSubCategoryRepository.findById(id);
+    public PlaceSubCategory findOne(long id){
+        return placeSubCategoryRepository.findById(id).orElseThrow(PlaceSubCategoryNotFoundException::new);
     }
 
 
     @Transactional
     public void update(long id, PlaceSubCategory placeSubCategory, String title_tm, String title_ru, String title_en){
-        Optional<PlaceSubCategory> subCategory = findOne(id);
+        PlaceSubCategory subCategory = findOne(id);
 
-        subCategory.ifPresent(sc -> {
-
-            PlaceSubCategoryTranslation existingTranslationTm = getTranslation(sc.getTranslations(),"tm");
-            PlaceSubCategoryTranslation existingTranslationRu = getTranslation(sc.getTranslations(),"ru");
-            PlaceSubCategoryTranslation existingTranslationEn = getTranslation(sc.getTranslations(),"en");
+            PlaceSubCategoryTranslation existingTranslationTm = getTranslation(subCategory.getTranslations(),"tm");
+            PlaceSubCategoryTranslation existingTranslationRu = getTranslation(subCategory.getTranslations(),"ru");
+            PlaceSubCategoryTranslation existingTranslationEn = getTranslation(subCategory.getTranslations(),"en");
 
             if (existingTranslationTm != null)
                 translationService.update(existingTranslationTm, title_tm);
@@ -105,9 +104,9 @@ public class PlaceSubCategoryService {
 
             placeSubCategory.setId(id);
             placeSubCategory.setUpdatedAt(new Date());
-            placeSubCategory.setCreatedAt(sc.getCreatedAt());
+            placeSubCategory.setCreatedAt(subCategory.getCreatedAt());
             placeSubCategoryRepository.save(placeSubCategory);
-        });
+
     }
 
     private PlaceSubCategoryTranslation getTranslation(List<PlaceSubCategoryTranslation> translations, String locale){

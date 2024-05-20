@@ -1,9 +1,5 @@
 package tm.ugur.dto;
 
-import jakarta.persistence.*;
-import tm.ugur.models.Place;
-import tm.ugur.models.PlaceSubCategory;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;

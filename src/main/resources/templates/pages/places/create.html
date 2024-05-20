@@ -46,12 +46,12 @@
                                         <div class="col-md-6 mb-3">
                                             <label for="title_tm">Название TM</label>
                                             <input class="form-control" id="title_tm" name="title_tm"  type="text" placeholder="Введите название заведения">
-                                            <div style="color: red;" id="title_tm-error"></div>
+                                            <div style="color: red;" id="titleTm-error"></div>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label for="address_tm">Адресс TM</label>
                                             <input class="form-control" id="address_tm" name="address_tm" type="text" placeholder="Введите адресс заведения">
-                                            <div style="color: red;" id="address_tm-error"></div>
+                                            <div style="color: red;" id="addressTm-error"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -60,12 +60,12 @@
                                         <div class="col-md-6 mb-3">
                                             <label for="title_ru">Название RU</label>
                                             <input class="form-control" id="title_ru" name="title_ru"  type="text" placeholder="Введите название заведения">
-                                            <div style="color: red;" id="title_ru-error"></div>
+                                            <div style="color: red;" id="titleRu-error"></div>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label for="address_ru">Адресс RU</label>
                                             <input class="form-control" id="address_ru" name="address_ru" type="text" placeholder="Введите адресс заведения">
-                                            <div style="color: red;" id="address_ru-error"></div>
+                                            <div style="color: red;" id="addressRu-error"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -74,12 +74,12 @@
                                         <div class="col-md-6 mb-3">
                                             <label for="title_en">Название EN</label>
                                             <input class="form-control" id="title_en" name="title_en"  type="text" placeholder="Введите название заведения">
-                                            <div style="color: red;" id="title_en-error"></div>
+                                            <div style="color: red;" id="titleEn-error"></div>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label for="address_en">Адресс EN</label>
                                             <input class="form-control" id="address_en" name="address_en" type="text" placeholder="Введите адресс заведения">
-                                            <div style="color: red;" id="address_en-error"></div>
+                                            <div style="color: red;" id="addressEn-error"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -95,13 +95,13 @@
                                            </div>
                                             <div id="template-container"></div>
                                         </div>
-                                        <div style="color: red;" id="file-error"></div>
+                                        <div style="color: red;" id="files-error"></div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <label for="prev">Превью</label>
                                             <input class="form-control" type="file" id="prev" name="prev"  accept="image/jpeg, image/jpg, image/png">
-                                            <div style="color: red;" id="prev-error"></div>
+                                            <div style="color: red;" id="thumb-error"></div>
 
                                         </div>
                                     </div>
@@ -131,19 +131,20 @@
                         <div class="col-md-6 mb-3">
                             <label for="tiktok">Тик ток</label>
                             <input class="form-control" id="tiktok" name="tiktok" type="text" placeholder="Введите сылку на тик ток">
+                            <div style="color: red;" id="tiktok-error"></div>
                         </div>
                     </div>
                     <div class="row dis">
                         <div class="col-md-6 mb-3">
                             <label for="city_phone">Городской телефон</label>
                             <input class="form-control" id="city_phone" name="city_phone" type="tel" placeholder="Введите городской номер">
-                            <div class="error" style="color: red;" id="number_city-error"></div>
+                            <div class="error" style="color: red;" id="cityNumber-error"></div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="mob_phone">Мобильный телефон</label>
                             <input class="form-control mob_phone_place" id="mob_phone" name="mob_phone" type="text" placeholder="Введите моб телефон"> <br>
                             <a class="btn btn-primary ml-3" id="add-input" onclick="addInputMobPhone()">Добавить поле</a>
-                            <div class="error" style="color: red;" id="number_mob-error"></div>
+                            <div class="error" style="color: red;" id="mobNumbers-error"></div>
                         </div>
                     </div>
                     <div class="row dis">
@@ -154,24 +155,26 @@
                                         th:value="${placeCategory.getId()}"
                                         th:text="${categoryTitles.get(placeCategory.getId())}"></option>
                             </select>
-                            <div style="color: red;" id="placeCategory-error"></div>
+                            <div style="color: red;" id="category-error"></div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="placeSubCategory">Под Категория</label>
                             <select class="form-select mb-0" id="placeSubCategory" name="placeSubCategory" aria-label="Sun Category select example" >
                                 <option></option>
                             </select>
-                            <div style="color: red;" id="placeSubCategory-error"></div>
+                            <div style="color: red;" id="subCategory-error"></div>
                         </div>
                     </div>
                     <div class="row dis">
                         <div class="col-md-6 mb-3">
                             <label for="lat">Широта</label>
                             <input class="form-control" id="lat" name="lat" type="text" placeholder="Введите широту">
+                            <div style="color: red;" id="lat-error"></div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="lng">Долготта</label>
                             <input class="form-control" id="lng" name="lng" type="text" placeholder="Введите долготу">
+                            <div style="color: red;" id="lng    -error"></div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <a href="#" class="btn btn-info mt-2 animate-up-2" onclick="showOnMap()">Отобразить на карте</a>
@@ -185,7 +188,11 @@
             </div>
 
             <div class="mt-3">
-                <button class="btn btn-lg btn-info mt-2 animate-up-2" onclick="sendCreatePlace()">Создать</button>
+                <button class="btn btn-lg btn-info mt-2 animate-up-2" id="btn-send" onclick="sendCreatePlace()">Создать</button>
+                <button class="btn btn-info d-none" id="btn-loading" type="button" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span class="ms-1">Loading...</span>
+                </button>
             </div>
         </form>
     </div>

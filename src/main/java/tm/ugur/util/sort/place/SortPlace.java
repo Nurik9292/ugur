@@ -1,8 +1,8 @@
 package tm.ugur.util.sort.place;
 
 import org.springframework.stereotype.Component;
-import tm.ugur.models.Place;
-import tm.ugur.models.PlaceTranslation;
+import tm.ugur.models.place.Place;
+import tm.ugur.models.place.PlaceTranslation;
 import tm.ugur.util.sort.Sort;
 
 import java.util.*;

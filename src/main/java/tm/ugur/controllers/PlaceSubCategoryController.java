@@ -6,9 +6,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import tm.ugur.models.PlaceCategory;
-import tm.ugur.models.PlaceSubCategory;
-import tm.ugur.models.PlaceSubCategoryTranslation;
+import tm.ugur.models.place.category.PlaceCategory;
+import tm.ugur.models.place.subCategory.PlaceSubCategory;
+import tm.ugur.models.place.subCategory.PlaceSubCategoryTranslation;
 import tm.ugur.services.admin.PlaceCategoryService;
 import tm.ugur.services.admin.PlaceSubCategoryService;
 import tm.ugur.util.pagination.PaginationUtil;
@@ -104,7 +104,7 @@ public class PlaceSubCategoryController {
 
         List<PlaceCategory> placeCategories = placeCategoryService.findAll();
 
-        PlaceSubCategory placeSubCategory = placeSubCategoryService.findOne(id).orElse(new PlaceSubCategory());
+        PlaceSubCategory placeSubCategory = placeSubCategoryService.findOne(id);
         List<PlaceSubCategoryTranslation> translations = placeSubCategory.getTranslations();
         Map<String, String> translation = new HashMap<>();
 

@@ -1,11 +1,10 @@
 package tm.ugur.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import tm.ugur.models.Place;
-import tm.ugur.models.PlaceCategory;
-import tm.ugur.models.PlaceSubCategory;
+import tm.ugur.models.place.Place;
+import tm.ugur.models.place.category.PlaceCategory;
+import tm.ugur.models.place.subCategory.PlaceSubCategory;
 
 import java.util.List;
 

@@ -7,7 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import tm.ugur.models.Client;
-import tm.ugur.models.Place;
+import tm.ugur.models.place.Place;
 import tm.ugur.security.ClientDetails;
 import tm.ugur.services.api.PlaceApiService;
 import tm.ugur.errors.places.PlaceErrorResponse;

@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import tm.ugur.models.PlaceCategory;
-import tm.ugur.models.PlaceCategoryTranslation;
+import tm.ugur.models.place.category.PlaceCategory;
+import tm.ugur.models.place.category.PlaceCategoryTranslation;
 import tm.ugur.services.admin.PlaceCategoryService;
 import tm.ugur.services.admin.PlaceCategoryTranslationService;
 

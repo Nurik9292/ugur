@@ -3,6 +3,7 @@ package tm.ugur.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import tm.ugur.models.place.Place;
 
 import java.util.Date;
 import java.util.List;
