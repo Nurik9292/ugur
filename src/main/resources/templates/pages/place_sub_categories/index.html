@@ -31,7 +31,7 @@
                         <div class="dataTable-dropdown">
                             <label>
                                 <form id="myForm">
-                                    <select id="selector"  class="dataTable-selector" onchange="onChagePageItems()">
+                                    <select id="selector"  class="dataTable-selector" onchange="onChangePageItems('place-sub-categories')">
                                         <option value="5" th:selected=" 5 == ${placeSubCategories.getSize()}">5</option>
                                         <option value="10" th:selected="10 == ${placeSubCategories.getSize()}">10</option>
                                         <option value="15" th:selected="15 == ${placeSubCategories.getSize()}">15</option>
@@ -109,7 +109,7 @@
                         <div class="dataTable-info"
                              th:text="'Showing 1 to ' + ${placeSubCategories.getSize()} + ' of ' + ${placeSubCategories.getTotalElements()} + ' entries'">
                         </div>
-                        <th:block th:insert="~{pagination/pagination :: paginate(${placeSubCategories}, ${totalPage}, null, 'place-sub-categories')}"></th:block>
+                        <th:block th:insert="~{pagination/pagination :: paginate(${placeSubCategories}, ${totalPage}, ${sort}, 0, 'place-sub-categories')}"></th:block>
                     </div>
                 </div>
             </div>

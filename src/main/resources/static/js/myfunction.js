@@ -81,7 +81,7 @@ function sortPlace(sortBy) {
     window.location.href = fullUrl;
 }
 
-function onClickSortPlaceCategory(sortBy) {
+function sortPlaceCategory(sortBy) {
     const url = host + '/place-categories';
     const element = data();
 

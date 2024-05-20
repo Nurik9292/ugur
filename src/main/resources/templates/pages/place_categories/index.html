@@ -31,7 +31,7 @@
                         <div class="dataTable-dropdown">
                             <label>
                                 <form id="myForm">
-                                    <select id="selector"  class="dataTable-selector" onchange="onChagePageItems()">
+                                    <select id="selector"  class="dataTable-selector" onchange="onChangePageItems('place-categories')">
                                         <option value="5" th:selected=" 5 == ${placeCategories.getSize()}">5</option>
                                         <option value="10" th:selected="10 == ${placeCategories.getSize()}">10</option>
                                         <option value="15" th:selected="15 == ${placeCategories.getSize()}">15</option>
@@ -50,7 +50,7 @@
                             <thead class="thead-light">
                             <tr>
                                 <th data-sortable="" style="width: 25%;">
-                                    <a href="#" class="dataTable-sorter" onclick="onClickSortPlaceCategory('tm')">
+                                    <a href="#" class="dataTable-sorter" onclick="sortPlaceCategory('tm')">
                                         Название Tm
                                         <svg class="icon icon-xxs" data-slot="icon" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5 7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5"></path>
@@ -58,7 +58,7 @@
                                     </a>
                                 </th>
                                 <th data-sortable="" style="width: 25%;">
-                                    <a href="#" class="dataTable-sorter" onclick="onClickSortPlaceCategory('ru')">
+                                    <a href="#" class="dataTable-sorter" onclick="sortPlaceCategory('ru')">
                                         Название Ru
                                         <svg class="icon icon-xxs" data-slot="icon" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5 7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5"></path>
@@ -66,7 +66,7 @@
                                     </a>
                                 </th>
                                 <th data-sortable="" style="width: 25%;">
-                                    <a href="#" class="dataTable-sorter" onclick="onClickSortPlaceCategory('en')">
+                                    <a href="#" class="dataTable-sorter" onclick="sortPlaceCategory('en')">
                                         Название EN
                                         <svg class="icon icon-xxs" data-slot="icon" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5 7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5"></path>
@@ -109,7 +109,7 @@
                         <div class="dataTable-info"
                              th:text="'Showing 1 to ' + ${placeCategories.getSize()} + ' of ' + ${placeCategories.getTotalElements()} + ' entries'">
                         </div>
-                        <th:block th:insert="~{pagination/pagination :: paginate(${placeCategories}, ${totalPage}, null, 'place-categories')}"></th:block>
+                        <th:block th:insert="~{pagination/pagination :: paginate(${placeCategories}, ${totalPage}, ${sort}, 0, 'place-categories')}"></th:block>
                     </div>
                 </div>
             </div>

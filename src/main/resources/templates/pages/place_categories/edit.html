@@ -45,7 +45,10 @@
                 <div class="col-md-6 mb-3">
                     <label for="file">Изображение</label>
                     <input class="form-control" type="file" id="file" name="file" multiple accept="image/jpeg, image/jpg, image/png, image/svg">
-                    <div style="color: red;" id="image-error"></div>
+                    <div class="mb-3" style="color: red;" id="image-error"></div>
+                    <img style="width: 100px; height: 100px" th:if="${placeCategory.getImage() != null}"
+                         th:src="${'/images/place/category' + placeCategory.getImage().substring(placeCategory.getImage().lastIndexOf('/'))}"
+                         alt="Нет фото">
                 </div>
             </div>
             <div class="mt-3">
