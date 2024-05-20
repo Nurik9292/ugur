@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tm.ugur.dto.PlaceCategoryDTO;
-import tm.ugur.models.PlaceCategory;
+import tm.ugur.models.place.category.PlaceCategory;
 import tm.ugur.repo.PlaceCategoryRepository;
 import tm.ugur.util.mappers.PlaceCategoryMapper;
 

@@ -55,7 +55,11 @@
                             </label>
                         </div>
                         <div class="dataTable-search">
-                            <input class="dataTable-input" placeholder="Search..." type="text"  id="search-place">
+                            <input  th:value="${search}"
+                                    class="dataTable-input"
+                                    placeholder="Search..."
+                                    type="text"
+                                    id="search-place">
                         </div>
                     </div>
                     <div class="dataTable-container">
@@ -101,7 +105,7 @@
                                     <td>
                                         <div th:each="trans : ${place.getTranslations()}">
                                             <p th:if="${trans.getAddress().length() > 20 and  trans.getLocale() == 'ru'}" th:text="${trans.getAddress().substring(0, 20)} + '...'"></p>
-                                            <p th:if="${trans.getAddress().length() < 8 and  trans.getLocale() == 'ru'}" th:text="${trans.getAddress()}"></p>
+                                            <p th:if="${trans.getAddress().length() < 20 and  trans.getLocale() == 'ru'}" th:text="${trans.getAddress()}"></p>
                                         </div>
                                     </td>
                                     <td>
@@ -186,5 +190,6 @@
     </div>
     <script th:inline="javascript">
         let sortByPlace = /*[[${sort}]]*/ '';
+        let searchResult = /*[[${search}]]*/ '';
     </script>
 </th:blokc>

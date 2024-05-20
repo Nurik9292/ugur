@@ -4,34 +4,22 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import tm.ugur.dto.PlaceDTO;
-import tm.ugur.dto.PlacePhoneDTO;
-import tm.ugur.dto.SocialNetworkDTO;
-import tm.ugur.dto.TranslationDTO;
 import tm.ugur.models.*;
-import tm.ugur.repo.PlacePhoneRepository;
+import tm.ugur.models.place.*;
+import tm.ugur.models.place.category.PlaceCategory;
+import tm.ugur.models.place.subCategory.PlaceSubCategory;
 import tm.ugur.repo.PlaceRepository;
-import tm.ugur.repo.SocialNetworkRepository;
-import tm.ugur.services.redis.RedisPlacePhoneService;
-import tm.ugur.services.redis.RedisPlaceSocialService;
-import tm.ugur.services.redis.RedisPlaceTranslationService;
+import tm.ugur.request.PlaceRequest;
 import tm.ugur.storage.FileSystemStorageService;
 import tm.ugur.util.ImageDownload;
 import tm.ugur.util.errors.places.PlaceNotFoundException;
-import tm.ugur.util.mappers.PlaceMapper;
-import tm.ugur.util.mappers.PlacePhoneMapper;
-import tm.ugur.util.mappers.SocialNetworkMapper;
-import tm.ugur.util.mappers.TranslationPlaceMapper;
-import tm.ugur.util.pagination.PaginationUtil;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,58 +27,41 @@ import java.util.stream.Collectors;
 public class PlaceService {
 
     private final PlaceRepository placeRepository;
-    private final PlacePhoneRepository placePhoneRepository;
-    private final SocialNetworkRepository socialNetworkRepository;
-    private final PaginationUtil paginationUtil;
+    private final PlacePhoneService placePhoneService;
+    private final PlaceSocialNetworkService socialNetworkService;
+    private final PlaceCategoryService placeCategoryService;
+    private final PlaceSubCategoryService placeSubCategoryService;
     private final GeometryFactory geometryFactory;
     private final FileSystemStorageService storageService;
     private final PlaceImageService placeImageService;
     private final PlaceTranslationService translationService;
     private final PlaceThumbService thumbService;
     private final ImageDownload imageDownload;
-    private final RedisPlaceTranslationService redisTranslationService;
-    private final TranslationPlaceMapper translationPlaceMapper;
-    private final RedisPlacePhoneService placePhoneService;
-    private final PlacePhoneMapper placePhoneMapper;
-    private final RedisPlaceSocialService redisPlaceSocialService;
-    private final SocialNetworkMapper socialNetworkMapper;
-    private final PlaceMapper placeMapper;
+
 
     @Autowired
     public PlaceService(PlaceRepository placeRepository,
-                        PlacePhoneRepository placePhoneRepository,
-                        SocialNetworkRepository socialNetworkRepository,
-                        PaginationUtil paginationUtil,
+                        PlacePhoneService placePhoneService,
+                        PlaceSocialNetworkService socialNetworkService,
+                        PlaceCategoryService placeCategoryService,
+                        PlaceSubCategoryService placeSubCategoryService,
                         GeometryFactory geometryFactory,
                         FileSystemStorageService storageService,
                         PlaceImageService placeImageService,
                         PlaceTranslationService translationService,
                         PlaceThumbService thumbService,
-                        ImageDownload imageDownload,
-                        RedisPlaceTranslationService redisTranslationService,
-                        TranslationPlaceMapper translationPlaceMapper,
-                        RedisPlacePhoneService placePhoneService,
-                        PlacePhoneMapper placePhoneMapper,
-                        RedisPlaceSocialService redisPlaceSocialService,
-                        SocialNetworkMapper socialNetworkMapper,
-                        PlaceMapper placeMapper) {
+                        ImageDownload imageDownload) {
         this.placeRepository = placeRepository;
-        this.placePhoneRepository = placePhoneRepository;
-        this.socialNetworkRepository = socialNetworkRepository;
-        this.paginationUtil = paginationUtil;
+        this.placePhoneService = placePhoneService;
+        this.socialNetworkService = socialNetworkService;
+        this.placeCategoryService = placeCategoryService;
+        this.placeSubCategoryService = placeSubCategoryService;
         this.geometryFactory = geometryFactory;
         this.storageService = storageService;
         this.placeImageService = placeImageService;
         this.translationService = translationService;
         this.thumbService = thumbService;
         this.imageDownload = imageDownload;
-        this.redisTranslationService = redisTranslationService;
-        this.translationPlaceMapper = translationPlaceMapper;
-        this.placePhoneService = placePhoneService;
-        this.placePhoneMapper = placePhoneMapper;
-        this.redisPlaceSocialService = redisPlaceSocialService;
-        this.socialNetworkMapper = socialNetworkMapper;
-        this.placeMapper = placeMapper;
     }
 
     public List<Place> search(String search, String locale) {
@@ -125,38 +96,47 @@ public class PlaceService {
     }
 
     @Transactional
-    public void store(Place place,
-                      MultipartFile[] images,
-                      MultipartFile prev) {
+    public void store(PlaceRequest request) {
+        Place place = new Place();
+        PlaceCategory category = placeCategoryService.findOne(request.getCategoryId());
+        PlaceSubCategory subCategory = placeSubCategoryService.findOne(request.getSubCategoryId());
 
-        List<PlaceImage> savedImages = Objects.nonNull(images) ? storeImages(images) : Collections.emptyList();;
+        System.out.println(request.getFiles());
+        List<PlaceImage> savedImages = Objects.nonNull(request.getFiles()) ? storeImages(request.getFiles()) : Collections.emptyList();;
+        PlaceThumb savedThumb =  storeThumb(request.getThumb());
+        System.out.println(savedThumb);
+
+        Set<PlaceTranslation> translations = new HashSet<>();
+        translations.add(translationService.store(new PlaceTranslation(request.getTitleTm(), request.getAddressTm(), "tm")));
+        translations.add(translationService.store(new PlaceTranslation(request.getTitleRu(), request.getAddressRu(), "ru")));
+        translations.add(translationService.store(new PlaceTranslation(request.getTitleEn(), request.getAddressEn(), "en")));
+
+        Set<SocialNetwork> socialNetworks = getSocialNetworks(request.getInstagram(), request.getTiktok());
+        Set<PlacePhone> phones = getPlacePhones(request.getCityNumber(), request.getMobNumbers());
+
+        Point location = geometryFactory.createPoint(new Coordinate(request.getLat(), request.getLng()));
+
+        place.setLocation(location);
+        place.setEmail(request.getEmail());
+        place.setWebsite(request.getWebsite());
+        place.setPlaceCategory(category);
+        place.setPlaceSubCategory(subCategory);
+        place.setTranslations(translations);
+        place.setSocialNetworks(socialNetworks);
+        place.setPhones(phones);
         place.setImages(savedImages);
-
-        PlaceThumb savedThumb =  storeThumb(prev);
         place.setThumbs(savedThumb);
-
-        place.setLocation(geometryFactory.createPoint(new Coordinate(place.getLat(), place.getLng())));
-
-        Set<SocialNetwork> savedNetworks = getSocialNetworks();
-        place.addSocialNetworks(savedNetworks);
-
-        Set<PlacePhone> savedPhones = getPlacePhones();
-        place.addPhones(savedPhones);
-
-        Set<PlaceTranslation> savedTranslations = getPlaceTranslations();
-        place.setTranslations(savedTranslations);
-
         place.setCreatedAt(new Date());
         place.setUpdatedAt(new Date());
 
-        Place finalPlace = placeRepository.save(place);
-        savedNetworks.forEach(network -> network.setPlace(finalPlace));
-        savedPhones.forEach(phone -> phone.setPlace(finalPlace));
+        Place resultPlace = placeRepository.save(place);
+        socialNetworks.forEach(network -> network.setPlace(resultPlace));
+        phones.forEach(phone -> phone.setPlace(resultPlace));
         if(!savedImages.isEmpty())
-            savedImages.forEach(image -> image.setPlace(finalPlace));
-        savedTranslations.forEach(translation -> translation.setPlace(finalPlace));
+            savedImages.forEach(image -> image.setPlace(resultPlace));
+        translations.forEach(translation -> translation.setPlace(resultPlace));
         if (Objects.nonNull(savedThumb))
-            savedThumb.setPlace(finalPlace);
+            savedThumb.setPlace(resultPlace);
     }
 
     @Transactional
@@ -200,43 +180,38 @@ public class PlaceService {
     }
 
     @Transactional
-    public void update(Long id, Place place,
-                       MultipartFile[] images,
-                       MultipartFile prev,
-                       long[] removeImageIds){
-
+    public void update(long id, PlaceRequest request){
 
         Place existingPlace = findOne(id);
 
-        if(Objects.nonNull(removeImageIds) && removeImageIds.length > 0)
-            deleteImageIds(existingPlace, removeImageIds);
+        if(Objects.nonNull(request.getRemoveImageIds()) && !request.getRemoveImageIds().isEmpty())
+            deleteImageIds(existingPlace, request.getRemoveImageIds());
 
-        List<PlaceImage> savedImages = Objects.nonNull(images) ? storeImages(images) : Collections.emptyList();
-        place.setImages(savedImages);
+        List<PlaceImage> savedImages = Objects.nonNull(request.getFiles()) ? storeImages(request.getFiles()) : Collections.emptyList();
+        existingPlace.addImages(savedImages);
 
+        PlaceThumb savedThumb = null;
+        if(Objects.nonNull(request.getThumb())) {
+            savedThumb = storeThumb(request.getThumb(), existingPlace);
+            existingPlace.setThumbs(savedThumb);
+        }
 
-        PlaceThumb savedThumb = Objects.nonNull(prev) ? storeThumb(prev, existingPlace) : null;
-        place.setThumbs(savedThumb);
+        existingPlace.setLocation(geometryFactory.createPoint(new Coordinate(request.getLat(), request.getLng())));
 
-        place.setLocation(geometryFactory.createPoint(new Coordinate(place.getLat(), place.getLng())));
+        socialNetworkService.deleteAll(existingPlace.getSocialNetworks());
+        Set<SocialNetwork> savedNetworks = getSocialNetworks(request.getInstagram(), request.getTiktok());
+        existingPlace.addSocialNetworks(savedNetworks);
 
-        socialNetworkRepository.deleteAll(existingPlace.getSocialNetworks());
-        Set<SocialNetwork> savedNetworks = getSocialNetworks();
-        place.addSocialNetworks(savedNetworks);
+        placePhoneService.deleteAll(existingPlace.getPhones());
+        Set<PlacePhone> savedPhones = getPlacePhones(request.getCityNumber(), request.getMobNumbers());
+        existingPlace.addPhones(savedPhones);
 
-        placePhoneRepository.deleteAll(existingPlace.getPhones());
+        Set<PlaceTranslation> savedTranslations = getUpdateTranslation(request, existingPlace.getTranslations());
+        if(!savedTranslations.isEmpty())
+            existingPlace.addTranslations(savedTranslations);
 
-        Set<PlacePhone> savedPhones = getPlacePhones();
-        place.addPhones(savedPhones);
-
-        Set<PlaceTranslation> savedTranslations = updatePlaceTranslations(existingPlace.getTranslations());
-        place.setTranslations(savedTranslations);
-
-
-        place.setId(id);
-        place.setCreatedAt(existingPlace.getCreatedAt());
-        place.setUpdatedAt(new Date());
-        Place finalPlace = placeRepository.save(place);
+        existingPlace.setUpdatedAt(new Date());
+        Place finalPlace = placeRepository.save(existingPlace);
         savedNetworks.forEach(network -> network.setPlace(finalPlace));
         savedPhones.forEach(phone -> phone.setPlace(finalPlace));
         if(!savedImages.isEmpty())
@@ -259,7 +234,7 @@ public class PlaceService {
         this.placeRepository.deleteById(id);
     }
 
-    private List<PlaceImage> storeImages(MultipartFile[] images) {
+    private List<PlaceImage> storeImages(List<MultipartFile> images) {
         List<PlaceImage> placeImages = new ArrayList<>();
         for (MultipartFile image : images) {
             String pathImage = storageService.store(image, "place", 360, 620);
@@ -286,90 +261,100 @@ public class PlaceService {
                 : thumbService.store(new PlaceThumb(thumbPath));
     }
 
-    private Set<SocialNetwork> getSocialNetworks() {
-        SocialNetworkDTO instagram = redisPlaceSocialService.getInstagram();
-        SocialNetworkDTO tiktok = redisPlaceSocialService.getTikTok();
-
+    private Set<SocialNetwork> getSocialNetworks(String instagram, String tiktok) {
         Set<SocialNetwork> savedNetworks = new HashSet<>();
-        if(instagram != null)
-            savedNetworks.add(socialNetworkRepository.save(convertDtoToEntity(instagram)));
-        if(tiktok != null)
-            savedNetworks.add(socialNetworkRepository.save(convertDtoToEntity(tiktok)));
+        if(Objects.nonNull(instagram) && !instagram.isBlank())
+            savedNetworks.add(socialNetworkService.store(new SocialNetwork(instagram, "instagram")));
+        if(Objects.nonNull(tiktok) && !tiktok.isBlank())
+            savedNetworks.add(socialNetworkService.store(new SocialNetwork(tiktok, "tiktok")));
         return savedNetworks;
     }
 
-    private Set<PlacePhone> getPlacePhones(){
-        List<PlacePhoneDTO> mobPhones = placePhoneService.getMob();
-        PlacePhoneDTO cityPhone = placePhoneService.getCity();
-        List<PlacePhoneDTO> phones = new ArrayList<>();
+    private Set<PlacePhone> getPlacePhones(String cityNumber, List<String> mobNumbers){
+        Set<PlacePhone> phones = new HashSet<>();
 
-        System.out.println(mobPhones);
+        if(Objects.nonNull(mobNumbers) && !mobNumbers.isEmpty()) {
+            mobNumbers.forEach(mobNumber -> {
+                phones.add(placePhoneService.store(new PlacePhone(mobNumber, "mob")));
+            });
+        }
 
-        if(!mobPhones.isEmpty() && mobPhones.getFirst() != null)
-            phones.addAll(mobPhones);
+        if(Objects.nonNull(cityNumber) && !cityNumber.isBlank())
+            phones.add(placePhoneService.store(new PlacePhone(cityNumber, "city")));
 
-        if(cityPhone != null)
-            phones.add(cityPhone);
-
-        return phones.stream()
-                        .map(phone -> placePhoneRepository.save(convertDtoToEntity(phone)))
-                        .collect(Collectors.toSet());
+        return phones;
     }
 
-    private Set<PlaceTranslation> getPlaceTranslations(){
-        Set<PlaceTranslation> translations = new HashSet<>();
-        translations.add(translationService.store(convertDtoToEntity(redisTranslationService.getTm())));
-        translations.add(translationService.store(convertDtoToEntity(redisTranslationService.getRu())));
-        translations.add(translationService.store(convertDtoToEntity(redisTranslationService.getEn())));
-        return translations;
-    }
+    private Set<PlaceTranslation> getUpdateTranslation(PlaceRequest request, Set<PlaceTranslation> translations) {
+//        translations.forEach(translation -> {
+//            if(translation.getLocale().equals("tm")) {
+//                translation.setTitle(request.getTitleTm());
+//                translation.setAddress(request.getAddressTm());
+//            }
+//            if(translation.getLocale().equals("ru")) {
+//                translation.setTitle(request.getTitleRu());
+//                translation.setAddress(request.getAddressRu());
+//            }
+//            if(translation.getLocale().equals("en")) {
+//                translation.setTitle(request.getTitleEn());
+//                translation.setAddress(request.getAddressEn());
+//            }
+//        });
+//
+//
+//        Set<String> translationLocales = translations.stream().map(PlaceTranslation::getLocale).collect(Collectors.toSet());
+//        if(!translationLocales.contains("en"))
+//            translations.add(translationService.store(new PlaceTranslation(request.getTitleEn(), request.getAddressEn(), "en")));
+//        if(!translationLocales.contains("ru"))
+//            translations.add(translationService.store(new PlaceTranslation(request.getTitleRu(), request.getAddressRu(), "ru")));
+//        if(!translationLocales.contains("tm"))
+//            translations.add(translationService.store(new PlaceTranslation(request.getTitleTm(), request.getAddressTm(), "tm")));
+//
+//        return translations;
 
-    private Set<PlaceTranslation> updatePlaceTranslations(Set<PlaceTranslation> existTranslation){
-        Set<PlaceTranslation> translations = new HashSet<>();
-        AtomicBoolean hasRu = new AtomicBoolean(false);
-        AtomicBoolean hasEn = new AtomicBoolean(false);
-        existTranslation.forEach(translation -> {
-            if(translation.getLocale().equals("tm")) {
-                TranslationDTO translationDTO = redisTranslationService.getTm();
-                translation.setTitle(translationDTO.getTitle());
-                translation.setAddress(translationDTO.getAddress());
-                translations.add(translationService.update(translation));
-            }
-            if(translation.getLocale().equals("ru")) {
-                TranslationDTO translationDTO = redisTranslationService.getRu();
-                translation.setTitle(translationDTO.getTitle());
-                translation.setAddress(translationDTO.getAddress());
-                translations.add(translationService.update(translation));
-                hasRu.set(true);
-            }
-            if(translation.getLocale().equals("en")) {
-                TranslationDTO translationDTO = redisTranslationService.getEn();
-                translation.setTitle(translationDTO.getTitle());
-                translation.setAddress(translationDTO.getAddress());
-                translations.add(translationService.update(translation));
-                hasEn.set(true);
-            }
+        Map<String, PlaceTranslation> translationMap = translations.stream()
+                .collect(Collectors.toMap(PlaceTranslation::getLocale, Function.identity()));
+
+        translationMap.computeIfPresent("tm", (locale, translation) -> {
+            translation.setTitle(request.getTitleTm());
+            translation.setAddress(request.getAddressTm());
+            return translation;
         });
 
-        if(!hasEn.get())
-            translations.add(translationService.store(convertDtoToEntity(redisTranslationService.getEn())));
-        if(!hasRu.get())
-            translations.add(translationService.store(convertDtoToEntity(redisTranslationService.getRu())));
+        translationMap.computeIfPresent("ru", (locale, translation) -> {
+            translation.setTitle(request.getTitleRu());
+            translation.setAddress(request.getAddressRu());
+            return translation;
+        });
 
-        return translations;
+        translationMap.computeIfPresent("en", (locale, translation) -> {
+            translation.setTitle(request.getTitleEn());
+            translation.setAddress(request.getAddressEn());
+            return translation;
+        });
+
+        Set<PlaceTranslation> newTranslations = new HashSet<>();
+        if (!translationMap.containsKey("tm"))
+            newTranslations.add(translationService.store(new PlaceTranslation(request.getTitleTm(), request.getAddressTm(), "tm")));
+
+        if (!translationMap.containsKey("ru"))
+            newTranslations.add(translationService.store(new PlaceTranslation(request.getTitleRu(), request.getAddressRu(), "ru")));
+
+        if (!translationMap.containsKey("en"))
+            newTranslations.add(translationService.store(new PlaceTranslation(request.getTitleEn(), request.getAddressEn(), "en")));
+
+        return newTranslations;
     }
 
-    private void deleteImageIds(Place existingPlace, long[] removeImageIds){
+
+    private void deleteImageIds(Place existingPlace, List<Long> removeImageIds){
         List<PlaceImage> placeImages = existingPlace.getImages();
 
         for(int i = 0; i < placeImages.size(); i++){
-            for(int j = 0; j < removeImageIds.length; j++){
-                if(placeImages.get(i).getId() == removeImageIds[j]){
-                    placeImageService.delete(placeImages.get(i));
-                    placeImages.remove(i);
-                }
-            }
+            if(removeImageIds.contains(placeImages.get(i).getId()))
+                placeImageService.delete(placeImages.remove(i));
         }
+
         existingPlace.setImages(placeImages);
     }
 
@@ -383,19 +368,4 @@ public class PlaceService {
         return path.substring(path.lastIndexOf("/") + 1);
     }
 
-    public PlaceDTO convertToDTO(Place place){
-        return this.placeMapper.toDto(place);
-    }
-
-    private PlaceTranslation convertDtoToEntity(TranslationDTO translation) {
-        return translationPlaceMapper.toEntity(translation);
-    }
-
-    private PlacePhone convertDtoToEntity(PlacePhoneDTO placePhone) {
-        return placePhoneMapper.toEntity(placePhone);
-    }
-
-    private SocialNetwork convertDtoToEntity(SocialNetworkDTO socialNetwork) {
-        return socialNetworkMapper.toEntity(socialNetwork);
-    }
 }

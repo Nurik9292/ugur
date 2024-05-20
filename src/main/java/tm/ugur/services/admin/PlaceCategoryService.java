@@ -5,10 +5,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import tm.ugur.models.PlaceCategory;
-import tm.ugur.models.PlaceCategoryTranslation;
+import tm.ugur.models.place.category.PlaceCategory;
+import tm.ugur.models.place.category.PlaceCategoryTranslation;
 import tm.ugur.repo.PlaceCategoryRepository;
 import tm.ugur.storage.FileSystemStorageService;
+import tm.ugur.util.errors.placeCategories.PlaceCategoryNotFoundException;
 import tm.ugur.util.pagination.PaginationUtil;
 
 import java.util.*;
@@ -90,27 +91,26 @@ public class PlaceCategoryService {
         return placeCategoryRepository.save(placeCategory);
     }
 
-    public Optional<PlaceCategory> findOne(long id){
-        return placeCategoryRepository.findById(id);
+    public PlaceCategory findOne(long id){
+        return placeCategoryRepository.findById(id).orElseThrow(PlaceCategoryNotFoundException::new);
     }
 
 
     @Transactional
     public void update(long id, PlaceCategory placeCategory, MultipartFile file, String title_tm, String title_ru, String title_en){
-        Optional<PlaceCategory> existingPlaceCategory = findOne(id);
+        PlaceCategory existingPlaceCategory = findOne(id);
 
-        existingPlaceCategory.ifPresent(category -> {
             String pathImage = storageService.store(file, "place/category");
             System.out.println(pathImage);
             if (!pathImage.isBlank()){
-                if(Objects.nonNull(category.getImage()))
-                    storageService.delete(category.getImage());
+                if(Objects.nonNull(existingPlaceCategory.getImage()))
+                    storageService.delete(existingPlaceCategory.getImage());
                 placeCategory.setImage(pathImage);
             }
 
-            PlaceCategoryTranslation existingTranslationTm = getTranslation(category.getTranslations(),"tm");
-            PlaceCategoryTranslation existingTranslationRu = getTranslation(category.getTranslations(),"ru");
-            PlaceCategoryTranslation existingTranslationEn = getTranslation(category.getTranslations(),"en");
+            PlaceCategoryTranslation existingTranslationTm = getTranslation(existingPlaceCategory.getTranslations(),"tm");
+            PlaceCategoryTranslation existingTranslationRu = getTranslation(existingPlaceCategory.getTranslations(),"ru");
+            PlaceCategoryTranslation existingTranslationEn = getTranslation(existingPlaceCategory.getTranslations(),"en");
 
             if (existingTranslationTm != null)
                 translationService.update(existingTranslationTm, title_tm);
@@ -124,10 +124,10 @@ public class PlaceCategoryService {
 
             placeCategory.setId(id);
             placeCategory.setUpdatedAt(new Date());
-            placeCategory.setCreatedAt(category.getCreatedAt());
+            placeCategory.setCreatedAt(existingPlaceCategory.getCreatedAt());
             placeCategoryRepository.save(placeCategory);
 
-        });
+
     }
 
     private PlaceCategoryTranslation getTranslation(List<PlaceCategoryTranslation> translations, String locale){

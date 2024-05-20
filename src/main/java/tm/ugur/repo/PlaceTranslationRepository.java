@@ -2,7 +2,7 @@ package tm.ugur.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import tm.ugur.models.PlaceTranslation;
+import tm.ugur.models.place.PlaceTranslation;
 
 import java.util.Optional;
 

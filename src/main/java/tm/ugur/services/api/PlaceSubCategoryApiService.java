@@ -3,12 +3,8 @@ package tm.ugur.services.api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tm.ugur.dto.PlaceSubCategoryDTO;
-import tm.ugur.dto.PlaceSubCategoryDTO;
-import tm.ugur.models.PlaceCategory;
-import tm.ugur.models.PlaceSubCategory;
-import tm.ugur.repo.PlaceCategoryRepository;
+import tm.ugur.models.place.subCategory.PlaceSubCategory;
 import tm.ugur.repo.PlaceSubCategoryRepository;
-import tm.ugur.util.mappers.PlaceCategoryMapper;
 import tm.ugur.util.mappers.PlaceSubCategoriesMapper;
 
 import java.util.List;

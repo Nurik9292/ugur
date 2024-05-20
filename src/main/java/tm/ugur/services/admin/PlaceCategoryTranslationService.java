@@ -3,7 +3,7 @@ package tm.ugur.services.admin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tm.ugur.models.PlaceCategoryTranslation;
+import tm.ugur.models.place.category.PlaceCategoryTranslation;
 import tm.ugur.repo.PlaceCategoryTranslationRepository;
 
 import java.util.Date;

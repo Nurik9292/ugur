@@ -40,6 +40,8 @@ if (searchPlace && table) {
         const url = `${host}/places?search=${encodeURIComponent(search)}`;
         if(search.length >= 3)
             window.location.href = url;
+        else
+            window.location.href = `${host}/places`
 
     }, 500));
 

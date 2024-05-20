@@ -5,10 +5,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import tm.ugur.dto.PlaceSubCategoryDTO;
-import tm.ugur.dto.TranslationDTO;
-import tm.ugur.models.PlaceCategoryTranslation;
-import tm.ugur.models.PlaceSubCategory;
-import tm.ugur.models.PlaceSubCategoryTranslation;
+import tm.ugur.models.place.subCategory.PlaceSubCategory;
+import tm.ugur.models.place.subCategory.PlaceSubCategoryTranslation;
 
 import java.util.List;
 import java.util.Map;

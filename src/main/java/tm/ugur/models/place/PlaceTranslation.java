@@ -1,13 +1,15 @@
-package tm.ugur.models;
+package tm.ugur.models.place;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import tm.ugur.models.AbstractEntity;
 
 import java.util.Date;
 import java.util.Objects;
 
 @Entity
-@Table(name = "place_sub_category_translations")
-public class PlaceSubCategoryTranslation extends AbstractEntity{
+@Table(name = "place_translations")
+public class PlaceTranslation extends AbstractEntity {
 
     @Id
     @Column(name = "id")
@@ -18,11 +20,16 @@ public class PlaceSubCategoryTranslation extends AbstractEntity{
     private String locale;
 
     @Column(name = "title")
+    @NotBlank(message = "Заголовк не должен быть пустым.")
     private String title;
 
+    @Column(name = "address")
+    @NotBlank(message = "Адрес не должен быть пустым.")
+    private String address;
+
     @ManyToOne
-    @JoinColumn(name = "place_sub_category_id", referencedColumnName = "id")
-    private PlaceSubCategory placeSubCategory;
+    @JoinColumn(name = "place_id", referencedColumnName ="id", nullable = false)
+    private Place place;
 
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
@@ -32,11 +39,13 @@ public class PlaceSubCategoryTranslation extends AbstractEntity{
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
 
-    public PlaceSubCategoryTranslation(){}
+    public PlaceTranslation(){}
 
-    public PlaceSubCategoryTranslation(String locale, String title){
+
+    public PlaceTranslation(String title, String address, String locale){
         this.locale = locale;
         this.title = title;
+        this.address = address;
     }
 
     public long getId() {
@@ -63,12 +72,20 @@ public class PlaceSubCategoryTranslation extends AbstractEntity{
         this.title = title;
     }
 
-    public PlaceSubCategory getPlaceSubCategory() {
-        return placeSubCategory;
+    public String getAddress() {
+        return address;
     }
 
-    public void setPlaceSubCategory(PlaceSubCategory placeSubCategory) {
-        this.placeSubCategory = placeSubCategory;
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public Place getPlace() {
+        return place;
+    }
+
+    public void setPlace(Place place) {
+        this.place = place;
     }
 
     public Date getUpdatedAt() {
@@ -91,22 +108,26 @@ public class PlaceSubCategoryTranslation extends AbstractEntity{
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
-        PlaceSubCategoryTranslation that = (PlaceSubCategoryTranslation) object;
-        return id == that.id && Objects.equals(locale, that.locale) && Objects.equals(title, that.title);
+        PlaceTranslation that = (PlaceTranslation) object;
+        return id == that.id && Objects.equals(locale, that.locale)
+                && Objects.equals(title, that.title) && Objects.equals(address, that.address);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, locale, title);
+        return Objects.hash(id, locale, title, address);
     }
 
     @Override
     public String toString() {
-        return "PlaceSubCategoryTranslation{" +
+        return "PlaceTranslation{" +
                 "id=" + id +
                 ", locale='" + locale + '\'' +
                 ", title='" + title + '\'' +
+                ", address='" + address + '\'' +
+                ", place=" + place +
                 '}';
     }
+
 
 }

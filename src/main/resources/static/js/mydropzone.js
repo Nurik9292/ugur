@@ -3,7 +3,7 @@ let myDropzone = new Dropzone("#drop", {
     autoProcessQueue: false,
     addRemoveLinks: true,
     maxFiles: 6,
-    acceptedFiles: "image/*",
+    acceptedFiles: "image/jpg, image/jpeg, image/png, image/webp",
     clickable: ".fileinput-button"
 });
 

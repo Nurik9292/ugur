@@ -1,8 +1,13 @@
-package tm.ugur.models;
+package tm.ugur.models.place;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import org.locationtech.jts.geom.Point;
+import tm.ugur.models.AbstractEntity;
+import tm.ugur.models.Client;
+import tm.ugur.models.SocialNetwork;
+import tm.ugur.models.place.category.PlaceCategory;
+import tm.ugur.models.place.subCategory.PlaceSubCategory;
 
 import java.util.Date;
 import java.util.List;
@@ -11,7 +16,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "places")
-public class Place extends AbstractEntity{
+public class Place extends AbstractEntity {
 
     @Id
     @Column(name = "id")
@@ -210,12 +215,21 @@ public class Place extends AbstractEntity{
         this.images = images;
     }
 
+    public void addImages(List<PlaceImage> images) {
+        this.images.addAll(images);
+    }
+
     public PlaceThumb getThumbs() {
         return thumbs;
     }
 
     public void setThumbs(PlaceThumb thumbs) {
         this.thumbs = thumbs;
+    }
+
+    public void addTranslations(Set<PlaceTranslation> translations) {
+        if(Objects.nonNull(translations) && !translations.isEmpty())
+            this.translations.addAll(translations);
     }
 
     @Override

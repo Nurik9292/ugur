@@ -62,3 +62,7 @@ tbody tr td {
     height: 40px;
     cursor: pointer;
 }
+
+.plus {
+    cursor: pointer;
+}

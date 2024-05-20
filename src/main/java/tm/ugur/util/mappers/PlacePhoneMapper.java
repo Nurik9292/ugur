@@ -5,8 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import tm.ugur.dto.PlacePhoneDTO;
-import tm.ugur.dto.geo.PointDTO;
-import tm.ugur.models.PlacePhone;
+import tm.ugur.models.place.PlacePhone;
 
 @Component
 public class PlacePhoneMapper extends AbstractMapper<PlacePhone, PlacePhoneDTO>{

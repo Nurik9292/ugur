@@ -1,6 +1,7 @@
 package tm.ugur.models;
 
 import jakarta.persistence.*;
+import tm.ugur.models.place.Place;
 
 import java.util.Date;
 import java.util.Objects;

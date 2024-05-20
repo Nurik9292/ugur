@@ -9,9 +9,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tm.ugur.dto.PlaceSubCategoryDTO;
-import tm.ugur.models.PlaceCategory;
-import tm.ugur.models.PlaceCategoryTranslation;
-import tm.ugur.models.PlaceSubCategory;
+import tm.ugur.models.place.category.PlaceCategory;
+import tm.ugur.models.place.category.PlaceCategoryTranslation;
+import tm.ugur.models.place.subCategory.PlaceSubCategory;
 import tm.ugur.services.admin.PlaceCategoryService;
 import tm.ugur.util.mappers.PlaceSubCategoriesMapper;
 import tm.ugur.util.pagination.PaginationUtil;
@@ -95,7 +95,7 @@ public class PlaceCategoryController {
     @GetMapping("/{id}/edit")
     public String edit(@PathVariable("id") long id, Model model){
         sortByStatic = "";
-        PlaceCategory placeCategory = placeCategoryService.findOne(id).orElse(new PlaceCategory());
+        PlaceCategory placeCategory = placeCategoryService.findOne(id);
 
         List<PlaceCategoryTranslation> translations = placeCategory.getTranslations();
         Map<String, String> translation = new HashMap<>();
@@ -142,13 +142,8 @@ public class PlaceCategoryController {
     @GetMapping("/getSubcategories/{id}")
     public ResponseEntity<List<PlaceSubCategoryDTO>> getSubCategories(@PathVariable("id") Long id){
 
-        Optional<PlaceCategory> category =  placeCategoryService.findOne(id);
-
-        if (category.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        PlaceCategory placeCategory = category.get();
-        List<PlaceSubCategoryDTO> placeSubCategories = placeCategory.getSubCategories().stream().map(this::convertToDto).toList();
+        PlaceCategory category =  placeCategoryService.findOne(id);
+        List<PlaceSubCategoryDTO> placeSubCategories = category.getSubCategories().stream().map(this::convertToDto).toList();
 
         return  ResponseEntity.ok(placeSubCategories);
     }

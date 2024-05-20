@@ -5,7 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import tm.ugur.dto.TranslationDTO;
-import tm.ugur.models.PlaceSubCategoryTranslation;
+import tm.ugur.models.place.subCategory.PlaceSubCategoryTranslation;
 
 @Component
 public class TranslationPlaceSubCategoryMapper extends AbstractMapper<PlaceSubCategoryTranslation, TranslationDTO>{

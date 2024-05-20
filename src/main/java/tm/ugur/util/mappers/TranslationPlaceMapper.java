@@ -4,11 +4,8 @@ import jakarta.annotation.PostConstruct;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import tm.ugur.dto.RouteDTO;
 import tm.ugur.dto.TranslationDTO;
-import tm.ugur.models.PlaceSubCategoryTranslation;
-import tm.ugur.models.PlaceTranslation;
-import tm.ugur.models.Route;
+import tm.ugur.models.place.PlaceTranslation;
 
 @Component
 public class TranslationPlaceMapper extends AbstractMapper<PlaceTranslation, TranslationDTO>{

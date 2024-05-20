@@ -3,7 +3,7 @@ package tm.ugur.services.admin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tm.ugur.models.PlaceThumb;
+import tm.ugur.models.place.PlaceThumb;
 import tm.ugur.repo.PlaceThumbRepository;
 import tm.ugur.storage.FileSystemStorageService;
 
