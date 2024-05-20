@@ -101,7 +101,6 @@
                                             <p th:if="${trans.getTitle().length() < 20 and  trans.getLocale() == 'ru'}" th:text="${trans.getTitle()}"></p>
                                         </div>
                                     </td>
-
                                     <td>
                                         <div th:each="trans : ${place.getTranslations()}">
                                             <p th:if="${trans.getAddress().length() > 20 and  trans.getLocale() == 'ru'}" th:text="${trans.getAddress().substring(0, 20)} + '...'"></p>
@@ -169,6 +168,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
                                         </div>
                                     </td>
                                 </tr>

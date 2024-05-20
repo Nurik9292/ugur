@@ -7,16 +7,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import tm.ugur.dto.PlaceSubCategoryDTO;
 import tm.ugur.models.place.category.PlaceCategory;
 import tm.ugur.models.place.category.PlaceCategoryTranslation;
 import tm.ugur.models.place.subCategory.PlaceSubCategory;
+import tm.ugur.request.place.CategoryRequest;
 import tm.ugur.services.admin.PlaceCategoryService;
 import tm.ugur.util.mappers.PlaceSubCategoriesMapper;
 import tm.ugur.util.pagination.PaginationUtil;
+import tm.ugur.util.sort.place.SortCategory;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.IntStream;
 
 @Controller
@@ -25,14 +29,17 @@ public class PlaceCategoryController {
 
     private final PlaceCategoryService placeCategoryService;
     private final PaginationUtil paginationUtil;
+    private final SortCategory sortCategory;
     private final PlaceSubCategoriesMapper placeSubCategoriesMapper;
-    private static String sortByStatic = "";
+
 
     public PlaceCategoryController(PlaceCategoryService placeCategoryService,
                                    PaginationUtil paginationUtil,
+                                   SortCategory sortCategory,
                                    PlaceSubCategoriesMapper placeSubCategoriesMapper) {
         this.placeCategoryService = placeCategoryService;
         this.paginationUtil = paginationUtil;
+        this.sortCategory = sortCategory;
         this.placeSubCategoriesMapper = placeSubCategoriesMapper;
     }
 
@@ -41,14 +48,16 @@ public class PlaceCategoryController {
                         @RequestParam(name = "items", required = false) String items,
                         @RequestParam(value = "sortBy", required = false) String sortBy, Model model){
 
-        if(sortBy != null){
-            sortByStatic = sortBy;
-        }
+        int pageNumber = page == null ? 1 : Integer.parseInt(page);
+        int itemsPerPage = items == null ? 10 : Integer.parseInt(items);
 
-        Page<PlaceCategory> placeCategories = this.placeCategoryService.getPlaceCategoryPages(page, items, sortByStatic);
+
+        List<PlaceCategory> placeCategoryList =  placeCategoryService.findAll();
+        sortCategory.setData(placeCategoryList, sortBy);
+        sortCategory.execute();
+
+        Page<PlaceCategory> placeCategories = paginationUtil.createPage(placeCategoryList, pageNumber, itemsPerPage);
         int totalPages = placeCategories.getTotalPages();
-
-        Integer[] totalPage = this.paginationUtil.getTotalPage(totalPages, placeCategories.getNumber());
 
         if(placeCategories.getTotalPages() > 0){
             List<Integer> pageNumbers = IntStream.rangeClosed(1, placeCategories.getTotalPages()).boxed().toList();
@@ -58,7 +67,8 @@ public class PlaceCategoryController {
         model.addAttribute("title", "Категория заведении");
         model.addAttribute("page", "place-category-index");
         model.addAttribute("placeCategories", placeCategories);
-        model.addAttribute("totalPage", totalPage);
+        model.addAttribute("totalPage", paginationUtil.getTotalPage(totalPages, placeCategories.getNumber()));
+        model.addAttribute("sort", Objects.nonNull(sortBy) ? sortBy : "");
 
         return "layouts/place_categories/index";
     }
@@ -66,7 +76,7 @@ public class PlaceCategoryController {
 
     @GetMapping("/create")
     public String create(@ModelAttribute("placeCategory") PlaceCategory placeCategory, Model model){
-        sortByStatic = "";
+
 
         model.addAttribute("title", "Создание категорию заведения");
         model.addAttribute("page", "place-category-create");
@@ -75,27 +85,34 @@ public class PlaceCategoryController {
         return "layouts/place_categories/create";
     }
 
-    @PostMapping
-    public String store(@RequestParam("title_tm") String title_tm,
-                        @RequestParam("title_ru") String title_ru,
-                        @RequestParam("title_en") String title_en,
-                        @RequestParam(value = "file", required = false) MultipartFile file,
-                        @ModelAttribute("placeCategory") @Valid PlaceCategory placeCategory, BindingResult result, Model model){
+
+        @PostMapping
+    public String store(@ModelAttribute @Valid CategoryRequest request, BindingResult result, Model model){
+
         if(result.hasErrors()){
+            Map<String, String> errors = new HashMap<>();
+            result.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+            model.addAttribute("errors", errors);
             model.addAttribute("page", "place-category-create");
             model.addAttribute("title", "Создать категорию заведения");
             return "layouts/place_categories/create";
         }
 
-        placeCategoryService.store(placeCategory, file, title_tm, title_ru, title_en);
+        placeCategoryService.store(request);
 
         return "redirect:/place-categories";
     }
 
+
+
+
+
     @GetMapping("/{id}/edit")
     public String edit(@PathVariable("id") long id, Model model){
-        sortByStatic = "";
+
         PlaceCategory placeCategory = placeCategoryService.findOne(id);
+
+        System.out.println(placeCategory);
 
         List<PlaceCategoryTranslation> translations = placeCategory.getTranslations();
         Map<String, String> translation = new HashMap<>();
@@ -114,20 +131,19 @@ public class PlaceCategoryController {
 
     @PatchMapping("/{id}")
     public String update(@PathVariable("id") long id,
-                         @RequestParam(value = "file", required = false) MultipartFile file,
-                         @RequestParam("title_tm") String title_tm,
-                         @RequestParam("title_ru") String title_ru,
-                         @RequestParam("title_en") String title_en,
-                         @ModelAttribute("placeCategory") @Valid PlaceCategory placeCategory, BindingResult result,
+                         @ModelAttribute @Valid CategoryRequest request, BindingResult result,
                          Model model){
-        System.out.println(file);
+
         if(result.hasErrors()){
+            Map<String, String> errors = new HashMap<>();
+            result.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+            model.addAttribute("errors", errors);
             model.addAttribute("page", "place-category-edit");
             model.addAttribute("title", "Изменить категорию заведения");
             return "layouts/place_categories/edit";
         }
 
-        this.placeCategoryService.update(id, placeCategory, file, title_tm, title_ru, title_en);
+        this.placeCategoryService.update(id, request);
 
         return "redirect:/place-categories";
     }

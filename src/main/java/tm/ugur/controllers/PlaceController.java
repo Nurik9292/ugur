@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import tm.ugur.models.*;
 import tm.ugur.models.place.*;
 import tm.ugur.models.place.category.PlaceCategory;
-import tm.ugur.request.PlaceRequest;
+import tm.ugur.request.place.PlaceRequest;
 import tm.ugur.services.admin.PlaceCategoryService;
 import tm.ugur.services.admin.PlaceService;
 import tm.ugur.services.admin.PlaceTranslationService;
@@ -159,7 +159,7 @@ public class PlaceController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable("id") long id,
-                         @ModelAttribute("place") @Valid PlaceRequest request, BindingResult result){
+                         @ModelAttribute @Valid PlaceRequest request, BindingResult result){
 
         if(result.hasErrors()){
             Map<String, String> errors = new HashMap<>();

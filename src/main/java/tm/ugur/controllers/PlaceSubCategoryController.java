@@ -1,6 +1,7 @@
 package tm.ugur.controllers;
 
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,9 +10,11 @@ import org.springframework.web.bind.annotation.*;
 import tm.ugur.models.place.category.PlaceCategory;
 import tm.ugur.models.place.subCategory.PlaceSubCategory;
 import tm.ugur.models.place.subCategory.PlaceSubCategoryTranslation;
+import tm.ugur.request.place.SubCategoryRequest;
 import tm.ugur.services.admin.PlaceCategoryService;
 import tm.ugur.services.admin.PlaceSubCategoryService;
 import tm.ugur.util.pagination.PaginationUtil;
+import tm.ugur.util.sort.place.SortSubCategory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,14 +28,16 @@ public class PlaceSubCategoryController {
     private final PlaceSubCategoryService placeSubCategoryService;
     private final PlaceCategoryService placeCategoryService;
     private final PaginationUtil paginationUtil;
-    private static String sortByStatic = "";
+    private final SortSubCategory sortSubCategory;
 
+    @Autowired
     public PlaceSubCategoryController(PlaceSubCategoryService placeSubCategoryService,
                                       PlaceCategoryService placeCategoryService,
-                                      PaginationUtil paginationUtil) {
+                                      PaginationUtil paginationUtil, SortSubCategory sortSubCategory) {
         this.placeSubCategoryService = placeSubCategoryService;
         this.placeCategoryService = placeCategoryService;
         this.paginationUtil = paginationUtil;
+        this.sortSubCategory = sortSubCategory;
     }
 
 
@@ -41,25 +46,25 @@ public class PlaceSubCategoryController {
                         @RequestParam(name = "items", required = false) String items,
                         @RequestParam(value = "sortBy", required = false) String sortBy, Model model){
 
-        if(sortBy != null){
-            sortByStatic = sortBy;
-        }
+        int pageNumber = page == null ? 1 : Integer.parseInt(page);
+        int itemsPerPage = items == null ? 10 : Integer.parseInt(items);
 
-        Page<PlaceSubCategory> placeSubCategories = this.placeSubCategoryService.getPlaceSubCategoryPages(page, items, sortByStatic);
+        List<PlaceSubCategory> subCategories = placeSubCategoryService.findAll();
+        sortSubCategory.setData(subCategories, sortBy);
+        sortSubCategory.execute();
+        Page<PlaceSubCategory> placeSubCategories = paginationUtil.createPage(subCategories,pageNumber, itemsPerPage);
         int totalPages = placeSubCategories.getTotalPages();
-
-        Integer[] totalPage = this.paginationUtil.getTotalPage(totalPages, placeSubCategories.getNumber());
 
         if(placeSubCategories.getTotalPages() > 0){
             List<Integer> pageNumbers = IntStream.rangeClosed(1, placeSubCategories.getTotalPages()).boxed().toList();
             model.addAttribute("pageNumbers", pageNumbers);
         }
 
-
         model.addAttribute("title", "Под категория заведении");
         model.addAttribute("page", "place-sub-category-index");
+        model.addAttribute("sort", sortBy);
         model.addAttribute("placeSubCategories", placeSubCategories);
-        model.addAttribute("totalPage", totalPage);
+        model.addAttribute("totalPage", paginationUtil.getTotalPage(totalPages, placeSubCategories.getNumber()));
 
 
         return "layouts/place_sub_categories/index";
@@ -67,10 +72,8 @@ public class PlaceSubCategoryController {
 
     @GetMapping("/create")
     public String create(@ModelAttribute("placeSubCategory") PlaceSubCategory placeSubCategory, Model model){
-        sortByStatic = "";
 
         List<PlaceCategory> placeCategories = placeCategoryService.findAll();
-
 
         model.addAttribute("title", "Создание под категорию заведения");
         model.addAttribute("page", "place-sub-category-create");
@@ -81,26 +84,28 @@ public class PlaceSubCategoryController {
     }
 
     @PostMapping
-    public String store(@RequestParam("title_tm") String title_tm,
-                        @RequestParam("title_ru") String title_ru,
-                        @RequestParam("title_en") String title_en,
-                        @ModelAttribute("placeSubCategory") @Valid PlaceSubCategory placeSubCategory,
-                        BindingResult result, Model model){
+    public String store(@ModelAttribute @Valid SubCategoryRequest request, BindingResult result, Model model){
+
+        List<PlaceCategory> placeCategories = placeCategoryService.findAll();
 
         if(result.hasErrors()){
+            Map<String, String> errors = new HashMap<>();
+            result.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+            model.addAttribute("errors", errors);
             model.addAttribute("page", "place-sub-category-create");
             model.addAttribute("title", "Создать под категорию заведения");
+            model.addAttribute("placeCategories", placeCategories);
+            model.addAttribute("titles", placeCategoryService.getCategoryTitles(placeCategories));
             return "layouts/place_sub_categories/create";
         }
 
-        placeSubCategoryService.store(placeSubCategory, title_tm, title_ru,title_en);
+        placeSubCategoryService.store(request);
 
         return "redirect:/place-sub-categories";
     }
 
     @GetMapping("/{id}/edit")
     public String edit(@PathVariable("id") long id, Model model){
-        sortByStatic = "";
 
         List<PlaceCategory> placeCategories = placeCategoryService.findAll();
 
@@ -124,19 +129,22 @@ public class PlaceSubCategoryController {
 
     @PatchMapping("/{id}")
     public String update(@PathVariable("id") long id,
-                         @RequestParam("title_tm") String title_tm,
-                         @RequestParam("title_ru") String title_ru,
-                         @RequestParam("title_en") String title_en,
-                         @ModelAttribute("placeSubCategory") @Valid PlaceSubCategory placeSubCategory, BindingResult result,
+                         @ModelAttribute @Valid SubCategoryRequest request, BindingResult result,
                          Model model){
+        List<PlaceCategory> placeCategories = placeCategoryService.findAll();
 
         if(result.hasErrors()){
+            Map<String, String> errors = new HashMap<>();
+            result.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+            model.addAttribute("errors", errors);
             model.addAttribute("page", "place-sub-category-edit");
             model.addAttribute("title", "Изменить под категорию заведения");
+            model.addAttribute("placeCategories", placeCategories);
+            model.addAttribute("titles", placeCategoryService.getCategoryTitles(placeCategories));
             return "layouts/place_sub_categories/edit";
         }
 
-        this.placeSubCategoryService.update(id, placeSubCategory, title_tm, title_ru, title_en);
+        this.placeSubCategoryService.update(id, request);
 
         return "redirect:/place-sub-categories";
     }

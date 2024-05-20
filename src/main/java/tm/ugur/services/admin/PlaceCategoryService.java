@@ -9,6 +9,7 @@ import tm.ugur.errors.placeCategories.PlaceCategoryNotFoundException;
 import tm.ugur.models.place.category.PlaceCategory;
 import tm.ugur.models.place.category.PlaceCategoryTranslation;
 import tm.ugur.repo.PlaceCategoryRepository;
+import tm.ugur.request.place.CategoryRequest;
 import tm.ugur.storage.FileSystemStorageService;
 import tm.ugur.util.pagination.PaginationUtil;
 
@@ -19,17 +20,14 @@ import java.util.*;
 public class PlaceCategoryService {
 
     private final PlaceCategoryRepository placeCategoryRepository;
-    private final PaginationUtil paginationUtil;
     private final PlaceCategoryTranslationService translationService;
     private final FileSystemStorageService storageService;
 
     @Autowired
     public PlaceCategoryService(PlaceCategoryRepository placeCategoryRepository,
-                                PaginationUtil paginationUtil,
                                 PlaceCategoryTranslationService translationService,
                                 FileSystemStorageService storageService) {
         this.placeCategoryRepository = placeCategoryRepository;
-        this.paginationUtil = paginationUtil;
         this.translationService = translationService;
         this.storageService = storageService;
     }
@@ -39,46 +37,20 @@ public class PlaceCategoryService {
         return placeCategoryRepository.findAll();
     }
 
-    public Page<PlaceCategory> findAll(int pageNumber, int itemsPerPage)
-    {
-        return paginationUtil.createPage(placeCategoryRepository.findAll(), pageNumber, itemsPerPage);
-    }
-
-
-    public Page<PlaceCategory> getPlaceCategoryPages(String page, String items, String sortBy){
-        int pageNumber = page == null ? 1 : Integer.parseInt(page);
-        int itemsPerPage = items == null ? 10 : Integer.parseInt(items);
-
-        List<PlaceCategory> placeCategories = !sortBy.isBlank()
-                ? categorySorted(sortBy) : placeCategoryRepository.findAll();
-
-        return this.paginationUtil.createPage(placeCategories, pageNumber, itemsPerPage);
-    }
-
-    private List<PlaceCategory> categorySorted(String sortBy){
-        return placeCategoryRepository.findAll().stream()
-                .sorted(Comparator.comparing(category -> {
-                    PlaceCategoryTranslation translation = category.getTranslations().stream()
-                            .filter(trans -> trans.getLocale().equals(sortBy))
-                            .findFirst().orElse(null);
-
-                    return translation != null ? translation.getTitle() : "";
-                })).toList();
-    }
 
     @Transactional
-    public void store(PlaceCategory placeCategory, MultipartFile file, String title_tm, String title_ru, String title_en){
-        String pathImage = storageService.store(file, "place/category");
-        System.out.println(pathImage);
+    public void store(CategoryRequest request){
+        PlaceCategory placeCategory = new PlaceCategory();
+        String pathImage = storageService.store(request.getThumb(), "place/category");
         if (!pathImage.isBlank())
             placeCategory.setImage(pathImage);
 
         placeCategory.setUpdatedAt(new Date());
         placeCategory.setCreatedAt(new Date());
         List<PlaceCategoryTranslation> pct =
-                new ArrayList<>(List.of(translationService.store(new PlaceCategoryTranslation("tm", title_tm)),
-                translationService.store(new PlaceCategoryTranslation("ru", title_ru)),
-                translationService.store(new PlaceCategoryTranslation("en", title_en))));
+                new ArrayList<>(List.of(translationService.store(new PlaceCategoryTranslation("tm", request.getTitleTm())),
+                translationService.store(new PlaceCategoryTranslation("ru", request.getTitleRu())),
+                translationService.store(new PlaceCategoryTranslation("en", request.getTitleEn()))));
         placeCategory.setTranslations(pct);
         PlaceCategory newPlaceCategory = placeCategoryRepository.save(placeCategory);
         pct.forEach(p -> p.setPlaceCategory(newPlaceCategory));
@@ -97,15 +69,15 @@ public class PlaceCategoryService {
 
 
     @Transactional
-    public void update(long id, PlaceCategory placeCategory, MultipartFile file, String title_tm, String title_ru, String title_en){
+    public void update(long id, CategoryRequest request){
         PlaceCategory existingPlaceCategory = findOne(id);
 
-            String pathImage = storageService.store(file, "place/category");
-            System.out.println(pathImage);
+            String pathImage = storageService.store(request.getThumb(), "place/category");
+
             if (!pathImage.isBlank()){
                 if(Objects.nonNull(existingPlaceCategory.getImage()))
                     storageService.delete(existingPlaceCategory.getImage());
-                placeCategory.setImage(pathImage);
+                existingPlaceCategory.setImage(pathImage);
             }
 
             PlaceCategoryTranslation existingTranslationTm = getTranslation(existingPlaceCategory.getTranslations(),"tm");
@@ -113,19 +85,17 @@ public class PlaceCategoryService {
             PlaceCategoryTranslation existingTranslationEn = getTranslation(existingPlaceCategory.getTranslations(),"en");
 
             if (existingTranslationTm != null)
-                translationService.update(existingTranslationTm, title_tm);
+                translationService.update(existingTranslationTm, request.getTitleTm());
 
-            if (existingTranslationTm != null)
-                translationService.update(existingTranslationRu, title_ru);
+            if (existingTranslationRu != null)
+                translationService.update(existingTranslationRu, request.getTitleRu());
 
-            if (existingTranslationTm != null)
-                translationService.update(existingTranslationEn, title_en);
+            if (existingTranslationEn != null)
+                translationService.update(existingTranslationEn, request.getTitleEn());
 
 
-            placeCategory.setId(id);
-            placeCategory.setUpdatedAt(new Date());
-            placeCategory.setCreatedAt(existingPlaceCategory.getCreatedAt());
-            placeCategoryRepository.save(placeCategory);
+            existingPlaceCategory.setUpdatedAt(new Date());
+            placeCategoryRepository.save(existingPlaceCategory);
 
 
     }

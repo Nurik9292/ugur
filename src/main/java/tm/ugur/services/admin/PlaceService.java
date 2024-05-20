@@ -14,7 +14,7 @@ import tm.ugur.models.place.*;
 import tm.ugur.models.place.category.PlaceCategory;
 import tm.ugur.models.place.subCategory.PlaceSubCategory;
 import tm.ugur.repo.PlaceRepository;
-import tm.ugur.request.PlaceRequest;
+import tm.ugur.request.place.PlaceRequest;
 import tm.ugur.storage.FileSystemStorageService;
 import tm.ugur.util.ImageDownload;
 

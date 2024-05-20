@@ -1,4 +1,4 @@
-package tm.ugur.request;
+package tm.ugur.request.place;
 
 import jakarta.validation.constraints.*;
 import org.springframework.web.multipart.MultipartFile;

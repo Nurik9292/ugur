@@ -1,72 +1,49 @@
 package tm.ugur.services.admin;
 
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tm.ugur.errors.placeSubCategories.PlaceSubCategoryNotFoundException;
+import tm.ugur.models.place.category.PlaceCategory;
 import tm.ugur.models.place.subCategory.PlaceSubCategory;
 import tm.ugur.models.place.subCategory.PlaceSubCategoryTranslation;
 import tm.ugur.repo.PlaceSubCategoryRepository;
-import tm.ugur.util.pagination.PaginationUtil;
+import tm.ugur.request.place.SubCategoryRequest;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
 public class PlaceSubCategoryService {
 
     private final PlaceSubCategoryRepository placeSubCategoryRepository;
-    private final PaginationUtil paginationUtil;
     private final PlaceSubCategoryTranslationService translationService;
+    private final PlaceCategoryService placeCategoryService;
 
     public PlaceSubCategoryService(PlaceSubCategoryRepository placeSubCategoryRepository,
-                                   PaginationUtil paginationUtil,
-                                   PlaceSubCategoryTranslationService translationService) {
+                                   PlaceSubCategoryTranslationService translationService,
+                                   PlaceCategoryService placeCategoryService) {
         this.placeSubCategoryRepository = placeSubCategoryRepository;
-        this.paginationUtil = paginationUtil;
         this.translationService = translationService;
+        this.placeCategoryService = placeCategoryService;
     }
 
     public List<PlaceSubCategory> findAll(){
         return placeSubCategoryRepository.findAll();
     }
 
-    public Page<PlaceSubCategory> findAll(int pageNumber, int itemsPerPage)
-    {
-        return paginationUtil.createPage(placeSubCategoryRepository.findAll(), pageNumber, itemsPerPage);
-    }
-
-
-    public Page<PlaceSubCategory> getPlaceSubCategoryPages(String page, String items, String sortBy){
-        int pageNumber = page == null ? 1 : Integer.parseInt(page);
-        int itemsPerPage = items == null ? 10 : Integer.parseInt(items);
-
-
-        List<PlaceSubCategory> placeCategories = !sortBy.isBlank()
-                ? subCategorySorted(sortBy) : placeSubCategoryRepository.findAll();;
-
-        return this.paginationUtil.createPage(placeCategories, pageNumber, itemsPerPage);
-    }
-
-    private List<PlaceSubCategory> subCategorySorted(String sortBy){
-        return placeSubCategoryRepository.findAll().stream()
-                .sorted(Comparator.comparing(sub -> {
-                    PlaceSubCategoryTranslation subTranslation = sub.getTranslations().stream()
-                            .filter(trans -> trans.getLocale().equals(sortBy))
-                            .findFirst().orElse(null);
-
-                    return subTranslation != null ? subTranslation.getTitle() : "";
-                })).toList();
-    }
 
     @Transactional
-    public void store(PlaceSubCategory placeSubCategory, String title_tm, String title_ru, String title_en){
+    public void store(SubCategoryRequest request){
+        PlaceSubCategory placeSubCategory = new PlaceSubCategory();
+        placeSubCategory.setPlaceCategory(placeCategoryService.findOne(request.getPlaceCategory()));
         placeSubCategory.setUpdatedAt(new Date());
         placeSubCategory.setCreatedAt(new Date());
         List<PlaceSubCategoryTranslation> psct =
-                new ArrayList<>(List.of(translationService.store(new PlaceSubCategoryTranslation("tm", title_tm)),
-                        translationService.store(new PlaceSubCategoryTranslation("ru", title_ru)),
-                        translationService.store(new PlaceSubCategoryTranslation("en", title_en))));
+                new ArrayList<>(List.of(translationService.store(new PlaceSubCategoryTranslation("tm", request.getTitleTm())),
+                        translationService.store(new PlaceSubCategoryTranslation("ru", request.getTitleRu())),
+                        translationService.store(new PlaceSubCategoryTranslation("en", request.getTitleEn()))));
         placeSubCategory.setTranslations(psct);
         PlaceSubCategory newPlaceSubCategory = placeSubCategoryRepository.save(placeSubCategory);
         psct.forEach(p -> p.setPlaceSubCategory(newPlaceSubCategory));
@@ -86,26 +63,24 @@ public class PlaceSubCategoryService {
 
 
     @Transactional
-    public void update(long id, PlaceSubCategory placeSubCategory, String title_tm, String title_ru, String title_en){
+    public void update(long id, SubCategoryRequest request){
         PlaceSubCategory subCategory = findOne(id);
-
+        subCategory.setPlaceCategory(placeCategoryService.findOne(request.getPlaceCategory()));
             PlaceSubCategoryTranslation existingTranslationTm = getTranslation(subCategory.getTranslations(),"tm");
             PlaceSubCategoryTranslation existingTranslationRu = getTranslation(subCategory.getTranslations(),"ru");
             PlaceSubCategoryTranslation existingTranslationEn = getTranslation(subCategory.getTranslations(),"en");
 
             if (existingTranslationTm != null)
-                translationService.update(existingTranslationTm, title_tm);
+                translationService.update(existingTranslationTm, request.getTitleTm());
 
-            if (existingTranslationTm != null)
-                translationService.update(existingTranslationRu, title_ru);
+            if (existingTranslationRu != null)
+                translationService.update(existingTranslationRu, request.getTitleRu());
 
-            if (existingTranslationTm != null)
-                translationService.update(existingTranslationEn, title_en);
+            if (existingTranslationEn != null)
+                translationService.update(existingTranslationEn, request.getTitleEn());
 
-            placeSubCategory.setId(id);
-            placeSubCategory.setUpdatedAt(new Date());
-            placeSubCategory.setCreatedAt(subCategory.getCreatedAt());
-            placeSubCategoryRepository.save(placeSubCategory);
+            subCategory.setUpdatedAt(new Date());
+            placeSubCategoryRepository.save(subCategory);
 
     }
 
