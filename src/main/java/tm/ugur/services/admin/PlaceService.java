@@ -210,6 +210,8 @@ public class PlaceService {
         if(!savedTranslations.isEmpty())
             existingPlace.addTranslations(savedTranslations);
 
+        existingPlace.setEmail(request.getEmail());
+        existingPlace.setWebsite(request.getWebsite());
         existingPlace.setUpdatedAt(new Date());
         Place finalPlace = placeRepository.save(existingPlace);
         savedNetworks.forEach(network -> network.setPlace(finalPlace));
