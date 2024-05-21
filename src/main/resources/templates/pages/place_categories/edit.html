@@ -45,8 +45,12 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label for="file">Изображение</label>
-                    <input class="form-control" type="file" id="file" name="thumb" multiple accept="image/jpeg, image/jpg, image/png, image/svg+xml">
+                    <input class="form-control" type="file" id="file" name="thumb" multiple accept="image/svg+xml">
                     <div class="mb-3" style="color: red;" id="image-error"></div>
+                    <object th:if="${placeCategory.getImage() != null}"
+                            th:data="'/images/place/category' + ${placeCategory.getImage().substring(placeCategory.getImage().lastIndexOf('/'))}" type="image/svg+xml" width="200" height="100">
+                        <p>Ваш браузер не поддерживает SVG.</p>
+                    </object>
                     <img style="width: 100px; height: 100px" th:if="${placeCategory.getImage() != null}"
                          th:src="${'/images/place/category' + placeCategory.getImage().substring(placeCategory.getImage().lastIndexOf('/'))}"
                          alt="Нет фото">

@@ -57,10 +57,11 @@ public class ImageController {
 
     @GetMapping("/place/category/{filename}")
     public ResponseEntity<Resource> getCategoryThumb(@PathVariable String filename) {
+
         Resource thumb = storageService.loadAsResource("place/category/" +filename);
 
         return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_JPEG)
+                .contentType(new MediaType("image", "svg+xml"))
                 .body(thumb);
     }
 }
