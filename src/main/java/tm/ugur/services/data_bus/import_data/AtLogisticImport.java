@@ -26,7 +26,7 @@ public class AtLogisticImport extends BusDataImplImport {
     @Override
     public Map<String, BusDTO> getBusData() {
         try {
-            JsonNode json = responseService.getData("https://atlogistika.com/api/api.php?cmd=list",
+                JsonNode json = responseService.getData("https://atlogistika.com/api/api.php?cmd=list",
                     "turkmenavtoulag", "Awto996");
 
             Map<String, BusDTO> buses = new TreeMap<>();
