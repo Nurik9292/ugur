@@ -183,6 +183,8 @@ public class PlaceService {
     public void update(long id, PlaceRequest request){
 
         Place existingPlace = findOne(id);
+        existingPlace.setPlaceCategory(placeCategoryService.findOne(request.getCategoryId()));
+        existingPlace.setPlaceSubCategory(placeSubCategoryService.findOne(request.getSubCategoryId()));
 
         if(Objects.nonNull(request.getRemoveImageIds()) && !request.getRemoveImageIds().isEmpty())
             deleteImageIds(existingPlace, request.getRemoveImageIds());
