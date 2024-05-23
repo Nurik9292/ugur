@@ -16,7 +16,6 @@ import tm.ugur.models.place.category.PlaceCategory;
 import tm.ugur.request.place.PlaceRequest;
 import tm.ugur.services.admin.PlaceCategoryService;
 import tm.ugur.services.admin.PlaceService;
-import tm.ugur.services.admin.PlaceTranslationService;
 import tm.ugur.util.pagination.PaginationUtil;
 import tm.ugur.util.sort.place.SortPlace;
 
@@ -34,7 +33,6 @@ public class PlaceController {
     String uploadPth;
 
     private final PlaceService placeService;
-    private final PlaceTranslationService placeTranslationService;
     private final PlaceCategoryService placeCategoryService;
     private final PaginationUtil paginationUtil;
     private final SortPlace sortPlace;
@@ -42,12 +40,10 @@ public class PlaceController {
 
     @Autowired
     public PlaceController(PlaceService placeService,
-                           PlaceTranslationService placeTranslationService,
                            PlaceCategoryService placeCategoryService,
                            PaginationUtil paginationUtil,
                            SortPlace sortPlace) {
         this.placeService = placeService;
-        this.placeTranslationService = placeTranslationService;
         this.placeCategoryService = placeCategoryService;
         this.paginationUtil = paginationUtil;
         this.sortPlace = sortPlace;

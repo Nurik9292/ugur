@@ -35,7 +35,7 @@ public class AuthClientController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String, String>> cleintRegister(@RequestBody @Valid ClientDTO clientDTO, BindingResult result) {
+    public ResponseEntity<Map<String, String>> clientRegister(@RequestBody @Valid ClientDTO clientDTO, BindingResult result) {
 
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(Map.of("message", "Ошибка"));
