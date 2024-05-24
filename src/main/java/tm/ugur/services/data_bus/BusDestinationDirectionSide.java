@@ -1,7 +1,6 @@
 package tm.ugur.services.data_bus;
 
 import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
 import org.slf4j.Logger;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import tm.ugur.dto.BusDTO;
 import tm.ugur.dto.geo.PointDTO;
-import tm.ugur.models.Bus;
 import tm.ugur.models.Route;
 import tm.ugur.models.StartRouteStop;
 import tm.ugur.models.Stop;
@@ -73,9 +71,12 @@ public class BusDestinationDirectionSide {
         } else if (distance.calculate(lastStop.getX(), lastStop.getY(), busLocation.getLat(), busLocation.getLng())) {
             return "back";
         } else {
-            Optional<BusDTO> oldBus = redisBusService.getBuses(String.valueOf(bus.getNumber()))
-                    .stream().filter(b -> b.getCarNumber().equals(bus.getCarNumber())).findFirst();
-            return oldBus.map(BusDTO::getSide).orElse(null);
+            return Optional.ofNullable(redisBusService.getBuses(String.valueOf(bus.getNumber())))
+                    .flatMap(buses -> buses.stream()
+                            .filter(b -> b.getCarNumber().equals(bus.getCarNumber()))
+                            .findFirst())
+                    .map(BusDTO::getSide)
+                    .orElse(null);
         }
     }
 

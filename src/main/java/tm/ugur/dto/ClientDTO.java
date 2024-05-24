@@ -29,4 +29,12 @@ public class ClientDTO {
     public int hashCode() {
         return Objects.hash(phone);
     }
+
+
+    @Override
+    public String toString() {
+        return "ClientDTO{" +
+                "phone='" + phone + '\'' +
+                '}';
+    }
 }

@@ -29,7 +29,10 @@ public class ClientRegistrationService {
     private final static Logger loggr = LoggerFactory.getLogger(ClientRegistrationService.class);
 
     @Autowired
-    public ClientRegistrationService(ClientOtpService clientOtpService, ClientService clientService, SmsService smsService, ModelMapper mapper) {
+    public ClientRegistrationService(ClientOtpService clientOtpService,
+                                     ClientService clientService,
+                                     SmsService smsService,
+                                     ModelMapper mapper) {
         this.clientOtpService = clientOtpService;
         this.clientService = clientService;
         this.smsService = smsService;
@@ -37,10 +40,13 @@ public class ClientRegistrationService {
     }
 
     public void register(ClientDTO clientDTO) throws Exception{
+        System.out.println(clientDTO);
         Optional<Client> existingClient = clientService.findClientByPhone(clientDTO.getPhone());
-
+        System.out.println("request client");
         if (existingClient.isPresent()) {
-            long timeOut = Duration.between(existingClient.get().getUpdatedAt().toInstant(), Instant.now()).getSeconds();
+            System.out.println(existingClient);
+            long timeOut = Math.abs(Duration.between(existingClient.get().getUpdatedAt().toInstant(), Instant.now()).getSeconds());
+            System.out.println(timeOut);
             if (timeOut <= endTime) {
                 throw new Exception("To many request");
             }

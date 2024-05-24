@@ -33,7 +33,7 @@ public class ImportBusData {
     @Autowired
     public ImportBusData(BusDataFetcher busDataFetcher,
                          BusDataAggregator busDataAggregator,
-                         RedisBusService redisService, RedisRouteService redisRouteService,
+                         RedisBusService redisService,
                          BusDestinationDirectionSide busSide, BusIndexing busIndexing, Lock lock) {
         this.busDataFetcher = busDataFetcher;
         this.busDataAggregator = busDataAggregator;

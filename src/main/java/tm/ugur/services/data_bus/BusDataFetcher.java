@@ -24,7 +24,7 @@ public class BusDataFetcher {
     public List<BusDTO> fetchBusDataFromAllSources() {
         Map<String, BusDTO> imdateBuses = imdataImport.getBusData();
         Map<String, BusDTO> atLogistikaBuses = atLogisticImport.getBusData();
-      
+
         return imdateBuses.entrySet().stream()
                 .filter(entry -> atLogistikaBuses.containsKey(entry.getKey()))
                 .map(entry -> {
