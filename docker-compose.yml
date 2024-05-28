@@ -28,18 +28,18 @@ services:
     container_name: app1
     restart: always
     volumes:
-#      - /home/nury/projects/images:/app/images
-      - /home/user/ugur/upload:/app/images
+      - /home/nury/projects/images:/app/images
+#      - /home/user/ugur/upload:/app/images
     ports:
       - "8080:8080"
     depends_on:
       - redis
       - rabbit
     environment:
-#      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/ugur
-      SPRING_DATASOURCE_URL: jdbc:postgresql://192.168.37.61:5432/ugur_v2
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/ugur
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://192.168.37.61:5432/ugur_v2
       SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATASOURCE_PASSWORD: 841992
       SPRING_DATA_REDIS_HOST: redis
       SPRING_RABBITMQ_HOST: rabbit
       SERVER_PORT: 8080
@@ -53,8 +53,8 @@ services:
       dockerfile: Dockerfile
     container_name: app2
     volumes:
-#      - /home/nury/projects/images:/app/images
-      - /home/user/ugur/upload:/app/images
+      - /home/nury/projects/images:/app/images
+#      - /home/user/ugur/upload:/app/images
     restart: always
     ports:
       - "8081:8081"
@@ -62,10 +62,10 @@ services:
       - redis
       - rabbit
     environment:
-#      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/ugur
-      SPRING_DATASOURCE_URL: jdbc:postgresql://192.168.37.61:5432/ugur_v2
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/ugur
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://192.168.37.61:5432/ugur_v2
       SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATASOURCE_PASSWORD: 841992
       SPRING_DATA_REDIS_HOST: redis
       SPRING_RABBITMQ_HOST: rabbit
       SERVER_PORT: 8081

@@ -14,6 +14,16 @@ public class Distance {
     public double calculateRadius(double aX, double aY, double bX, double bY) {
         double R = 6371;
 
+        return R * calculateProcess(aX, aY, bX, bY);
+    }
+
+    public double calculateRadiusMeter(double aX, double aY, double bX, double bY) {
+        double R = 6371e3;
+
+        return R * calculateProcess(aX, aY, bX, bY);
+    }
+
+    private double calculateProcess(double aX, double aY, double bX, double bY) {
         double latDistance = Math.toRadians(bX - aX);
         double lonDistance = Math.toRadians(bY - aY);
 
@@ -21,8 +31,6 @@ public class Distance {
                 + Math.cos(Math.toRadians(aX)) * Math.cos(Math.toRadians(bX))
                 * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
 
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-        return R * c;
+       return 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     }
 }

@@ -113,11 +113,14 @@ public class PlaceController {
         Place place = placeService.findOne(id);
         List<SocialNetwork> socialNetworks = new ArrayList<>(place.getSocialNetworks());
 
-        if(!socialNetworks.isEmpty() && socialNetworks.  getFirst().getName().equalsIgnoreCase("instagram")){
-            model.addAttribute("instagram", socialNetworks.getFirst().getName());
-        }
-        if(!socialNetworks.isEmpty() && socialNetworks.getLast().getName().equalsIgnoreCase("tiktok")){
-            model.addAttribute("tiktok", socialNetworks.getLast().getName());
+        if(!socialNetworks.isEmpty()){
+            socialNetworks.forEach(socialNetwork -> {
+                if (socialNetwork.getName().equals("instagram"))
+                    model.addAttribute("instagram", socialNetwork.getLink());
+                if (socialNetwork.getName().equals("tiktok"))
+                    model.addAttribute("tiktok", socialNetwork.getLink());
+            });
+
         }
 
         Set<PlaceTranslation> translations = place.getTranslations();

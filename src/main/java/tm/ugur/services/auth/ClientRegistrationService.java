@@ -61,7 +61,6 @@ public class ClientRegistrationService {
             smsService.sendSms(client.getPhone(), otp);
         } catch (Exception e) {
             loggr.error("Sms service failed: " + e.getMessage());
-            e.printStackTrace();
             throw new Exception("SMS service failed: " + e.getMessage());
         }
 

@@ -103,7 +103,7 @@
                         <div class="dataTable-info"
                              th:text="'Showing 1 to ' + ${stops.getSize()} + ' of ' + ${stops.getTotalElements()} + ' entries'">
                         </div>
-                        <th:block th:insert="~{pagination/pagination :: paginate(${stops}, ${totalPage}, null, 'stops')}"></th:block>
+                        <th:block th:insert="~{pagination/pagination :: paginate(${stops}, ${totalPage}, null, null, 'stops')}"></th:block>
                     </div>
                 </div>
             </div>

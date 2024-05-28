@@ -44,7 +44,7 @@ public class AtLogisticImport extends BusDataImplImport {
             return buses;
         } catch (JsonProcessingException e) {
             logger.error("Api atlogistika unavailable: " + e.getMessage());
-            return Collections.EMPTY_MAP;
+            return Collections.emptyMap();
         }
     }
 }
