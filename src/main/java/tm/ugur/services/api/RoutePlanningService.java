@@ -1,5 +1,7 @@
 package tm.ugur.services.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,7 +12,9 @@ import tm.ugur.models.Route;
 import tm.ugur.models.StartRouteStop;
 import tm.ugur.models.Stop;
 import tm.ugur.services.admin.StopService;
+import tm.ugur.services.graph.GraphHopperService;
 import tm.ugur.util.Distance;
+import tm.ugur.util.hopper.RouteResponse;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -18,17 +22,22 @@ import java.util.stream.Collectors;
 @Service
 public class RoutePlanningService {
 
+    private final GraphHopperService graphHopperService;
+    private final ObjectMapper mapper;
     private final StopService stopService;
     private final Distance distance;
 
     @Autowired
-    public RoutePlanningService(StopService stopService,
+    public RoutePlanningService(GraphHopperService graphHopperService, ObjectMapper mapper,
+                                StopService stopService,
                                 Distance distance) {
+        this.graphHopperService = graphHopperService;
+        this.mapper = mapper;
         this.stopService = stopService;
         this.distance = distance;
     }
 
-    public Map<Integer, LineStringDTO> planning(double pointALat, double pointALng, double pointBLat, double pointBLng) {
+    public Map<Integer, Map<String, LineStringDTO>> planning(double pointALat, double pointALng, double pointBLat, double pointBLng) {
         List<Stop> stops = stopService.findAll();
 
         Map<Double, Stop> nearbyStopsA = findNearbyStops(stops, pointALat, pointALng);
@@ -46,7 +55,7 @@ public class RoutePlanningService {
         Map<Route, Stop> routeBStops = findRouteStops(nearbyStopsB.values(), intersectingRoutes);
 
 
-        return processPlanning(
+        return  processPlanning(
                 routeAStops.keySet(), routeSide, routeAStops, routeBStops, pointALat, pointALng, pointBLat, pointBLng);
     }
 
@@ -141,13 +150,64 @@ public class RoutePlanningService {
         return routeStops;
     }
 
-    private Map<Integer, LineStringDTO> processPlanning(Set<Route> routes,
+    private Map<Integer, Map<String, LineStringDTO>> processPlanning(Set<Route> routes,
                                  Map<Route, String> routeSide,
                                  Map<Route, Stop> routeAStops,
                                  Map<Route, Stop> routeBStops,
                                  double pointALat, double pointALng,
                                  double pointBLat, double pointBLng) {
-        Map<Integer, LineStringDTO> lines = new HashMap<>();
+
+        Map<Integer, List<PointDTO>> points =
+                processCoordinates(routes, routeSide, routeAStops, routeBStops, pointALat, pointALng, pointBLat, pointBLng);
+
+        Map<Integer, Map<String, LineStringDTO>> res = new HashMap<>();
+
+        for(Map.Entry<Integer, List<PointDTO>> entry : points.entrySet()) {
+            int routeNumber = entry.getKey();
+            List<PointDTO> pointDTOList = entry.getValue();
+
+           String responseFoot = graphHopperService.calculateFootRoute(
+                   pointALat, pointALng, pointDTOList.get(1).getLat(), pointDTOList.get(1).getLng());
+           String responseBus = graphHopperService.calculateBusRoute(pointDTOList.subList(1, pointDTOList.size()));
+
+           RouteResponse routeFootResponse = readObject(responseFoot);
+           RouteResponse routeBusResponse = readObject(responseBus);
+
+           Map<String, LineStringDTO> route = new HashMap<>();
+           List<PointDTO> pointFootLists = new ArrayList<>();
+           List<PointDTO> pointBusLists = new ArrayList<>();
+
+           routeFootResponse.getPaths().getFirst().getPoints().getCoordinates().forEach(coordinate -> {
+                pointFootLists.add(new PointDTO(coordinate.getLast(), coordinate.getFirst()));
+            });
+
+           routeBusResponse.getPaths().getFirst().getPoints().getCoordinates().forEach(coordinate -> {
+               pointBusLists.add(new PointDTO(coordinate.getLast(), coordinate.getFirst()));
+           });
+
+            route.put("walk", new LineStringDTO(pointFootLists));
+            route.put("bus", new LineStringDTO(pointBusLists));
+            res.put(routeNumber, route);
+        }
+
+        return res;
+    }
+
+    private RouteResponse readObject(String response) {
+        try {
+           return mapper.readValue(response, RouteResponse.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Map<Integer, List<PointDTO>> processCoordinates(Set<Route> routes,
+                                 Map<Route, String> routeSide,
+                                 Map<Route, Stop> routeAStops,
+                                 Map<Route, Stop> routeBStops,
+                                 double pointALat, double pointALng,
+                                 double pointBLat, double pointBLng) {
+        Map<Integer, List<PointDTO>> routePoits = new HashMap<>();
 
         routes.forEach(route -> {
             List<Stop> list;
@@ -176,10 +236,10 @@ public class RoutePlanningService {
                    points.add(new PointDTO(point.getX(), point.getY()));
                });
                points.add(new PointDTO(pointBLat, pointBLng));
-               lines.put(route.getNumber(), new LineStringDTO(points));
+               routePoits.put(route.getNumber(), points);
            }
         });
 
-        return lines;
+        return routePoits;
     }
 }

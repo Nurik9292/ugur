@@ -21,7 +21,7 @@ public class RoutePlanningController {
     }
 
     @GetMapping
-    public ResponseEntity<Map<Integer, LineStringDTO>> planning(@RequestParam("pointALat") double pointALat,
+    public ResponseEntity<Map<Integer, Map<String, LineStringDTO>>> planning(@RequestParam("pointALat") double pointALat,
                                                                 @RequestParam("pointALng") double pointALng,
                                                                 @RequestParam("pointBLat") double pointBLat,
                                                                 @RequestParam("pointBLng") double pointBLng
